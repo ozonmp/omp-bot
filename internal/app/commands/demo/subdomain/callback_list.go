@@ -18,7 +18,7 @@ func (c *DemoSubdomainCommander) CallbackList(callback *tgbotapi.CallbackQuery, 
 	err := json.Unmarshal([]byte(callbackPath.CallbackData), &parsedData)
 	if err != nil {
 		log.Printf("DemoSubdomainCommander.CallbackList: "+
-			"error reading json data for type CallbackListData from"+
+			"error reading json data for type CallbackListData from "+
 			"input string %v - %v", callbackPath.CallbackData, err)
 		return
 	}
