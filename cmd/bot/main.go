@@ -19,7 +19,8 @@ func main() {
 		log.Panic(err)
 	}
 
-	bot.Debug = true
+	// Uncomment if you want debugging
+	// bot.Debug = true
 
 	log.Printf("Authorized on account %s", bot.Self.UserName)
 
