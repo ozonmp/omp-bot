@@ -5,8 +5,7 @@ import (
 	"os"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-	"github.com/istrel/bot/internal/app/commands"
-	"github.com/istrel/bot/internal/service/product"
+	"github.com/istrel/bot/internal/app/router"
 	"github.com/joho/godotenv"
 )
 
@@ -33,11 +32,9 @@ func main() {
 		log.Panic(err)
 	}
 
-	productService := product.NewService()
-
-	commander := commands.NewCommander(bot, productService)
+	router := router.NewRouter(bot)
 
 	for update := range updates {
-		commander.HandleUpdate(update)
+		router.HandleUpdate(update)
 	}
 }

@@ -1,6 +1,6 @@
-package product
+package subdomain
 
-var allProducts = []Product{
+var allEntities = []Entity{
 	{Title: "one"},
 	{Title: "two"},
 	{Title: "three"},
@@ -8,6 +8,6 @@ var allProducts = []Product{
 	{Title: "five"},
 }
 
-type Product struct {
+type Entity struct {
 	Title string
 }
