@@ -1,6 +1,8 @@
 package commands
 
 import (
+	"encoding/json"
+	"fmt"
 	"log"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
@@ -21,18 +23,33 @@ func (c *Commander) HandleUpdate(update tgbotapi.Update) {
 		}
 	}()
 
-	if update.Message == nil { // ignore any non-Message Updates
-		return
+	switch {
+	case update.CallbackQuery != nil:
+		c.handleCallback(update.CallbackQuery)
+	case update.Message != nil:
+		c.handleMessage(update.Message)
 	}
+}
 
-	switch update.Message.Command() {
+func (c *Commander) handleCallback(callback *tgbotapi.CallbackQuery) {
+	parsedData := CommandData{}
+	json.Unmarshal([]byte(callback.Data), &parsedData)
+	msg := tgbotapi.NewMessage(
+		callback.Message.Chat.ID,
+		fmt.Sprintf("Parsed: %+v\n", parsedData),
+	)
+	c.bot.Send(msg)
+}
+
+func (c *Commander) handleMessage(msg *tgbotapi.Message) {
+	switch msg.Command() {
 	case "help":
-		c.Help(update.Message)
+		c.Help(msg)
 	case "list":
-		c.List(update.Message)
+		c.List(msg)
 	case "get":
-		c.Get(update.Message)
+		c.Get(msg)
 	default:
-		c.Default(update.Message)
+		c.Default(msg)
 	}
 }
