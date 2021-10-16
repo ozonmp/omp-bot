@@ -10,9 +10,15 @@ import (
 )
 
 func main() {
-	godotenv.Load()
+	err := godotenv.Load()
+	if err != nil {
+		log.Panic(err)
+	}
 
-	token := os.Getenv("TOKEN")
+	token, found := os.LookupEnv("TOKEN")
+	if !found {
+		log.Panic("environment variable TOKEN not found in .env")
+	}
 
 	bot, err := tgbotapi.NewBotAPI(token)
 	if err != nil {
@@ -33,9 +39,9 @@ func main() {
 		log.Panic(err)
 	}
 
-	router := router.NewRouter(bot)
+	routerHandler := router.NewRouter(bot)
 
 	for update := range updates {
-		router.HandleUpdate(update)
+		routerHandler.HandleUpdate(update)
 	}
 }
