@@ -3,8 +3,8 @@ package business
 import "fmt"
 
 type Office struct {
-	Name        string
-	Description string
+	Name        string `json:"name"`
+	Description string `json:"description"`
 }
 
 func (o *Office) String() string {

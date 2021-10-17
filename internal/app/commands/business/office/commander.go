@@ -43,6 +43,8 @@ func (c *OfficeCommander) HandleCommand(msg *tgbotapi.Message, commandPath path.
 		c.Get(msg)
 	case "delete":
 		c.Delete(msg)
+	case "create":
+		c.Create(msg)
 	default:
 		c.Help(msg)
 	}

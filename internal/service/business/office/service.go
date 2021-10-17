@@ -1,6 +1,7 @@
 package office
 
 import (
+	"errors"
 	"fmt"
 	"github.com/ozonmp/omp-bot/internal/model/business"
 )
@@ -72,7 +73,7 @@ func (s *DummyOfficeService) List(cursor uint64, limit uint64) ([]business.Offic
 }
 
 func (s *DummyOfficeService) Get(officeId uint64) (*business.Office, error) {
-	if uint64(len(s.allEntities)) < officeId {
+	if uint64(len(s.allEntities)-1) < officeId {
 		return nil, fmt.Errorf("entity with id %d not found", officeId)
 	}
 
@@ -81,7 +82,7 @@ func (s *DummyOfficeService) Get(officeId uint64) (*business.Office, error) {
 }
 
 func (s *DummyOfficeService) Delete(officeId uint64) (bool, error) {
-	if uint64(len(s.allEntities)) < officeId {
+	if uint64(len(s.allEntities)-1) < officeId {
 		return false, fmt.Errorf("entity with id %d not found", officeId)
 	}
 
@@ -89,8 +90,16 @@ func (s *DummyOfficeService) Delete(officeId uint64) (bool, error) {
 	return true, nil
 }
 
-//func (s *DummyOfficeService) Create(business.Office) (uint64, error) {
-//	s.allEntities = append(s.allEntities[:key], s.allEntities[key+1:]...)
-//
-//	return false, fmt.Errorf("entity with id %d not found", office_id)
-//}
+func (s *DummyOfficeService) Create(o business.Office) (uint64, error) {
+	if len(o.Name) == 0 {
+		return 0, errors.New("field 'Name' is required")
+	}
+
+	if len(o.Description) == 0 {
+		return 0, errors.New("field 'Description' is required")
+	}
+
+	s.allEntities = append(s.allEntities, o)
+
+	return uint64(len(s.allEntities) - 1), nil
+}

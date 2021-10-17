@@ -3,6 +3,7 @@ package office
 import (
 	"log"
 	"strconv"
+	"strings"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
@@ -10,7 +11,7 @@ import (
 func (c *OfficeCommander) Get(inputMessage *tgbotapi.Message) {
 	args := inputMessage.CommandArguments()
 
-	idx, err := strconv.Atoi(args)
+	idx, err := strconv.Atoi(strings.TrimSpace(args))
 	if err != nil {
 		log.Println("wrong args", args)
 		return
