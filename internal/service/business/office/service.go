@@ -6,11 +6,11 @@ import (
 )
 
 type OfficeService interface {
-	Describe(office_id uint64) (*business.Office, error)
+	Describe(officeId uint64) (*business.Office, error)
 	List(cursor uint64, limit uint64) ([]business.Office, error)
 	Create(business.Office) (uint64, error)
-	Update(office_id uint64, office business.Office) error
-	Remove(office_id uint64) (bool, error)
+	Update(officeId uint64, office business.Office) error
+	Remove(officeId uint64) (bool, error)
 }
 
 type DummyOfficeService struct {
@@ -20,47 +20,38 @@ type DummyOfficeService struct {
 func NewDummyOfficeService() *DummyOfficeService {
 	return &DummyOfficeService{allEntities: []business.Office{
 		{
-			Id:          1,
 			Name:        "One",
 			Description: "Office one",
 		},
 		{
-			Id:          2,
 			Name:        "Two",
 			Description: "Office two",
 		},
 		{
-			Id:          3,
 			Name:        "three",
 			Description: "Office tree",
 		},
 		{
-			Id:          4,
 			Name:        "four",
 			Description: "Office four",
 		},
 		{
-			Id:          5,
 			Name:        "five",
 			Description: "Office 5",
 		},
 		{
-			Id:          6,
 			Name:        "six",
 			Description: "Office 6",
 		},
 		{
-			Id:          7,
 			Name:        "seven",
 			Description: "Office 7",
 		},
 		{
-			Id:          8,
 			Name:        "eight",
 			Description: "Office 8",
 		},
 		{
-			Id:          9,
 			Name:        "eight",
 			Description: "Office 9",
 		},
@@ -80,23 +71,26 @@ func (s *DummyOfficeService) List(cursor uint64, limit uint64) ([]business.Offic
 	return s.allEntities[cursor : cursor+limit], nil
 }
 
-func (s *DummyOfficeService) Get(office_id uint64) (*business.Office, error) {
-	for _, entity := range s.allEntities {
-		if entity.Id == office_id {
-			return &entity, nil
-		}
+func (s *DummyOfficeService) Get(officeId uint64) (*business.Office, error) {
+	if uint64(len(s.allEntities)) < officeId {
+		return nil, fmt.Errorf("entity with id %d not found", officeId)
 	}
 
-	return nil, fmt.Errorf("entity with id %d not found", office_id)
+	return &s.allEntities[officeId], nil
+
 }
 
-func (s *DummyOfficeService) Delete(office_id uint64) (bool, error) {
-	for key, entity := range s.allEntities {
-		if entity.Id == office_id {
-			s.allEntities = append(s.allEntities[:key], s.allEntities[key+1:]...)
-			return true, nil
-		}
+func (s *DummyOfficeService) Delete(officeId uint64) (bool, error) {
+	if uint64(len(s.allEntities)) < officeId {
+		return false, fmt.Errorf("entity with id %d not found", officeId)
 	}
 
-	return false, fmt.Errorf("entity with id %d not found", office_id)
+	s.allEntities = append(s.allEntities[:officeId], s.allEntities[officeId+1:]...)
+	return true, nil
 }
+
+//func (s *DummyOfficeService) Create(business.Office) (uint64, error) {
+//	s.allEntities = append(s.allEntities[:key], s.allEntities[key+1:]...)
+//
+//	return false, fmt.Errorf("entity with id %d not found", office_id)
+//}

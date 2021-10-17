@@ -7,8 +7,11 @@ import (
 
 func (c *OfficeCommander) Help(inputMessage *tgbotapi.Message) {
 	msg := tgbotapi.NewMessage(inputMessage.Chat.ID,
-		"/help__business__office - help\n"+
-			"/list__business__office - list products",
+		`/help__business__office - help
+		/list__business__office - list products
+		/get__business__office {id} - get entity by id
+		/delete__business__office {id} - remove entity by id
+	`,
 	)
 
 	_, err := c.bot.Send(msg)
