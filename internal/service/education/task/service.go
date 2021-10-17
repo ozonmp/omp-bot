@@ -4,18 +4,18 @@ import (
 	"errors"
 )
 
-type TaskService struct {
+type DummyTaskService struct {
 	data *taskModel
 }
 
-func NewTaskService() *TaskService {
+func NewDummyTaskService() *DummyTaskService {
 
 	taskEntities.Init()
 
-	return &TaskService{taskEntities}
+	return &DummyTaskService{taskEntities}
 }
 
-func (s *TaskService) List(cursor, limit uint64) (result taskModel) {
+func (s *DummyTaskService) List(cursor, limit uint64) (result taskModel) {
 
 	lenSlice := uint64(len(*s.data))
 
@@ -34,7 +34,7 @@ func (s *TaskService) List(cursor, limit uint64) (result taskModel) {
 	return result
 }
 
-func (s *TaskService) Create(Task_id uint64, name, desc string) error {
+func (s *DummyTaskService) Create(Task_id uint64, name, desc string) error {
 
 	if _, err := s.Find(Task_id); err == nil {
 		return errors.New("product id found on another product")
@@ -49,7 +49,7 @@ func (s *TaskService) Create(Task_id uint64, name, desc string) error {
 	return nil
 }
 
-func (s *TaskService) Update(Task_id uint64, Title, Desc string) error {
+func (s *DummyTaskService) Update(Task_id uint64, Title, Desc string) error {
 
 	id, err := s.Find(Task_id)
 	if err != nil {
@@ -63,7 +63,7 @@ func (s *TaskService) Update(Task_id uint64, Title, Desc string) error {
 	return nil
 }
 
-func (s *TaskService) Remove(Task_id uint64) error {
+func (s *DummyTaskService) Remove(Task_id uint64) error {
 
 	id, err := s.Find(Task_id)
 	if err != nil {
@@ -78,11 +78,11 @@ func (s *TaskService) Remove(Task_id uint64) error {
 	return nil
 }
 
-func (s *TaskService) Count() int {
+func (s *DummyTaskService) Count() int {
 	return len(*s.data)
 }
 
-func (s *TaskService) Get(Task_id uint64) task {
+func (s *DummyTaskService) Get(Task_id uint64) task {
 
 	id, err := s.Find(Task_id)
 	if err != nil {
@@ -95,7 +95,7 @@ func (s *TaskService) Get(Task_id uint64) task {
 
 }
 
-func (s *TaskService) Find(Task_id uint64) (int, error) {
+func (s *DummyTaskService) Find(Task_id uint64) (int, error) {
 
 	data := *s.data
 

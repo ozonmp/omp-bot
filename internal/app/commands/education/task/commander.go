@@ -11,12 +11,12 @@ import (
 
 type TaskCommander struct {
 	bot         *tgbotapi.BotAPI
-	taskService *task.TaskService
+	taskService *task.DummyTaskService
 }
 
 func NewTaskCommander(bot *tgbotapi.BotAPI) *TaskCommander {
 
-	taskService := task.NewTaskService()
+	taskService := task.NewDummyTaskService()
 
 	return &TaskCommander{
 		bot:         bot,
