@@ -2,9 +2,10 @@ package internship
 
 import (
 	"encoding/json"
+	"log"
 
+	"github.com/VYBel/omp-bot/internal/app/path"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-	"github.com/ozonmp/omp-bot/internal/app/path"
 )
 
 func (c *WorkInternshipCommander) List(inputMessage *tgbotapi.Message) {
@@ -12,7 +13,7 @@ func (c *WorkInternshipCommander) List(inputMessage *tgbotapi.Message) {
 
 	products := c.internshipService.List()
 	for _, p := range products {
-		outputMsgText += p.Title
+		outputMsgText += p.Description
 		outputMsgText += "\n"
 	}
 
@@ -35,5 +36,8 @@ func (c *WorkInternshipCommander) List(inputMessage *tgbotapi.Message) {
 		),
 	)
 
-	c.bot.Send(msg)
+	_, err := c.bot.Send(msg)
+	if err != nil {
+		log.Printf("WorkInternshipCommander.List: error sending reply message to chat - %v", err)
+	}
 }

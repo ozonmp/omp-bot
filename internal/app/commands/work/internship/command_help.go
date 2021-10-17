@@ -2,6 +2,7 @@ package internship
 
 import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+	"log"
 )
 
 func (c *WorkInternshipCommander) Help(inputMessage *tgbotapi.Message) {
@@ -10,5 +11,8 @@ func (c *WorkInternshipCommander) Help(inputMessage *tgbotapi.Message) {
 			"/list - list products",
 	)
 
-	c.bot.Send(msg)
+	_, err := c.bot.Send(msg)
+	if err != nil {
+		log.Printf("WorkInternshipCommander.Help: error sending reply message to chat - %v", err)
+	}
 }

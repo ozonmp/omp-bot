@@ -3,10 +3,9 @@ package internship
 import (
 	"log"
 
-	"github.com/VYBel/omp-bot/internal/app/commands/work/internship"
+	"github.com/VYBel/omp-bot/internal/app/path"
 	"github.com/VYBel/omp-bot/internal/service/work/internship"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-	"github.com/ozonmp/omp-bot/internal/app/path"
 )
 
 type WorkInternshipCommander struct {
@@ -14,7 +13,7 @@ type WorkInternshipCommander struct {
 	internshipService *internship.Service
 }
 
-func NewDemoSubdomainCommander(
+func NewWorkInternshipCommander(
 	bot *tgbotapi.BotAPI,
 ) *WorkInternshipCommander {
 	internshipService := internship.NewService()
