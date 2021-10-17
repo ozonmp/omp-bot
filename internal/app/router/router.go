@@ -236,5 +236,8 @@ func (c *Router) handleMessage(msg *tgbotapi.Message) {
 func (c *Router) showCommandFormat(inputMessage *tgbotapi.Message) {
 	outputMsg := tgbotapi.NewMessage(inputMessage.Chat.ID, "Command format: /{command}__{domain}__{subdomain}")
 
-	c.bot.Send(outputMsg)
+	_, err := c.bot.Send(outputMsg)
+	if err != nil {
+		log.Printf("Router.showCommandFormat: error sending reply message to chat - %v", err)
+	}
 }
