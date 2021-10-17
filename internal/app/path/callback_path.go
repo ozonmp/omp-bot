@@ -1,6 +1,7 @@
 package path
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 )
@@ -11,6 +12,8 @@ type CallbackPath struct {
 	CallbackName string
 	CallbackData string
 }
+
+var ErrUnknownCallback = errors.New("unknown callback")
 
 func ParseCallback(callbackData string) (CallbackPath, error) {
 	callbackParts := strings.SplitN(callbackData, "__", 4)

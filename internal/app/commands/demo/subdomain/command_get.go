@@ -27,5 +27,8 @@ func (c *DemoSubdomainCommander) Get(inputMessage *tgbotapi.Message) {
 		product.Title,
 	)
 
-	c.bot.Send(msg)
+	_, err = c.bot.Send(msg)
+	if err != nil {
+		log.Printf("DemoSubdomainCommander.Get: error sending reply message to chat - %v", err)
+	}
 }

@@ -13,7 +13,6 @@ type CommandPath struct {
 }
 
 var ErrUnknownCommand = errors.New("unknown command")
-var ErrUnknownCallback = errors.New("unknown callback")
 
 func ParseCommand(commandText string) (CommandPath, error) {
 	commandParts := strings.SplitN(commandText, "__", 3)
