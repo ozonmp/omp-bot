@@ -9,16 +9,16 @@ import (
 
 type StreamingAnnouncementCommander struct {
 	bot              *tgbotapi.BotAPI
-	announcementService *announcement.Service
+	announcementService announcement.AnnouncementService
 }
 
 func NewStreamingAnnouncementCommander(
 	bot *tgbotapi.BotAPI,
 ) *StreamingAnnouncementCommander {
-	announcementService := announcement.NewService()
+	announcementService := announcement.NewDummyAnnouncementService()
 
 	return &StreamingAnnouncementCommander{
-		bot:              bot,
+		bot:                 bot,
 		announcementService: announcementService,
 	}
 }

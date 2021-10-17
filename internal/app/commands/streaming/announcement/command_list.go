@@ -10,7 +10,7 @@ import (
 func (c *StreamingAnnouncementCommander) List(inputMessage *tgbotapi.Message) {
 	outputMsgText := "Here all the products: \n\n"
 
-	products := c.announcementService.List()
+	products, _ := c.announcementService.List(0, 0)
 	for _, p := range products {
 		outputMsgText += p.Title
 		outputMsgText += "\n"

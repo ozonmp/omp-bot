@@ -15,7 +15,7 @@ func (c *StreamingAnnouncementCommander) Get(inputMessage *tgbotapi.Message) {
 		return
 	}
 
-	product, err := c.announcementService.Get(idx)
+	product, err := c.announcementService.Describe(uint64(idx))
 	if err != nil {
 		log.Printf("fail to get product with idx %d: %v", idx, err)
 		return
