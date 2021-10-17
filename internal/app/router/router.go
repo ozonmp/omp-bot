@@ -3,6 +3,7 @@ package router
 import (
 	"github.com/ozonmp/omp-bot/internal/app/commands/demo"
 	"github.com/ozonmp/omp-bot/internal/app/commands/education"
+	"github.com/ozonmp/omp-bot/internal/service_consts"
 	"github.com/ozonmp/omp-bot/internal/servicedata"
 	"log"
 
@@ -165,7 +166,7 @@ func (c *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
 		break
 	case "product":
 		break
-	case "education":
+	case service_consts.Education:
 		c.EducationCommander.HandleCallback(callback, callbackPath)
 		break
 	default:
@@ -176,11 +177,12 @@ func (c *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
 func (c *Router) handleMessage(msg *tgbotapi.Message) {
 	var commandPath path.CommandPath
 	var err error
+	//Вот тут тоже не уверен что правильно так реализовывать
 	if _, ok := servicedata.EditedChat[msg.Chat.ID]; ok {
 		commandPath = path.CommandPath{}
 		commandPath.CommandName = ""
-		commandPath.Domain = "education"
-		commandPath.Subdomain = "solution"
+		commandPath.Domain = service_consts.Education
+		commandPath.Subdomain = service_consts.Solution
 	} else {
 		if !msg.IsCommand() {
 			c.showCommandFormat(msg)
@@ -246,7 +248,7 @@ func (c *Router) handleMessage(msg *tgbotapi.Message) {
 		break
 	case "product":
 		break
-	case "education":
+	case service_consts.Education:
 		c.EducationCommander.HandleCommand(msg, commandPath)
 		break
 	default:

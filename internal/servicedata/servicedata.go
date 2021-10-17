@@ -1,5 +1,10 @@
 package servicedata
 
+import (
+	"fmt"
+	"strconv"
+)
+
 const (
 	NewoperationData  = iota
 	EditoperationData
@@ -15,4 +20,17 @@ func GetOperationData(productID uint64, operationType int) *operationData{
 		ProductID: productID,
 		OperationType: operationType,
 	}
+}
+
+func (s *operationData) String() string {
+	OperationName := ""
+	switch s.OperationType {
+	case NewoperationData:
+		OperationName = "New"
+	case EditoperationData:
+		OperationName = "Edit"
+	default:
+		OperationName = "Unknown:" + strconv.Itoa(s.OperationType)
+	}
+	return fmt.Sprintf("Тип операции: %s, для ID = %d", OperationName, s.ProductID)
 }

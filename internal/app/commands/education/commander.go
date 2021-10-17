@@ -4,6 +4,7 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/app/commands/education/solution"
 	"github.com/ozonmp/omp-bot/internal/app/path"
+	"github.com/ozonmp/omp-bot/internal/service_consts"
 	"log"
 )
 
@@ -29,7 +30,7 @@ func NewEducationCommander(
 
 func (c *Education_Commander) HandleCallback(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
 	switch callbackPath.Subdomain {
-	case "solution":
+	case service_consts.Solution:
 		c.SolutionCommander.HandleCallback(callback, callbackPath)
 	default:
 		log.Printf("Education_Commander.HandleCallback: unknown subdomain - %s", callbackPath.Subdomain)
@@ -38,7 +39,7 @@ func (c *Education_Commander) HandleCallback(callback *tgbotapi.CallbackQuery, c
 
 func (c *Education_Commander) HandleCommand(msg *tgbotapi.Message, commandPath path.CommandPath) {
 	switch commandPath.Subdomain {
-	case "solution":
+	case service_consts.Solution:
 		c.SolutionCommander.HandleCommand(msg, commandPath)
 	default:
 		log.Printf("Education_Commander.HandleCommand: unknown subdomain - %s", commandPath.Subdomain)
