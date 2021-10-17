@@ -3,14 +3,23 @@ package internship
 import (
 	"log"
 
-	"github.com/VYBel/omp-bot/internal/app/path"
-	"github.com/VYBel/omp-bot/internal/service/work/internship"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+	"github.com/ozonmp/omp-bot/internal/app/path"
+	"github.com/ozonmp/omp-bot/internal/service/work/internship"
 )
+
+type WorkCommander interface {
+	Help(inputMsg *tgbotapi.Message)
+	Get(inputMsg *tgbotapi.Message)
+	List(inputMsg *tgbotapi.Message)
+	Delete(inputMsg *tgbotapi.Message)
+	New(inputMsg *tgbotapi.Message)
+	Edit(inputMsg *tgbotapi.Message)
+}
 
 type WorkInternshipCommander struct {
 	bot               *tgbotapi.BotAPI
-	internshipService *internship.Service
+	internshipService internship.WorkService
 }
 
 func NewWorkInternshipCommander(

@@ -4,9 +4,9 @@ import (
 	"log"
 	"os"
 
-	routerPkg "github.com/VYBel/omp-bot/internal/app/router"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/joho/godotenv"
+	routerPkg "github.com/ozonmp/omp-bot/internal/app/router"
 )
 
 func main() {

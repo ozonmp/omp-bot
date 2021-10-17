@@ -3,9 +3,9 @@ package work
 import (
 	"log"
 
-	"github.com/VYBel/omp-bot/internal/app/commands/work/internship"
-	"github.com/VYBel/omp-bot/internal/app/path"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+	"github.com/ozonmp/omp-bot/internal/app/commands/work/internship"
+	"github.com/ozonmp/omp-bot/internal/app/path"
 )
 
 type Commander interface {

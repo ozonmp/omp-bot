@@ -6,6 +6,21 @@ import (
 	"strconv"
 )
 
+type WorkService interface {
+	List() []Internship
+	ShortString(p Internship) string
+	FullString(p Internship) string
+	Get(idx int) (*Internship, error)
+	Delete(idx int) bool
+	/*
+	   Describe({subdomain}ID uint64) (*{domain}.{Subdomain}, error)
+	   List(cursor uint64, limit uint64) ([]{domain}.{Subdomain}, error)
+	   Create({domain}.{Subdomain}) (uint64, error)
+	   Update({subdomain}ID uint64, {subdomain} {domain}.{Subdomain}) error
+	   Remove({subdomain}ID uint64) (bool, error)
+	*/
+}
+
 type Service struct{}
 
 func NewService() *Service {
