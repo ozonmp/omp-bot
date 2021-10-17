@@ -2,10 +2,10 @@ package exchange
 
 type Exchange struct {}
 
-func (xchg Exchange) NewExchange() *Exchange {
+func (exchange Exchange) NewExchange() *Exchange {
 	return &Exchange{}
 }
 
-func (xchg Exchange) String() string {
+func (exchange Exchange) String() string {
 	return "domain: exchange, subdomain: exchange\n"
 }
