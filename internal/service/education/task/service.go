@@ -34,24 +34,24 @@ func (s *DummyTaskService) List(cursor, limit uint64) (result taskModel) {
 	return result
 }
 
-func (s *DummyTaskService) Create(Task_id uint64, name, desc string) error {
+func (s *DummyTaskService) Create(TaskId uint64, name, desc string) error {
 
-	if _, err := s.Find(Task_id); err == nil {
+	if _, err := s.Find(TaskId); err == nil {
 		return errors.New("product id found on another product")
 	}
 
 	data := *s.data
 
-	data = append(data, task{Id: Task_id, Championat_id: 1, Difficulty: 5, Title: name, Description: desc})
+	data = append(data, task{Id: TaskId, Championat_id: 1, Difficulty: 5, Title: name, Description: desc})
 
 	s.data = &data
 
 	return nil
 }
 
-func (s *DummyTaskService) Update(Task_id uint64, Title, Desc string) error {
+func (s *DummyTaskService) Update(TaskId uint64, Title, Desc string) error {
 
-	id, err := s.Find(Task_id)
+	id, err := s.Find(TaskId)
 	if err != nil {
 		return err
 	}
@@ -63,9 +63,9 @@ func (s *DummyTaskService) Update(Task_id uint64, Title, Desc string) error {
 	return nil
 }
 
-func (s *DummyTaskService) Remove(Task_id uint64) error {
+func (s *DummyTaskService) Remove(TaskId uint64) error {
 
-	id, err := s.Find(Task_id)
+	id, err := s.Find(TaskId)
 	if err != nil {
 		return err
 	}
@@ -82,9 +82,9 @@ func (s *DummyTaskService) Count() int {
 	return len(*s.data)
 }
 
-func (s *DummyTaskService) Get(Task_id uint64) task {
+func (s *DummyTaskService) Get(TaskId uint64) task {
 
-	id, err := s.Find(Task_id)
+	id, err := s.Find(TaskId)
 	if err != nil {
 		return task{}
 	}
@@ -95,12 +95,12 @@ func (s *DummyTaskService) Get(Task_id uint64) task {
 
 }
 
-func (s *DummyTaskService) Find(Task_id uint64) (int, error) {
+func (s *DummyTaskService) Find(TaskId uint64) (int, error) {
 
 	data := *s.data
 
 	for i, v := range data {
-		if v.Id == Task_id {
+		if v.Id == TaskId {
 			return i, nil
 		}
 	}
