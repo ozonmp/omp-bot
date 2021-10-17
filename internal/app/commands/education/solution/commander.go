@@ -144,10 +144,9 @@ func (p *SolutionCommander) Edit(inputMsg *tgbotapi.Message){
 		log.Println(TextMsg)
 		return
 	}
-	servicedata.EditedChat[inputMsg.Chat.ID] = idx
+	servicedata.EditedChat[inputMsg.Chat.ID] = *(servicedata.GetOperationData(idx, servicedata.EditoperationData))
 	TextMsg = product.String() + "\n Измененная запись должна содержать поля TaskID, Autor, Title. Все поля "+
-		"должны быть в одном сообщении каждое поле в отдельной строке." + strconv.FormatInt(inputMsg.Chat.ID, 10) +
-		" " + strconv.FormatUint(idx, 10)
+		"должны быть в одном сообщении каждое поле в отдельной строке."
 }
 
 func (c *SolutionCommander) CallbackList(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
@@ -190,18 +189,18 @@ func (c *SolutionCommander) Default(inputMessage *tgbotapi.Message) {
 			return
 		}
 		solution := education.Solution{	}
-		solution.Id = idx
+		solution.Id = idx.ProductID
 		solution.TaskID = taskID
 		solution.Autor = data[1]
 		solution.Title = data[2]
-		c.SolutionService.Update(idx, solution)
+		c.SolutionService.Update(idx.ProductID, solution)
 		delete(servicedata.EditedChat, inputMessage.Chat.ID)
-		sol, _ := c.SolutionService.Describe(idx)
+		sol, _ := c.SolutionService.Describe(idx.ProductID)
 		TextMsg = "Запись заменена: \n " + sol.String()
 	} else {
 		log.Printf("[%s] %s", inputMessage.From.UserName, inputMessage.Text)
 
-		msg := tgbotapi.NewMessage(inputMessage.Chat.ID, "You wrote: "+inputMessage.Text + " " + strconv.FormatInt(inputMessage.Chat.ID, 10))
+		msg := tgbotapi.NewMessage(inputMessage.Chat.ID, "You wrote: "+inputMessage.Text)
 
 		c.bot.Send(msg)
 	}
