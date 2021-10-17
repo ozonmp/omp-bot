@@ -7,7 +7,7 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
-func (c *WorkInternshipCommander) Get(inputMessage *tgbotapi.Message) {
+func (c *WorkInternshipCommander) Delete(inputMessage *tgbotapi.Message) {
 	args := inputMessage.CommandArguments()
 	idx, err := strconv.Atoi(args)
 	if err != nil {
@@ -19,13 +19,12 @@ func (c *WorkInternshipCommander) Get(inputMessage *tgbotapi.Message) {
 		}
 		return
 	}
-	product, err := c.internshipService.Get(idx)
+	delResult := c.internshipService.Delete(idx)
 	var msgText string
-	if err != nil {
-		log.Printf("fail to get product with idx %d: %v", idx, err)
-		msgText = "Can't find internship with this id :("
+	if delResult {
+		msgText = "Internship info is deleted!"
 	} else {
-		msgText = c.internshipService.FullString(*product)
+		msgText = "Internship info with this id is not founded."
 	}
 	msg := tgbotapi.NewMessage(inputMessage.Chat.ID, msgText)
 	_, err = c.bot.Send(msg)

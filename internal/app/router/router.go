@@ -234,7 +234,7 @@ func (c *Router) handleMessage(msg *tgbotapi.Message) {
 }
 
 func (c *Router) showCommandFormat(inputMessage *tgbotapi.Message) {
-	outputMsg := tgbotapi.NewMessage(inputMessage.Chat.ID, "Command format: /{command}__work__internship")
+	outputMsg := tgbotapi.NewMessage(inputMessage.Chat.ID, "Command format: /{command}__work__internship, for example /help__work__internship")
 
 	_, err := c.bot.Send(outputMsg)
 	if err != nil {

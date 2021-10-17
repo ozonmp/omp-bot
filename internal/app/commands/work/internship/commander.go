@@ -41,6 +41,12 @@ func (c *WorkInternshipCommander) HandleCommand(msg *tgbotapi.Message, commandPa
 		c.List(msg)
 	case "get":
 		c.Get(msg)
+	case "delete":
+		c.Delete(msg)
+	case "new":
+		c.New(msg)
+	case "edit":
+		c.Edit(msg)
 	default:
 		c.Default(msg)
 	}

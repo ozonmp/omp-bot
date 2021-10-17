@@ -2,18 +2,17 @@ package internship
 
 import (
 	"encoding/json"
-	"log"
-
 	"github.com/VYBel/omp-bot/internal/app/path"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+	"log"
 )
 
 func (c *WorkInternshipCommander) List(inputMessage *tgbotapi.Message) {
-	outputMsgText := "Here all the products: \n\n"
+	outputMsgText := "Here all the interships: \n\n"
 
 	products := c.internshipService.List()
 	for _, p := range products {
-		outputMsgText += p.Description
+		outputMsgText += c.internshipService.ShortString(p)
 		outputMsgText += "\n"
 	}
 
