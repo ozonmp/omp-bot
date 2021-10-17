@@ -15,7 +15,7 @@ const paginatorChunkSize = 2
 
 type CustomerCommander struct {
 	bot             *tgbotapi.BotAPI
-	customerService *customer.DummyService
+	customerService DummyService
 	paginator       *paginator.Paginator
 }
 

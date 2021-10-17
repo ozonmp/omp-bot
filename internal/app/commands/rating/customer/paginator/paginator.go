@@ -11,9 +11,14 @@ import (
 
 const DefaultLimit = 2
 
+type DummyService interface {
+	List(cursor uint64, limit uint64) ([]customer.Customer, error)
+	Count() int
+}
+
 // Paginator отвечает за вывод информации о покупателях порциями
 type Paginator struct {
-	customerService *customer.DummyService
+	customerService DummyService
 	limit           uint64
 	Formatter       func([]customer.Customer) string
 }
@@ -22,7 +27,7 @@ type CallbackListData struct {
 	Offset int `json:"offset"`
 }
 
-func NewPaginator(customerService *customer.DummyService, limit uint64) *Paginator {
+func NewPaginator(customerService DummyService, limit uint64) *Paginator {
 	if limit == 0 {
 		limit = DefaultLimit
 	}
