@@ -22,8 +22,7 @@ func NewWorkCommander(
 	bot *tgbotapi.BotAPI,
 ) *WorkCommander {
 	return &WorkCommander{
-		bot: bot,
-		// subdomainCommander
+		bot:                 bot,
 		internshipCommander: internship.NewWorkInternshipCommander(bot),
 	}
 }
