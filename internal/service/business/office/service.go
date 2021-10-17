@@ -89,3 +89,14 @@ func (s *DummyOfficeService) Get(office_id uint64) (*business.Office, error) {
 
 	return nil, fmt.Errorf("entity with id %d not found", office_id)
 }
+
+func (s *DummyOfficeService) Delete(office_id uint64) (bool, error) {
+	for key, entity := range s.allEntities {
+		if entity.Id == office_id {
+			s.allEntities = append(s.allEntities[:key], s.allEntities[key+1:]...)
+			return true, nil
+		}
+	}
+
+	return false, fmt.Errorf("entity with id %d not found", office_id)
+}
