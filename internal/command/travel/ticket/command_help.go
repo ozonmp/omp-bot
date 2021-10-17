@@ -12,9 +12,11 @@ func (c *TicketCommander) Help(inputMessage *tgbotapi.Message) {
 			"/list__travel__ticket - get a list of tickets \n"+
 			"/delete__travel__ticket - delete an existing ticket by id \n\n"+
 			"/new__travel__ticket - create a new ticket.\n"+
-			"  Input format: JSON-serialized ticket.\n"+
+			"  Input format: JSON-serialized ticket or space-separated list of arguments.\n"+
 			"  Required fields: At least user and schedule must be specified.\n"+
-			"  Example: { \"User\": {\"FirstName\":\"Petr\"},\"Schedule\":{\"Destination\":\"Tokyo\"}}.\n"+
+			"  Field constraints: Departure and Arrival date time must be in RFC3339 format.\n"+
+			"  Example 1: { \"User\": {\"FirstName\":\"Petr\"},\"Schedule\":{\"Destination\":\"Tokyo\"}}.\n"+
+			"  Example 2: User:{\"FirstName\":\"Petr\"} Schedule:{\"Destination\":\"Tokyo\"} comment:\"meaningful comment.\".\n"+
 			"/edit__travel__ticket - edit a ticket by id \n"+
 			"  Input format: ticket id, then JSON-serialized ticket.\n"+
 			"  Required fields: At least user and schedule must be specified.\n"+
