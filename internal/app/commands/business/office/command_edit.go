@@ -8,15 +8,16 @@ import (
 	"log"
 )
 
-type CreateRequest struct {
+type EditRequest struct {
+	Id          uint64 `json:"id"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
 }
 
-func (c *OfficeCommander) Create(inputMessage *tgbotapi.Message) {
+func (c *OfficeCommander) Edit(inputMessage *tgbotapi.Message) {
 	args := inputMessage.CommandArguments()
 
-	parsedData := business.Office{}
+	parsedData := EditRequest{}
 
 	err := json.Unmarshal([]byte(args), &parsedData)
 
@@ -27,12 +28,12 @@ func (c *OfficeCommander) Create(inputMessage *tgbotapi.Message) {
 
 		msg := tgbotapi.NewMessage(
 			inputMessage.Chat.ID,
-			"Wrong json struct. Please send like this: {\"name\":\"name\", \"description\":\"description\"}",
+			`Wrong json struct. Please send like this: {"id": 1, name":"name", "description":"description"}`,
 		)
 
 		_, err = c.bot.Send(msg)
 		if err != nil {
-			log.Printf("OfficeCommander.Create: error sending reply message to chat - %v", err)
+			log.Printf("OfficeCommander.Edit: error sending reply message to chat - %v", err)
 		}
 		return
 	}
@@ -42,17 +43,20 @@ func (c *OfficeCommander) Create(inputMessage *tgbotapi.Message) {
 		"",
 	)
 
-	id, err := c.officeService.Create(parsedData)
+	err = c.officeService.Update(parsedData.Id, business.Office{
+		Name:        parsedData.Name,
+		Description: parsedData.Description,
+	})
 
 	if err != nil {
-		log.Printf("fail to create entity %v", err)
+		log.Printf("fail to edit entity %v", err)
 		msg.Text = err.Error()
 	} else {
-		msg.Text = fmt.Sprintf("Entity was added, id:%d", id)
+		msg.Text = fmt.Sprintf("Entity was updated, id:%d", parsedData.Id)
 	}
 
 	_, err = c.bot.Send(msg)
 	if err != nil {
-		log.Printf("OfficeCommander.Create: error sending reply message to chat - %v", err)
+		log.Printf("OfficeCommander.Edit: error sending reply message to chat - %v", err)
 	}
 }

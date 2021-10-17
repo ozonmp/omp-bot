@@ -103,3 +103,20 @@ func (s *DummyOfficeService) Create(o business.Office) (uint64, error) {
 
 	return uint64(len(s.allEntities) - 1), nil
 }
+
+func (s *DummyOfficeService) Update(officeId uint64, office business.Office) error {
+	if uint64(len(s.allEntities)-1) < officeId {
+		return fmt.Errorf("entity with id %d not found", officeId)
+	}
+
+	if len(office.Name) > 0 {
+		s.allEntities[officeId].Name = office.Name
+		errors.New("field 'Name' is required")
+	}
+
+	if len(office.Description) > 0 {
+		s.allEntities[officeId].Description = office.Description
+	}
+
+	return nil
+}
