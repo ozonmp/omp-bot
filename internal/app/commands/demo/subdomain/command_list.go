@@ -19,9 +19,12 @@ func (c *DemoSubdomainCommander) List(inputMessage *tgbotapi.Message) {
 
 	msg := tgbotapi.NewMessage(inputMessage.Chat.ID, outputMsgText)
 
-	serializedData, _ := json.Marshal(CallbackListData{
+	serializedData, err := json.Marshal(CallbackListData{
 		Offset: 21,
 	})
+	if err != nil {
+		log.Println(err)
+	}
 
 	callbackPath := path.CallbackPath{
 		Domain:       "demo",
@@ -36,8 +39,7 @@ func (c *DemoSubdomainCommander) List(inputMessage *tgbotapi.Message) {
 		),
 	)
 
-	_, err := c.bot.Send(msg)
-	if err != nil {
+	if _, err := c.bot.Send(msg); err != nil {
 		log.Printf("DemoSubdomainCommander.List: error sending reply message to chat - %v", err)
 	}
 }

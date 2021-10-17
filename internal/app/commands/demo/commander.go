@@ -21,6 +21,7 @@ type DemoCommander struct {
 func NewDemoCommander(
 	bot *tgbotapi.BotAPI,
 ) *DemoCommander {
+
 	return &DemoCommander{
 		bot: bot,
 		// subdomainCommander

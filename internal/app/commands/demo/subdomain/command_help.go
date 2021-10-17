@@ -1,8 +1,9 @@
 package subdomain
 
 import (
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"log"
+
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
 func (c *DemoSubdomainCommander) Help(inputMessage *tgbotapi.Message) {
@@ -11,8 +12,7 @@ func (c *DemoSubdomainCommander) Help(inputMessage *tgbotapi.Message) {
 			"/list - list products",
 	)
 
-	_, err := c.bot.Send(msg)
-	if err != nil {
+	if _, err := c.bot.Send(msg); err != nil {
 		log.Printf("DemoSubdomainCommander.Help: error sending reply message to chat - %v", err)
 	}
 }

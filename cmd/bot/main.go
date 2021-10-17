@@ -4,13 +4,14 @@ import (
 	"log"
 	"os"
 
+	"github.com/ozonmp/omp-bot/internal/app/router"
+
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/joho/godotenv"
-	routerPkg "github.com/ozonmp/omp-bot/internal/app/router"
 )
 
 func main() {
-	_ = godotenv.Load()
+	godotenv.Load() // nolint: errcheck
 
 	token, found := os.LookupEnv("TOKEN")
 	if !found {
@@ -36,9 +37,9 @@ func main() {
 		log.Panic(err)
 	}
 
-	routerHandler := routerPkg.NewRouter(bot)
+	r := router.NewRouter(bot)
 
 	for update := range updates {
-		routerHandler.HandleUpdate(update)
+		r.HandleUpdate(&update)
 	}
 }

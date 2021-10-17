@@ -16,6 +16,7 @@ type DemoSubdomainCommander struct {
 func NewDemoSubdomainCommander(
 	bot *tgbotapi.BotAPI,
 ) *DemoSubdomainCommander {
+
 	subdomainService := subdomain.NewService()
 
 	return &DemoSubdomainCommander{

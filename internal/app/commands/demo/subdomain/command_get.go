@@ -13,12 +13,14 @@ func (c *DemoSubdomainCommander) Get(inputMessage *tgbotapi.Message) {
 	idx, err := strconv.Atoi(args)
 	if err != nil {
 		log.Println("wrong args", args)
+
 		return
 	}
 
 	product, err := c.subdomainService.Get(idx)
 	if err != nil {
 		log.Printf("fail to get product with idx %d: %v", idx, err)
+
 		return
 	}
 
@@ -27,8 +29,7 @@ func (c *DemoSubdomainCommander) Get(inputMessage *tgbotapi.Message) {
 		product.Title,
 	)
 
-	_, err = c.bot.Send(msg)
-	if err != nil {
+	if _, err = c.bot.Send(msg); err != nil {
 		log.Printf("DemoSubdomainCommander.Get: error sending reply message to chat - %v", err)
 	}
 }
