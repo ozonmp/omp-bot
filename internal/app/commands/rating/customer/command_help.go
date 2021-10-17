@@ -9,10 +9,10 @@ func (c *CustomerCommander) Help(inputMessage *tgbotapi.Message) error {
 		`
 /help__rating__customer — print list of commands
 /get__rating__customer — get a entity
-/list__rating__customer — get a list of your entity (💎: with pagination via telegram keyboard)
+/list__rating__customer — get a list of your entity
 /delete__rating__customer — delete an existing entity
 
-/new__rating__customer — create a new entity // not implemented (💎: implement list fields via arguments)
+/new__rating__customer — create a new entity
 /edit__rating__customer — edit a entity      // not implemented`,
 	)
 

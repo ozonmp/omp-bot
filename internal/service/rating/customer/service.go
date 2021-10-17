@@ -3,7 +3,7 @@ package customer
 import (
 	"fmt"
 
-	"github.com/ozonmp/omp-bot/internal"
+	"github.com/ozonmp/omp-bot/internal/service/rating"
 )
 
 type DummyService struct{}
@@ -40,7 +40,7 @@ func (s *DummyService) Remove(idx uint64) (bool, error) {
 	}
 
 	if int(idx) == len(allEntities)-1 {
-		allEntities = allEntities[:idx-1]
+		allEntities = allEntities[:idx]
 		return true, nil
 	}
 
@@ -64,7 +64,7 @@ func (s *DummyService) Update(idx uint64, customer Customer) error {
 
 func (s *DummyService) validateIndex(idx uint64) error {
 	if int(idx) >= len(allEntities) {
-		return internal.NewUserError(fmt.Sprintf("index %d is out of range 0 - %d", idx, len(allEntities)))
+		return rating.NewUserError(fmt.Sprintf("index %d is out of range 0 - %d", idx, len(allEntities)))
 	}
 	return nil
 }

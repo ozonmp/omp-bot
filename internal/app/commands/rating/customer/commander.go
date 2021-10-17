@@ -5,11 +5,13 @@ import (
 	"log"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-	"github.com/ozonmp/omp-bot/internal"
 	"github.com/ozonmp/omp-bot/internal/app/commands/rating/customer/paginator"
 	"github.com/ozonmp/omp-bot/internal/app/path"
+	"github.com/ozonmp/omp-bot/internal/service/rating"
 	"github.com/ozonmp/omp-bot/internal/service/rating/customer"
 )
+
+const paginatorChunkSize = 2
 
 type CustomerCommander struct {
 	bot             *tgbotapi.BotAPI
@@ -25,7 +27,7 @@ func NewCustomerCommander(
 	return &CustomerCommander{
 		bot:             bot,
 		customerService: customerService,
-		paginator:       paginator.NewPaginator(customerService, 2),
+		paginator:       paginator.NewPaginator(customerService, paginatorChunkSize),
 	}
 }
 
@@ -45,7 +47,7 @@ func (c *CustomerCommander) HandleCommand(msg *tgbotapi.Message, commandPath pat
 	var err error
 	switch commandPath.CommandName {
 	case "help":
-		c.Help(msg)
+		err = c.Help(msg)
 	case "list":
 		err = c.List(msg)
 	case "get":
@@ -53,9 +55,9 @@ func (c *CustomerCommander) HandleCommand(msg *tgbotapi.Message, commandPath pat
 	case "delete":
 		err = c.Delete(msg)
 	case "new":
-		err = internal.NewUserError("not implemented")
+		err = c.New(msg)
 	case "edit":
-		err = internal.NewUserError("not implemented")
+		err = rating.NewUserError("not implemented")
 	default:
 		err = c.Default(msg)
 	}
@@ -70,7 +72,7 @@ func (c *CustomerCommander) handleError(chatID int64, err error) {
 
 	var outMsg tgbotapi.MessageConfig
 
-	var userError internal.UserError
+	var userError rating.UserError
 	if errors.As(err, &userError) {
 		outMsg = tgbotapi.NewMessage(chatID, "Input data were wrong: "+userError.Error())
 	} else {

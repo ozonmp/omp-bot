@@ -1,7 +1,8 @@
-package internal
+package rating
 
 import "errors"
 
+//UserError - если такой вариант подходит, то надо выносить на глобальный уровень как базовые типы ошибок
 type UserError struct {
 	Err error
 }

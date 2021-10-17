@@ -1,5 +1,7 @@
 package customer
 
+import "fmt"
+
 var allEntities = []Customer{
 	{FirstName: "one", SecondName: "one"},
 	{FirstName: "two", SecondName: "two"},
@@ -14,5 +16,12 @@ type Customer struct {
 }
 
 func (c Customer) String() string {
-	return c.FirstName
+	return fmt.Sprintf("Firstname: %s SecondName: %s", c.FirstName, c.SecondName)
+}
+
+func NewCustomer(firstName string, secondName string) Customer {
+	return Customer{
+		FirstName:  firstName,
+		SecondName: secondName,
+	}
 }
