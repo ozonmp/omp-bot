@@ -5,7 +5,7 @@ import (
 	"strconv"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-	"github.com/ozonmp/omp-bot/internal/general_errors"
+	"github.com/ozonmp/omp-bot/internal"
 )
 
 func (c *CustomerCommander) Delete(inputMessage *tgbotapi.Message) error {
@@ -13,7 +13,7 @@ func (c *CustomerCommander) Delete(inputMessage *tgbotapi.Message) error {
 
 	idx, err := strconv.ParseInt(args, 10, 64)
 	if err != nil {
-		return general_errors.NewUserError("wrong args: " + args)
+		return internal.NewUserError("wrong args: " + args)
 	}
 
 	isRemoved, err := c.customerService.Remove(uint64(idx))

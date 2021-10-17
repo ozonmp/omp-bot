@@ -1,4 +1,4 @@
-package general_errors
+package internal
 
 import "errors"
 

@@ -1,13 +1,18 @@
 package customer
 
 var allEntities = []Customer{
-	{Title: "one"},
-	{Title: "two"},
-	{Title: "three"},
-	{Title: "four"},
-	{Title: "five"},
+	{FirstName: "one", SecondName: "one"},
+	{FirstName: "two", SecondName: "two"},
+	{FirstName: "three", SecondName: "three"},
+	{FirstName: "four", SecondName: "four"},
+	{FirstName: "five", SecondName: "five"},
 }
 
 type Customer struct {
-	Title string
+	FirstName  string
+	SecondName string
+}
+
+func (c Customer) String() string {
+	return c.FirstName
 }

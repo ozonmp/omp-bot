@@ -5,7 +5,7 @@ import (
 	"strconv"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-	"github.com/ozonmp/omp-bot/internal/general_errors"
+	"github.com/ozonmp/omp-bot/internal"
 )
 
 func (c *CustomerCommander) Get(inputMessage *tgbotapi.Message) error {
@@ -13,7 +13,7 @@ func (c *CustomerCommander) Get(inputMessage *tgbotapi.Message) error {
 
 	idx, err := strconv.Atoi(args)
 	if err != nil {
-		return general_errors.NewUserError(fmt.Sprintf("wrong args %s. Err: %v", args, err))
+		return internal.NewUserError(fmt.Sprintf("wrong args %s. Err: %v", args, err))
 	}
 
 	product, err := c.customerService.Describe(uint64(idx))
@@ -23,7 +23,7 @@ func (c *CustomerCommander) Get(inputMessage *tgbotapi.Message) error {
 
 	msg := tgbotapi.NewMessage(
 		inputMessage.Chat.ID,
-		product.Title,
+		product.String(),
 	)
 
 	_, err = c.bot.Send(msg)

@@ -4,7 +4,7 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
-func (c *CustomerCommander) Help(inputMessage *tgbotapi.Message) {
+func (c *CustomerCommander) Help(inputMessage *tgbotapi.Message) error {
 	msg := tgbotapi.NewMessage(inputMessage.Chat.ID,
 		`
 /help__rating__customer — print list of commands
@@ -16,5 +16,6 @@ func (c *CustomerCommander) Help(inputMessage *tgbotapi.Message) {
 /edit__rating__customer — edit a entity      // not implemented`,
 	)
 
-	c.bot.Send(msg)
+	_, err := c.bot.Send(msg)
+	return err
 }

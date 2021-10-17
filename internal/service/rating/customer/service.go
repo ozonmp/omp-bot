@@ -3,7 +3,7 @@ package customer
 import (
 	"fmt"
 
-	"github.com/ozonmp/omp-bot/internal/general_errors"
+	"github.com/ozonmp/omp-bot/internal"
 )
 
 type DummyService struct{}
@@ -16,11 +16,15 @@ func (s *DummyService) List(cursor uint64, limit uint64) ([]Customer, error) {
 	if err := s.validateIndex(cursor); err != nil {
 		return nil, fmt.Errorf("invalid cursor data: %w", err)
 	}
-	min := int(limit)
+	min := int(cursor + limit)
 	if min > len(allEntities) {
 		min = len(allEntities)
 	}
 	return allEntities[cursor:min], nil
+}
+
+func (s *DummyService) Count() int {
+	return len(allEntities)
 }
 
 func (s *DummyService) Describe(idx uint64) (*Customer, error) {
@@ -60,7 +64,7 @@ func (s *DummyService) Update(idx uint64, customer Customer) error {
 
 func (s *DummyService) validateIndex(idx uint64) error {
 	if int(idx) >= len(allEntities) {
-		return general_errors.NewUserError(fmt.Sprintf("index %d is out of range 0 - %d", idx, len(allEntities)))
+		return internal.NewUserError(fmt.Sprintf("index %d is out of range 0 - %d", idx, len(allEntities)))
 	}
 	return nil
 }

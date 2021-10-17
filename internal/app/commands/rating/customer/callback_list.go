@@ -2,22 +2,22 @@ package customer
 
 import (
 	"encoding/json"
-	"fmt"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+	"github.com/ozonmp/omp-bot/internal/app/commands/rating/customer/paginator"
 	"github.com/ozonmp/omp-bot/internal/app/path"
 )
 
-type CallbackListData struct {
-	Offset int `json:"offset"`
-}
+func (c *CustomerCommander) CallbackList(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) error {
+	parsedData := paginator.CallbackListData{}
+	if err := json.Unmarshal([]byte(callbackPath.CallbackData), &parsedData); err != nil {
+		return err
+	}
 
-func (c *CustomerCommander) CallbackList(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
-	parsedData := CallbackListData{}
-	json.Unmarshal([]byte(callbackPath.CallbackData), &parsedData)
-	msg := tgbotapi.NewMessage(
-		callback.Message.Chat.ID,
-		fmt.Sprintf("Parsed: %+v\n", parsedData),
-	)
-	c.bot.Send(msg)
+	msg, err := c.paginator.GetMessage(callback.Message.Chat.ID, parsedData)
+	if err != nil {
+		return err
+	}
+	_, err = c.bot.Send(msg)
+	return err
 }
