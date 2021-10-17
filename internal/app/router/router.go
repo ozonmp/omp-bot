@@ -157,6 +157,8 @@ func (c *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
 		break
 	case "education":
 		break
+	case "location":
+		break
 	default:
 		log.Printf("Router.handleCallback: unknown domain - %s", callbackPath.Domain)
 	}
@@ -227,6 +229,8 @@ func (c *Router) handleMessage(msg *tgbotapi.Message) {
 	case "product":
 		break
 	case "education":
+		break
+	case "location":
 		break
 	default:
 		log.Printf("Router.handleCallback: unknown domain - %s", commandPath.Domain)
