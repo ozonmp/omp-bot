@@ -42,5 +42,3 @@ func main() {
 		routerHandler.HandleUpdate(update)
 	}
 }
-
-//Привет! твой домен - business, поддомен - office
