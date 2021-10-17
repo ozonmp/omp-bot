@@ -5,17 +5,13 @@ import (
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/app/path"
+	"github.com/ozonmp/omp-bot/internal/model/education"
 	"github.com/ozonmp/omp-bot/internal/service/education/solution"
+	"github.com/ozonmp/omp-bot/internal/servicedata"
 	"log"
 	"strconv"
 	"strings"
 )
-/*
-	LastCommand string
-	CurrentPos uint64
-	Limit uint64
-*
- */
 
 type SolutionCommander struct {
 	bot              *tgbotapi.BotAPI
@@ -135,11 +131,23 @@ func (p *SolutionCommander) Delete(inputMsg *tgbotapi.Message){
 }
 
 func (p *SolutionCommander) Edit(inputMsg *tgbotapi.Message){
-	msg := tgbotapi.NewMessage(inputMsg.Chat.ID,
-		"/help - help\n"+
-			"/list - list products",
-	)
-	p.bot.Send(msg)
+	TextMsg := ""
+	defer func() {
+		p.SendMessage(inputMsg, TextMsg)
+	}()
+	idx, TextMsg := GetArgument(inputMsg)
+	if TextMsg != "" { return}
+
+	product, err := p.SolutionService.Describe(idx)
+	if err != nil {
+		TextMsg = fmt.Sprintf("fail to get product with idx %d: %v", idx, err)
+		log.Println(TextMsg)
+		return
+	}
+	servicedata.EditedChat[inputMsg.Chat.ID] = idx
+	TextMsg = product.String() + "\n Измененная запись должна содержать поля TaskID, Autor, Title. Все поля "+
+		"должны быть в одном сообщении каждое поле в отдельной строке." + strconv.FormatInt(inputMsg.Chat.ID, 10) +
+		" " + strconv.FormatUint(idx, 10)
 }
 
 func (c *SolutionCommander) CallbackList(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
@@ -166,11 +174,37 @@ func (c *SolutionCommander) CallbackList(callback *tgbotapi.CallbackQuery, callb
 	c.bot.Send(msg)
 }
 func (c *SolutionCommander) Default(inputMessage *tgbotapi.Message) {
-	log.Printf("[%s] %s", inputMessage.From.UserName, inputMessage.Text)
+	TextMsg := ""
+	defer func() {
+		c.SendMessage(inputMessage, TextMsg)
+	}()
+	if idx, ok := servicedata.EditedChat[inputMessage.Chat.ID]; ok {
+		data := strings.Split(inputMessage.Text, "\n")
+		if len(data) != 3 {
+			TextMsg = "В сообщение должно быть 3 строки, повторите ввод, пожалуйста"
+			return
+		}
+		taskID, err := strconv.ParseUint(data[0], 0, 64)
+		if err != nil {
+			TextMsg = "Первая строка не содержит число, повторите ввод, пожалуйста"
+			return
+		}
+		solution := education.Solution{	}
+		solution.Id = idx
+		solution.TaskID = taskID
+		solution.Autor = data[1]
+		solution.Title = data[2]
+		c.SolutionService.Update(idx, solution)
+		delete(servicedata.EditedChat, inputMessage.Chat.ID)
+		sol, _ := c.SolutionService.Describe(idx)
+		TextMsg = "Запись заменена: \n " + sol.String()
+	} else {
+		log.Printf("[%s] %s", inputMessage.From.UserName, inputMessage.Text)
 
-	msg := tgbotapi.NewMessage(inputMessage.Chat.ID, "You wrote: "+inputMessage.Text)
+		msg := tgbotapi.NewMessage(inputMessage.Chat.ID, "You wrote: "+inputMessage.Text + " " + strconv.FormatInt(inputMessage.Chat.ID, 10))
 
-	c.bot.Send(msg)
+		c.bot.Send(msg)
+	}
 }
 
 func (c *SolutionCommander) HandleCallback(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {

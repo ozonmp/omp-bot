@@ -3,6 +3,7 @@ package router
 import (
 	"github.com/ozonmp/omp-bot/internal/app/commands/demo"
 	"github.com/ozonmp/omp-bot/internal/app/commands/education"
+	"github.com/ozonmp/omp-bot/internal/servicedata"
 	"log"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
@@ -173,16 +174,24 @@ func (c *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
 }
 
 func (c *Router) handleMessage(msg *tgbotapi.Message) {
-	if !msg.IsCommand() {
-		c.showCommandFormat(msg)
+	var commandPath path.CommandPath
+	var err error
+	if _, ok := servicedata.EditedChat[msg.Chat.ID]; ok {
+		commandPath = path.CommandPath{}
+		commandPath.CommandName = ""
+		commandPath.Domain = "education"
+		commandPath.Subdomain = "solution"
+	} else {
+		if !msg.IsCommand() {
+			c.showCommandFormat(msg)
 
-		return
-	}
-
-	commandPath, err := path.ParseCommand(msg.Command())
-	if err != nil {
-		log.Printf("Router.handleCallback: error parsing callback data `%s` - %v", msg.Command(), err)
-		return
+			return
+		}
+		commandPath, err = path.ParseCommand(msg.Command())
+		if err != nil {
+			log.Printf("Router.handleCallback: error parsing callback data `%s` - %v", msg.Command(), err)
+			return
+		}
 	}
 
 	switch commandPath.Domain {
