@@ -4,4 +4,4 @@ run:
 
 .PHONY: build
 build:
-	go build -o bot cmd/bot/main.go
+	go build -o -gcflags="all=-N -l" bot cmd/bot/main.go
