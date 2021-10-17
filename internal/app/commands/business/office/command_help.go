@@ -11,7 +11,7 @@ func (c *OfficeCommander) Help(inputMessage *tgbotapi.Message) {
 		/list__business__office - list products
 		/get__business__office id - get entity by id
 		/delete__business__office id - remove entity by id
-		/create__business__office {"name":"name", "description"":"description"} - create new entity by json string
+		/create__business__office {"name":"name", "description":"description"} - create new entity by json string
 		/edit__business__office {"id":1, "name":"name", "description":"description"} - edit entity by json string
 	`,
 	)

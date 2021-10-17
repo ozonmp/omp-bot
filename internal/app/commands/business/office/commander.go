@@ -1,6 +1,7 @@
 package office
 
 import (
+	"github.com/ozonmp/omp-bot/internal/model/business"
 	"log"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
@@ -8,9 +9,17 @@ import (
 	"github.com/ozonmp/omp-bot/internal/service/business/office"
 )
 
+type OfficeService interface {
+	Describe(officeId uint64) (*business.Office, error)
+	List(cursor uint64, limit uint64) ([]business.Office, error)
+	Create(o business.Office) (uint64, error)
+	Update(officeId uint64, office business.Office) error
+	Remove(officeId uint64) (bool, error)
+}
+
 type OfficeCommander struct {
 	bot           *tgbotapi.BotAPI
-	officeService *office.DummyOfficeService
+	officeService OfficeService
 }
 
 func NewOfficeCommander(

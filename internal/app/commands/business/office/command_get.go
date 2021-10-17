@@ -21,7 +21,7 @@ func (c *OfficeCommander) Get(inputMessage *tgbotapi.Message) {
 		inputMessage.Chat.ID,
 		"",
 	)
-	entity, err := c.officeService.Get(uint64(idx))
+	entity, err := c.officeService.Describe(uint64(idx))
 
 	if err != nil {
 		log.Printf("fail to get entity with id %d: %v", idx, err)

@@ -21,7 +21,7 @@ func (c *OfficeCommander) Delete(inputMessage *tgbotapi.Message) {
 		inputMessage.Chat.ID,
 		"",
 	)
-	_, err = c.officeService.Delete(uint64(idx))
+	_, err = c.officeService.Remove(uint64(idx))
 
 	if err != nil {
 		log.Printf("fail to get entity with id %d: %v", idx, err)
@@ -32,6 +32,6 @@ func (c *OfficeCommander) Delete(inputMessage *tgbotapi.Message) {
 
 	_, err = c.bot.Send(msg)
 	if err != nil {
-		log.Printf("OfficeCommander.Get: error sending reply message to chat - %v", err)
+		log.Printf("OfficeCommander.Delete: error sending reply message to chat - %v", err)
 	}
 }

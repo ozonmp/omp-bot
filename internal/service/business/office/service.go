@@ -6,14 +6,6 @@ import (
 	"github.com/ozonmp/omp-bot/internal/model/business"
 )
 
-type OfficeService interface {
-	Describe(officeId uint64) (*business.Office, error)
-	List(cursor uint64, limit uint64) ([]business.Office, error)
-	Create(business.Office) (uint64, error)
-	Update(officeId uint64, office business.Office) error
-	Remove(officeId uint64) (bool, error)
-}
-
 type DummyOfficeService struct {
 	allEntities []business.Office
 }
@@ -53,7 +45,7 @@ func NewDummyOfficeService() *DummyOfficeService {
 			Description: "Office 8",
 		},
 		{
-			Name:        "eight",
+			Name:        "nine",
 			Description: "Office 9",
 		},
 	}}
@@ -72,7 +64,7 @@ func (s *DummyOfficeService) List(cursor uint64, limit uint64) ([]business.Offic
 	return s.allEntities[cursor : cursor+limit], nil
 }
 
-func (s *DummyOfficeService) Get(officeId uint64) (*business.Office, error) {
+func (s *DummyOfficeService) Describe(officeId uint64) (*business.Office, error) {
 	if uint64(len(s.allEntities)-1) < officeId {
 		return nil, fmt.Errorf("entity with id %d not found", officeId)
 	}
@@ -81,7 +73,7 @@ func (s *DummyOfficeService) Get(officeId uint64) (*business.Office, error) {
 
 }
 
-func (s *DummyOfficeService) Delete(officeId uint64) (bool, error) {
+func (s *DummyOfficeService) Remove(officeId uint64) (bool, error) {
 	if uint64(len(s.allEntities)-1) < officeId {
 		return false, fmt.Errorf("entity with id %d not found", officeId)
 	}
