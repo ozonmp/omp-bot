@@ -5,6 +5,7 @@ import (
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/app/commands/demo"
+	"github.com/ozonmp/omp-bot/internal/app/commands/domain"
 	"github.com/ozonmp/omp-bot/internal/app/path"
 )
 
@@ -44,6 +45,7 @@ type Router struct {
 	// logistic
 	// product
 	// education
+	domainCommander Commander // TODO: Remove!
 }
 
 func NewRouter(
@@ -79,6 +81,7 @@ func NewRouter(
 		// logistic
 		// product
 		// education
+		domainCommander: domain.NewDomainCommander(bot), // TODO: Remove!
 	}
 }
 
@@ -157,6 +160,8 @@ func (c *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
 		break
 	case "education":
 		break
+	case "domain": // TODO: Remove!
+		c.domainCommander.HandleCallback(callback, callbackPath) // TODO: Remove!
 	default:
 		log.Printf("Router.handleCallback: unknown domain - %s", callbackPath.Domain)
 	}
@@ -228,6 +233,8 @@ func (c *Router) handleMessage(msg *tgbotapi.Message) {
 		break
 	case "education":
 		break
+	case "domain": // TODO: Remove!
+		c.domainCommander.HandleCommand(msg, commandPath) // TODO: Remove!
 	default:
 		log.Printf("Router.handleCallback: unknown domain - %s", commandPath.Domain)
 	}
