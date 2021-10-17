@@ -107,11 +107,10 @@ func (p *SolutionCommander) List(inputMsg *tgbotapi.Message){
 	p.bot.Send(msg)
 }
 func (p *SolutionCommander) New(inputMsg *tgbotapi.Message){
-	msg := tgbotapi.NewMessage(inputMsg.Chat.ID,
-		"/help - help\n"+
-			"/list - list products",
-	)
-	p.bot.Send(msg)
+	servicedata.EditedChat[inputMsg.Chat.ID] = *(servicedata.GetOperationData(0, servicedata.NewoperationData))
+	TextMsg := "Новая запись должна содержать поля TaskID, Autor, Title. Все поля "+
+		"должны быть в одном сообщении каждое поле в отдельной строке."
+	p.SendMessage(inputMsg, TextMsg)
 }
 func (p *SolutionCommander) Delete(inputMsg *tgbotapi.Message){
 	TextMsg := ""
@@ -189,11 +188,18 @@ func (c *SolutionCommander) Default(inputMessage *tgbotapi.Message) {
 			return
 		}
 		solution := education.Solution{	}
-		solution.Id = idx.ProductID
 		solution.TaskID = taskID
 		solution.Autor = data[1]
 		solution.Title = data[2]
-		c.SolutionService.Update(idx.ProductID, solution)
+		if idx.OperationType == servicedata.NewoperationData {
+			NewID := c.SolutionService.CreateNewID()
+			solution.Id = NewID
+			idx.ProductID = NewID
+			c.SolutionService.Create(NewID, solution)
+		} else {
+			solution.Id = idx.ProductID
+			c.SolutionService.Update(idx.ProductID, solution)
+		}
 		delete(servicedata.EditedChat, inputMessage.Chat.ID)
 		sol, _ := c.SolutionService.Describe(idx.ProductID)
 		TextMsg = "Запись заменена: \n " + sol.String()

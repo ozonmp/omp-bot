@@ -47,6 +47,14 @@ func (s *DummySolutionService) List(cursor uint64, limit uint64) []string {
 	}
 	return res
 }
+func (s *DummySolutionService) CreateNewID() uint64 {
+	max := uint64(0)
+	for i, _ := range education.Data {
+		if max < i {max = i}
+	}
+	return max + 1
+}
+
 func (s *DummySolutionService) Create(SolutionId uint64, Solution education.Solution) (uint64, error) {
 	if _, ok := education.Data[SolutionId]; ok {
 		return 0, fmt.Errorf("Item already exists")
