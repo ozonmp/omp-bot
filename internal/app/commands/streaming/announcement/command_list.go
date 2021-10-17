@@ -8,18 +8,17 @@ import (
 )
 
 func (c *StreamingAnnouncementCommander) List(inputMessage *tgbotapi.Message) {
-	outputMsgText := "Here all the products: \n\n"
-
-	products, _ := c.announcementService.List(0, 0)
+	outputMsgText := ""
+	products, _ := c.announcementService.List(0, 5)
 	for _, p := range products {
-		outputMsgText += p.Title
-		outputMsgText += "\n"
+		outputMsgText += p.String()
+		outputMsgText += "\n----------------------\n"
 	}
 
 	msg := tgbotapi.NewMessage(inputMessage.Chat.ID, outputMsgText)
 
 	serializedData, _ := json.Marshal(CallbackListData{
-		Offset: 21,
+		Offset: len(products),
 	})
 
 	callbackPath := path.CallbackPath{
