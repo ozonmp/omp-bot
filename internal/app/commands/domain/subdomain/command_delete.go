@@ -28,5 +28,8 @@ func (c *DummySubdomainCommander) Delete(inputMsg *tgbotapi.Message) {
 		SuccessDelete,
 	)
 
-	c.bot.Send(msg)
+	_, err = c.bot.Send(msg)
+	if err != nil {
+		log.Printf("DummySubdomainCommander.Delete: error sending reply message to chat - %v", err)
+	}
 }

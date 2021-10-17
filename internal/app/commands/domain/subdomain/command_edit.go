@@ -31,5 +31,8 @@ func (c *DummySubdomainCommander) Edit(inputMsg *tgbotapi.Message) {
 		SuccessEdit,
 	)
 
-	c.bot.Send(msg)
+	_, err = c.bot.Send(msg)
+	if err != nil {
+		log.Printf("DummySubdomainCommander.Edit: error sending reply message to chat - %v", err)
+	}
 }

@@ -2,6 +2,7 @@ package subdomain
 
 import (
 	"encoding/json"
+	"log"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/app/path"
@@ -14,7 +15,13 @@ type CallbackListData struct {
 
 func (c *DummySubdomainCommander) CallbackList(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
 	parsedData := CallbackListData{}
-	json.Unmarshal([]byte(callbackPath.CallbackData), &parsedData)
+	err := json.Unmarshal([]byte(callbackPath.CallbackData), &parsedData)
+	if err != nil {
+		log.Printf("DummySubdomainCommander.CallbackList: "+
+			"error reading json data for type CallbackListData from "+
+			"input string %v - %v", callbackPath.CallbackData, err)
+		return
+	}
 
 	pagination := NewPaginationList(c.subdomainService.List, parsedData.Cursor, parsedData.Limit)
 
@@ -42,5 +49,8 @@ func (c *DummySubdomainCommander) CallbackList(callback *tgbotapi.CallbackQuery,
 		editConf.BaseEdit.ReplyMarkup = &keyboardMarkup
 	}
 
-	c.bot.Send(editConf)
+	_, err = c.bot.Send(editConf)
+	if err != nil {
+		log.Printf("DummySubdomainCommander.CallbackList: error sending reply message to chat - %v", err)
+	}
 }

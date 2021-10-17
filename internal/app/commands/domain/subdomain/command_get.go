@@ -29,5 +29,8 @@ func (c *DummySubdomainCommander) Get(inputMsg *tgbotapi.Message) {
 		elem.String(),
 	)
 
-	c.bot.Send(msg)
+	_, err = c.bot.Send(msg)
+	if err != nil {
+		log.Printf("DummySubdomainCommander.Get: error sending reply message to chat - %v", err)
+	}
 }

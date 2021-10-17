@@ -27,5 +27,8 @@ func (c *DummySubdomainCommander) New(inputMsg *tgbotapi.Message) {
 		fmt.Sprintf("%s\nid:%d", SuccessNew, id),
 	)
 
-	c.bot.Send(msg)
+	_, err = c.bot.Send(msg)
+	if err != nil {
+		log.Printf("DummySubdomainCommander.New: error sending reply message to chat - %v", err)
+	}
 }

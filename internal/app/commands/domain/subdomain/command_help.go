@@ -2,6 +2,7 @@ package subdomain
 
 import (
 	"fmt"
+	"log"
 	"strings"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
@@ -17,5 +18,9 @@ func (c *DummySubdomainCommander) Help(inputMsg *tgbotapi.Message) {
 		fmt.Sprintf("/%s — edit an entity", CommandEdit),
 	}
 	msg := tgbotapi.NewMessage(inputMsg.Chat.ID, strings.Join(txtCmds, "\n"))
-	c.bot.Send(msg)
+
+	_, err := c.bot.Send(msg)
+	if err != nil {
+		log.Printf("DummySubdomainCommander.Help: error sending reply message to chat - %v", err)
+	}
 }

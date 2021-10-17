@@ -39,7 +39,10 @@ func (c *DummySubdomainCommander) List(inputMsg *tgbotapi.Message) {
 		)
 	}
 
-	c.bot.Send(msg)
+	_, err = c.bot.Send(msg)
+	if err != nil {
+		log.Printf("DummySubdomainCommander.List: error sending reply message to chat - %v", err)
+	}
 }
 
 func parseListCmdArgs(args string) (cursor, limit uint64, err error) {
