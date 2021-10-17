@@ -81,6 +81,6 @@ func (c *CustomerCommander) handleError(chatID int64, err error) {
 	}
 
 	if _, err := c.bot.Send(outMsg); err != nil {
-		log.Printf("Send message errro %v", err)
+		log.Printf("Send error message error %v", err)
 	}
 }

@@ -15,6 +15,7 @@ const DefaultLimit = 2
 type Paginator struct {
 	customerService *customer.DummyService
 	limit           uint64
+	Formatter       func([]customer.Customer) string
 }
 
 type CallbackListData struct {
@@ -28,18 +29,15 @@ func NewPaginator(customerService *customer.DummyService, limit uint64) *Paginat
 	return &Paginator{
 		customerService: customerService,
 		limit:           limit,
+		Formatter:       defaultFormatter,
 	}
 }
 
 func (p *Paginator) GetMessage(chatID int64, data CallbackListData) (msg tgbotapi.MessageConfig, err error) {
-	outputMsgText := "Here all the customers: \n\n"
+
 	customers, err := p.customerService.List(uint64(data.Offset), p.limit)
 	if err != nil {
 		return
-	}
-
-	for _, p := range customers {
-		outputMsgText += fmt.Sprintf("%s\n", p)
 	}
 
 	var buttonRow []tgbotapi.InlineKeyboardButton
@@ -53,7 +51,7 @@ func (p *Paginator) GetMessage(chatID int64, data CallbackListData) (msg tgbotap
 		return
 	}
 
-	msg = tgbotapi.NewMessage(chatID, outputMsgText)
+	msg = tgbotapi.NewMessage(chatID, p.Formatter(customers))
 	msg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(
 		buttonRow,
 	)
@@ -105,4 +103,12 @@ func getButton(title string, offset int) (button tgbotapi.InlineKeyboardButton, 
 	}
 
 	return tgbotapi.NewInlineKeyboardButtonData(title, callbackPath.String()), nil
+}
+
+func defaultFormatter(customers []customer.Customer) string {
+	outputMsgText := "Here all the customers: \n\n"
+	for _, p := range customers {
+		outputMsgText += fmt.Sprintf("%s\n", p)
+	}
+	return outputMsgText
 }
