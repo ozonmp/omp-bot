@@ -37,16 +37,16 @@ func (c *TaskCommander) HandleCommand(msg *tgbotapi.Message, commandPath path.Co
 	switch commandPath.CommandName {
 	case "help":
 		c.Help(msg)
-	case "list":
-		c.List(msg)
-	case "create":
-		c.Create(msg)
-	case "update":
-		c.Update(msg)
-	case "remove":
-		c.Remove(msg)
 	case "get":
 		c.Get(msg)
+	case "list":
+		c.List(msg)
+	case "delete":
+		c.Delete(msg)
+	case "new":
+		c.New(msg)
+	case "edits":
+		c.Edit(msg)
 	default:
 		c.Default(msg)
 	}

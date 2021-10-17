@@ -7,7 +7,7 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
-func (c *TaskCommander) Remove(inputMessage *tgbotapi.Message) {
+func (c *TaskCommander) Delete(inputMessage *tgbotapi.Message) {
 
 	args := inputMessage.CommandArguments()
 

@@ -13,7 +13,7 @@ type updateProductData struct {
 	Description string `json:"description"`
 }
 
-func (c *TaskCommander) Update(inputMessage *tgbotapi.Message) {
+func (c *TaskCommander) Edit(inputMessage *tgbotapi.Message) {
 
 	args := inputMessage.CommandArguments()
 
