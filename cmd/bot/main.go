@@ -6,14 +6,11 @@ import (
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/joho/godotenv"
-	"github.com/ozonmp/omp-bot/internal/app/router"
+	routerPkg "github.com/ozonmp/omp-bot/internal/app/router"
 )
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Panic(err)
-	}
+	_ = godotenv.Load()
 
 	token, found := os.LookupEnv("TOKEN")
 	if !found {
@@ -39,7 +36,7 @@ func main() {
 		log.Panic(err)
 	}
 
-	routerHandler := router.NewRouter(bot)
+	routerHandler := routerPkg.NewRouter(bot)
 
 	for update := range updates {
 		routerHandler.HandleUpdate(update)
