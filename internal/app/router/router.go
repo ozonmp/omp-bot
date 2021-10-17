@@ -2,9 +2,11 @@ package router
 
 import (
 	"log"
+	"runtime/debug"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/app/commands/demo"
+	"github.com/ozonmp/omp-bot/internal/app/commands/recommendation"
 	"github.com/ozonmp/omp-bot/internal/app/path"
 )
 
@@ -24,6 +26,7 @@ type Router struct {
 	// buy
 	// delivery
 	// recommendation
+	recommendationCommander Commander
 	// travel
 	// loyalty
 	// bank
@@ -46,9 +49,7 @@ type Router struct {
 	// education
 }
 
-func NewRouter(
-	bot *tgbotapi.BotAPI,
-) *Router {
+func NewRouter(bot *tgbotapi.BotAPI) *Router {
 	return &Router{
 		// bot
 		bot: bot,
@@ -59,6 +60,7 @@ func NewRouter(
 		// buy
 		// delivery
 		// recommendation
+		recommendationCommander: recommendation.NewRecommendationCommander(bot),
 		// travel
 		// loyalty
 		// bank
@@ -85,7 +87,7 @@ func NewRouter(
 func (c *Router) HandleUpdate(update tgbotapi.Update) {
 	defer func() {
 		if panicValue := recover(); panicValue != nil {
-			log.Printf("recovered from panic: %v", panicValue)
+			log.Printf("recovered from panic: %v\n%v", panicValue, string(debug.Stack()))
 		}
 	}()
 
@@ -116,7 +118,7 @@ func (c *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
 	case "delivery":
 		break
 	case "recommendation":
-		break
+		c.recommendationCommander.HandleCallback(callback, callbackPath)
 	case "travel":
 		break
 	case "loyalty":
@@ -187,7 +189,7 @@ func (c *Router) handleMessage(msg *tgbotapi.Message) {
 	case "delivery":
 		break
 	case "recommendation":
-		break
+		c.recommendationCommander.HandleCommand(msg, commandPath)
 	case "travel":
 		break
 	case "loyalty":
