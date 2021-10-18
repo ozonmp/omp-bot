@@ -13,32 +13,33 @@ type Commander interface {
 	HandleCommand(message *tgbotapi.Message, commandPath path.CommandPath)
 }
 
-type GroundCommander struct {
+type AutotransportCommander struct {
 	bot             *tgbotapi.BotAPI
 	groundCommander Commander
 }
 
-func NewGroundCommander(bot *tgbotapi.BotAPI) *GroundCommander {
-	return &GroundCommander{
-		bot:             bot,
+func NewGroundCommander(bot *tgbotapi.BotAPI) *AutotransportCommander {
+	return &AutotransportCommander{
+		bot: bot,
+		// groundCommander
 		groundCommander: ground.NewGroundCommander(bot),
 	}
 }
 
-func (c *GroundCommander) HandleCallback(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
+func (c *AutotransportCommander) HandleCallback(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
 	switch callbackPath.Subdomain {
 	case "ground":
 		c.groundCommander.HandleCallback(callback, callbackPath)
 	default:
-		log.Printf("GroundCommander.HandleCallback: unknown subdomain - %s", callbackPath.Subdomain)
+		log.Printf("AutotransportCommander.HandleCallback: unknown subdomain - %s", callbackPath.Subdomain)
 	}
 }
 
-func (c *GroundCommander) HandleCommand(msg *tgbotapi.Message, commandPath path.CommandPath) {
+func (c *AutotransportCommander) HandleCommand(msg *tgbotapi.Message, commandPath path.CommandPath) {
 	switch commandPath.Subdomain {
 	case "ground":
 		c.groundCommander.HandleCommand(msg, commandPath)
 	default:
-		log.Printf("GroundCommander.HandleCommand: unknown subdomain - %s", commandPath.Subdomain)
+		log.Printf("AutotransportCommander.HandleCommand: unknown subdomain - %s", commandPath.Subdomain)
 	}
 }
