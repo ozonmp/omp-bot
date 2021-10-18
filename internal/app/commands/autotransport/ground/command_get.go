@@ -16,7 +16,7 @@ func (c *GroundCommander) Get(inputMessage *tgbotapi.Message) error {
 		return errors.New(fmt.Sprintf("Wrong args %s. \nErr: %v", args, err))
 	}
 
-	product, err := c.groundService.Describe(int64(idx))
+	product, err := c.groundService.Describe(uint64(idx))
 	if err != nil {
 		return fmt.Errorf("Fail to get auto with idx %d: \n%w", idx, err)
 	}

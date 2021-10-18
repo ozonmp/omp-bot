@@ -16,7 +16,7 @@ func (c *GroundCommander) Delete(inputMessage *tgbotapi.Message) error {
 		return errors.New("Wrong args: " + args)
 	}
 
-	isRemoved, err := c.groundService.Remove(idx)
+	isRemoved, err := c.groundService.Remove(uint64(idx))
 	if err != nil {
 		return fmt.Errorf("Fail to get auto with idx %d: %w", idx, err)
 	}

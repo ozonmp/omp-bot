@@ -1,6 +1,9 @@
 package ground
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 var allGrounds = []Ground{
 	{Name: "auto", WheelsCount: 4, Color: "black", MaxSpeed: 200},
@@ -12,17 +15,17 @@ var allGrounds = []Ground{
 
 type Ground struct {
 	Name        string
-	WheelsCount int
+	WheelsCount uint64
 	Color       string
-	MaxSpeed    int
+	MaxSpeed    uint64
 }
 
 func (c Ground) String() string {
 	return fmt.Sprintf("%s, \tWheelsCount: %d, \tColor: %s, \tMaxSpeed: %d",
-		c.Name, c.WheelsCount, c.Color, c.MaxSpeed)
+		strings.Title(c.Name), c.WheelsCount, c.Color, c.MaxSpeed)
 }
 
-func NewGround(name string, wheelsCount int, color string, maxSpeed int) Ground {
+func NewGround(name string, wheelsCount uint64, color string, maxSpeed uint64) Ground {
 	return Ground{
 		Name:        name,
 		WheelsCount: wheelsCount,
