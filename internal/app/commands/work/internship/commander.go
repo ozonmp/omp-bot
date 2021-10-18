@@ -11,6 +11,8 @@ import (
 type WorkInternshipCommander struct {
 	bot               *tgbotapi.BotAPI
 	internshipService internship.WorkService
+	cursor            uint64
+	limit             uint64
 }
 
 func NewWorkInternshipCommander(bot *tgbotapi.BotAPI) *WorkInternshipCommander {
@@ -19,6 +21,8 @@ func NewWorkInternshipCommander(bot *tgbotapi.BotAPI) *WorkInternshipCommander {
 	return &WorkInternshipCommander{
 		bot:               bot,
 		internshipService: internshipService,
+		cursor:            0,
+		limit:             3, // 3 per page
 	}
 }
 

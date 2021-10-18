@@ -3,38 +3,53 @@ package internship
 import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"log"
+	"strconv"
 )
 
 func (c *WorkInternshipCommander) List(inputMessage *tgbotapi.Message) {
-	outputMsgText := "Interships (id&description): \n\n"
-
-	products := c.internshipService.List(0, 0)
-	for _, p := range products {
+	max := len(c.internshipService.List(0, 0))
+	outputMsgText := "Interships (id&description), total: " + strconv.Itoa(max) + "\n\n"
+	internships := c.internshipService.List(c.cursor, c.limit)
+	if len(internships) == 0 {
+		outputMsgText += "empty\n"
+		msg := tgbotapi.NewMessage(inputMessage.Chat.ID, outputMsgText)
+		_, err := c.bot.Send(msg)
+		if err != nil {
+			log.Printf("WorkInternshipCommander.List: error sending reply message to chat - %v", err)
+		}
+		return
+	}
+	for _, p := range internships {
 		outputMsgText += c.internshipService.ShortString(p)
 		outputMsgText += "\n"
 	}
+
 	msg := tgbotapi.NewMessage(inputMessage.Chat.ID, outputMsgText)
 
-	/*
-		serializedData, _ := json.Marshal(CallbackListData{
-			Offset: 21,
-		})
+	buttons := make([]tgbotapi.InlineKeyboardButton, 0)
 
-		callbackPath := path.CallbackPath{
-			Domain:       "work",
-			Subdomain:    "internship",
-			CallbackName: "list",
-			CallbackData: string(serializedData),
-		}
-
-		msg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(
-			tgbotapi.NewInlineKeyboardRow(
-				tgbotapi.NewInlineKeyboardButtonData("Next page", callbackPath.String()),
-			),
+	if c.cursor > 0 {
+		buttons = append(
+			buttons,
+			tgbotapi.NewInlineKeyboardButtonData("Prev", "work__internship__list__prev"),
 		)
-	*/
+	}
+
+	if int(c.cursor+c.limit) < max {
+		buttons = append(
+			buttons,
+			tgbotapi.NewInlineKeyboardButtonData("Next", "work__internship__list__next"),
+		)
+	}
+
+	if len(buttons) > 0 {
+		keyboard := tgbotapi.NewInlineKeyboardMarkup(tgbotapi.NewInlineKeyboardRow(buttons...))
+		msg.ReplyMarkup = keyboard
+	}
+
 	_, err := c.bot.Send(msg)
 	if err != nil {
 		log.Printf("WorkInternshipCommander.List: error sending reply message to chat - %v", err)
 	}
+
 }

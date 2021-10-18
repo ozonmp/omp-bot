@@ -23,7 +23,14 @@ func NewService() *Service {
 }
 
 func (s *Service) List(cursor uint64, limit uint64) []Internship {
-	return allEntities
+	if limit == 0 {
+		return allEntities
+	}
+	l := uint64(len(allEntities))
+	if cursor+limit >= l {
+		return allEntities[cursor:]
+	}
+	return allEntities[cursor : limit+cursor]
 }
 
 func (s *Service) Describe(internshipID uint64) (*Internship, error) {
