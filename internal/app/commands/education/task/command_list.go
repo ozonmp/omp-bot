@@ -2,19 +2,18 @@ package task
 
 import (
 	"encoding/json"
-	"fmt"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/app/path"
 )
 
-func (c *TaskCommander) List(inputMessage *tgbotapi.Message) {
+func (c *TaskStruct) List(inputMessage *tgbotapi.Message) {
 
 	outputMsgText := "Here the products: \n"
 
-	products := c.taskService.List(0, 5)
+	products, _ := c.taskService.List(0, 5)
 	for _, p := range products {
-		outputMsgText += fmt.Sprintf("ProductID: %d Name: %s Description: %s", p.Id, p.Title, p.Description)
+		outputMsgText += p.String()
 		outputMsgText += "\n"
 	}
 
@@ -25,7 +24,7 @@ func (c *TaskCommander) List(inputMessage *tgbotapi.Message) {
 		Limit:  5,
 	})
 
-	if c.taskService.Count() > 5 {
+	if c.taskService.CountData() > 5 {
 		KeyboardMarkup := tgbotapi.NewInlineKeyboardMarkup()
 
 		callbackPath := path.CallbackPath{
@@ -53,7 +52,7 @@ func (c *TaskCommander) List(inputMessage *tgbotapi.Message) {
 		}
 
 		serializedDataLast, _ := json.Marshal(CallbackListData{
-			Cursor: uint64(c.taskService.Count()) - 5,
+			Cursor: uint64(c.taskService.CountData()) - 5,
 			Limit:  5,
 		})
 

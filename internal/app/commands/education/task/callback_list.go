@@ -13,14 +13,14 @@ type CallbackListData struct {
 	Limit  uint64 `json:"limit"`
 }
 
-func (c *TaskCommander) CallbackList(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
+func (c *TaskStruct) CallbackList(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
 
 	parsedData := CallbackListData{}
 
 	json.Unmarshal([]byte(callbackPath.CallbackData), &parsedData)
 
 	outputMsgText := "Here the products: \n"
-	products := c.taskService.List(parsedData.Cursor, parsedData.Limit)
+	products, _ := c.taskService.List(parsedData.Cursor, parsedData.Limit)
 	for _, p := range products {
 		outputMsgText += fmt.Sprintf("ProductID: %d Name: %s Description: %s", p.Id, p.Title, p.Description)
 		outputMsgText += "\n"
@@ -47,7 +47,7 @@ func (c *TaskCommander) CallbackList(callback *tgbotapi.CallbackQuery, callbackP
 		)
 	}
 
-	maxElem := c.taskService.Count()
+	maxElem := c.taskService.CountData()
 
 	if maxElem > int(parsedData.Cursor)+int(parsedData.Limit) {
 		serializedDataNext, _ := json.Marshal(CallbackListData{

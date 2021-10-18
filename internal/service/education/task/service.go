@@ -2,20 +2,43 @@ package task
 
 import (
 	"errors"
+
+	"github.com/ozonmp/omp-bot/internal/model/education"
 )
 
+type TaskService interface {
+	Describe(taskID uint64) (*education.Task, error)
+	List(cursor uint64, limit uint64) ([]education.Task, error)
+	Create(education.Task) (uint64, error)
+	Update(taskID uint64, task education.Task) error
+	Remove(taskID uint64) (bool, error)
+}
+
 type DummyTaskService struct {
-	data *taskModel
+	data *education.TaskModel
 }
 
 func NewDummyTaskService() *DummyTaskService {
 
-	taskEntities.Init()
+	education.TaskEntities.Init()
 
-	return &DummyTaskService{taskEntities}
+	return &DummyTaskService{education.TaskEntities}
 }
 
-func (s *DummyTaskService) List(cursor, limit uint64) (result taskModel) {
+func (s *DummyTaskService) Describe(taskID uint64) (*education.Task, error) {
+
+	data := *s.data
+
+	id, err := data.FindID(taskID)
+	if err != nil {
+		return &education.Task{}, err
+	}
+
+	return &data[id], err
+
+}
+
+func (s *DummyTaskService) List(cursor, limit uint64) ([]education.Task, error) {
 
 	lenSlice := uint64(len(*s.data))
 
@@ -25,85 +48,63 @@ func (s *DummyTaskService) List(cursor, limit uint64) (result taskModel) {
 
 	data := *s.data
 
-	if cursor+limit > lenSlice {
-		result = data[cursor:]
-	} else {
-		result = data[cursor : cursor+limit]
+	if cursor+limit < lenSlice {
+		return data[cursor : cursor+limit], nil
 	}
 
-	return result
+	return data[cursor:], nil
+
 }
 
-func (s *DummyTaskService) Create(TaskId uint64, name, desc string) error {
-
-	if _, err := s.Find(TaskId); err == nil {
-		return errors.New("product id found on another product")
-	}
+func (s *DummyTaskService) Create(Task education.Task) (uint64, error) {
 
 	data := *s.data
 
-	data = append(data, task{Id: TaskId, Championat_id: 1, Difficulty: 5, Title: name, Description: desc})
+	if _, err := data.FindID(Task.Id); err == nil {
+		return 0, errors.New("product id found on another product")
+	}
+
+	Task.Id = data.MaxID()
+
+	data = append(data, Task)
 
 	s.data = &data
 
-	return nil
+	return Task.Id, nil
 }
 
-func (s *DummyTaskService) Update(TaskId uint64, Title, Desc string) error {
+func (s *DummyTaskService) Update(taskID uint64, Task education.Task) error {
 
-	id, err := s.Find(TaskId)
+	data := *s.data
+
+	id, err := data.FindID(taskID)
 	if err != nil {
 		return err
 	}
 
-	data := *s.data
-	data[id-1].Title = Title
-	data[id-1].Description = Desc
+	data[id].Title = Task.Title
+	data[id].Description = Task.Description
 
 	return nil
 }
 
-func (s *DummyTaskService) Remove(TaskId uint64) error {
-
-	id, err := s.Find(TaskId)
-	if err != nil {
-		return err
-	}
+func (s *DummyTaskService) Remove(taskID uint64) (bool, error) {
 
 	data := *s.data
+
+	id, err := data.FindID(taskID)
+	if err != nil {
+		return false, err
+	}
+
 	data = append(data[:id], data[id+1:]...)
 
 	s.data = &data
 
-	return nil
+	return true, nil
 }
 
-func (s *DummyTaskService) Count() int {
-	return len(*s.data)
-}
-
-func (s *DummyTaskService) Get(TaskId uint64) task {
-
-	id, err := s.Find(TaskId)
-	if err != nil {
-		return task{}
-	}
-
-	result := *s.data
-
-	return result[id]
-
-}
-
-func (s *DummyTaskService) Find(TaskId uint64) (int, error) {
-
-	data := *s.data
-
-	for i, v := range data {
-		if v.Id == TaskId {
-			return i, nil
-		}
-	}
-
-	return 0, errors.New("id not found")
+// TODO - Как такое лучше организовывать ?
+func (s *DummyTaskService) CountData() int {
+	return s.data.Count()
 }

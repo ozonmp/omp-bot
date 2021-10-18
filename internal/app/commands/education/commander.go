@@ -14,14 +14,14 @@ type Commander interface {
 }
 
 type EducationCommander struct {
-	bot           *tgbotapi.BotAPI
-	taskCommander Commander
+	bot        *tgbotapi.BotAPI
+	TaskStruct Commander
 }
 
 func NewEducationCommander(bot *tgbotapi.BotAPI) *EducationCommander {
 	return &EducationCommander{
-		bot:           bot,
-		taskCommander: task.NewTaskCommander(bot),
+		bot:        bot,
+		TaskStruct: task.NewTaskCommander(bot),
 	}
 }
 
@@ -29,7 +29,7 @@ func (c *EducationCommander) HandleCallback(callback *tgbotapi.CallbackQuery, ca
 
 	switch callbackPath.Subdomain {
 	case "task":
-		c.taskCommander.HandleCallback(callback, callbackPath)
+		c.TaskStruct.HandleCallback(callback, callbackPath)
 	default:
 		log.Printf("EducationCommander.HandleCallback: unknown subdomain - %s", callbackPath.Subdomain)
 	}
@@ -38,7 +38,7 @@ func (c *EducationCommander) HandleCallback(callback *tgbotapi.CallbackQuery, ca
 func (c *EducationCommander) HandleCommand(msg *tgbotapi.Message, commandPath path.CommandPath) {
 	switch commandPath.Subdomain {
 	case "task":
-		c.taskCommander.HandleCommand(msg, commandPath)
+		c.TaskStruct.HandleCommand(msg, commandPath)
 	default:
 		log.Printf("EducationCommander.HandleCommand: unknown subdomain - %s", commandPath.Subdomain)
 	}

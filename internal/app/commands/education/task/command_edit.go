@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+	"github.com/ozonmp/omp-bot/internal/model/education"
 )
 
 type updateProductData struct {
@@ -13,7 +14,7 @@ type updateProductData struct {
 	Description string `json:"description"`
 }
 
-func (c *TaskCommander) Edit(inputMessage *tgbotapi.Message) {
+func (c *TaskStruct) Edit(inputMessage *tgbotapi.Message) {
 
 	args := inputMessage.CommandArguments()
 
@@ -27,7 +28,12 @@ func (c *TaskCommander) Edit(inputMessage *tgbotapi.Message) {
 		return
 	}
 
-	err = c.taskService.Update(updateData.Id, updateData.Title, updateData.Description)
+	err = c.taskService.Update(updateData.Id,
+		education.Task{
+			Title:       updateData.Title,
+			Description: updateData.Description,
+		},
+	)
 	if err != nil {
 		msg := tgbotapi.NewMessage(inputMessage.Chat.ID,
 			fmt.Sprintf("Update error. Error = %s", err),

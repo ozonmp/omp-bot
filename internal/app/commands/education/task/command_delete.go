@@ -7,18 +7,18 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
-func (c *TaskCommander) Delete(inputMessage *tgbotapi.Message) {
+func (c *TaskStruct) Delete(inputMessage *tgbotapi.Message) {
 
 	args := inputMessage.CommandArguments()
 
 	task_id, err := strconv.Atoi(args)
 	if err != nil {
-		msg := tgbotapi.NewMessage(inputMessage.Chat.ID, "Remove error - id is poor")
+		msg := tgbotapi.NewMessage(inputMessage.Chat.ID, "Remove error - id is not valid")
 		c.SendMessage(msg)
 		return
 	}
 
-	err = c.taskService.Remove(uint64(task_id))
+	_, err = c.taskService.Remove(uint64(task_id))
 	if err != nil {
 		msg := tgbotapi.NewMessage(inputMessage.Chat.ID,
 			fmt.Sprintf("Remove error. Error = %s", err),

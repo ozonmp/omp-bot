@@ -9,22 +9,35 @@ import (
 	"github.com/ozonmp/omp-bot/internal/service/education/task"
 )
 
-type TaskCommander struct {
+type TaskCommander interface {
+	Help(inputMsg *tgbotapi.Message)
+	Get(inputMsg *tgbotapi.Message)
+	List(inputMsg *tgbotapi.Message)
+	Delete(inputMsg *tgbotapi.Message)
+
+	New(inputMsg *tgbotapi.Message)  // return error not implemented
+	Edit(inputMsg *tgbotapi.Message) // return error not implemented
+
+	HandleCallback(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath)
+	HandleCommand(message *tgbotapi.Message, commandPath path.CommandPath)
+}
+
+type TaskStruct struct {
 	bot         *tgbotapi.BotAPI
 	taskService *task.DummyTaskService
 }
 
-func NewTaskCommander(bot *tgbotapi.BotAPI) *TaskCommander {
+func NewTaskCommander(bot *tgbotapi.BotAPI) TaskCommander {
 
 	taskService := task.NewDummyTaskService()
 
-	return &TaskCommander{
+	return &TaskStruct{
 		bot:         bot,
 		taskService: taskService,
 	}
 }
 
-func (c *TaskCommander) HandleCallback(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
+func (c *TaskStruct) HandleCallback(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
 	switch callbackPath.CallbackName {
 	case "list":
 		c.CallbackList(callback, callbackPath)
@@ -33,7 +46,7 @@ func (c *TaskCommander) HandleCallback(callback *tgbotapi.CallbackQuery, callbac
 	}
 }
 
-func (c *TaskCommander) HandleCommand(msg *tgbotapi.Message, commandPath path.CommandPath) {
+func (c *TaskStruct) HandleCommand(msg *tgbotapi.Message, commandPath path.CommandPath) {
 	switch commandPath.CommandName {
 	case "help":
 		c.Help(msg)
@@ -52,7 +65,7 @@ func (c *TaskCommander) HandleCommand(msg *tgbotapi.Message, commandPath path.Co
 	}
 }
 
-func (c *TaskCommander) SendMessage(msg tgbotapi.MessageConfig) {
+func (c *TaskStruct) SendMessage(msg tgbotapi.MessageConfig) {
 
 	_, err := c.bot.Send(msg)
 	if err != nil {

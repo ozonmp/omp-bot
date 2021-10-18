@@ -7,7 +7,7 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
-func (c *TaskCommander) Get(inputMessage *tgbotapi.Message) {
+func (c *TaskStruct) Get(inputMessage *tgbotapi.Message) {
 
 	args := inputMessage.CommandArguments()
 
@@ -18,7 +18,7 @@ func (c *TaskCommander) Get(inputMessage *tgbotapi.Message) {
 		return
 	}
 
-	product := c.taskService.Get(uint64(pos))
+	product, _ := c.taskService.Describe(uint64(pos))
 
 	if product.IsEmpty() {
 		msg := tgbotapi.NewMessage(inputMessage.Chat.ID, "id not found.")
