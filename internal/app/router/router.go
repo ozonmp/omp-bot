@@ -1,6 +1,7 @@
 package router
 
 import (
+	"github.com/ozonmp/omp-bot/internal/app/commands/business"
 	"log"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
@@ -33,7 +34,7 @@ type Router struct {
 	// payment
 	// storage
 	// streaming
-	// business
+	businessCommander Commander
 	// work
 	// service
 	// exchange
@@ -68,7 +69,7 @@ func NewRouter(
 		// payment
 		// storage
 		// streaming
-		// business
+		businessCommander: business.NewBusinessCommander(bot),
 		// work
 		// service
 		// exchange
@@ -136,7 +137,7 @@ func (c *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
 	case "streaming":
 		break
 	case "business":
-		break
+		c.businessCommander.HandleCallback(callback,callbackPath)
 	case "work":
 		break
 	case "service":
@@ -207,7 +208,7 @@ func (c *Router) handleMessage(msg *tgbotapi.Message) {
 	case "streaming":
 		break
 	case "business":
-		break
+		c.businessCommander.HandleCommand(msg, commandPath)
 	case "work":
 		break
 	case "service":
