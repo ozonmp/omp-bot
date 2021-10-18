@@ -27,7 +27,7 @@ type DummySingleSubscriptionCommander struct {
 	service service.SingleSubscriptionService
 }
 
-func NewSubdomainCommander(bot *tgbotapi.BotAPI, service service.SingleSubscriptionService) *DummySingleSubscriptionCommander {
+func NewSingleSubscriptionCommander(bot *tgbotapi.BotAPI, service service.SingleSubscriptionService) *DummySingleSubscriptionCommander {
 	return &DummySingleSubscriptionCommander{
 		bot:     bot,
 		service: service,

@@ -31,7 +31,7 @@ func NewSubscriptionCommander(
 
 func (c *SubscriptionCommander) HandleCallback(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
 	switch callbackPath.Subdomain {
-	case "subdomain":
+	case "singleSubscription":
 		c.singleSubscriptionCommander.HandleCallback(callback, callbackPath)
 	default:
 		log.Printf("SubscriptionCommander.HandleCallback: unknown subdomain - %s", callbackPath.Subdomain)
@@ -40,7 +40,7 @@ func (c *SubscriptionCommander) HandleCallback(callback *tgbotapi.CallbackQuery,
 
 func (c *SubscriptionCommander) HandleCommand(msg *tgbotapi.Message, commandPath path.CommandPath) {
 	switch commandPath.Subdomain {
-	case "subdomain":
+	case "singleSubscription":
 		c.singleSubscriptionCommander.HandleCommand(msg, commandPath)
 	default:
 		log.Printf("SubscriptionCommander.HandleCommand: unknown subdomain - %s", commandPath.Subdomain)
