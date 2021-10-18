@@ -2,21 +2,19 @@ package main
 
 import (
 	"log"
-	"os"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-	"github.com/joho/godotenv"
 	"github.com/ozonmp/omp-bot/internal/app/router"
 )
 
 func main() {
-	godotenv.Load()
-
-	token := os.Getenv("TOKEN")
-
+	token, err := lookupToken()
+	if err != nil {
+		log.Panicf("lookup token: %v", err)
+	}
 	bot, err := tgbotapi.NewBotAPI(token)
 	if err != nil {
-		log.Panic(err)
+		log.Panicf("connect to API: %v", err)
 	}
 
 	// Uncomment if you want debugging
