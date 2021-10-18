@@ -1,10 +1,9 @@
 package group
 
-import "github.com/ozonmp/omp-bot/internal/model/location"
-
-//type GroupService interface {
-//	List(cursor uint64, limit uint64) ([]location.Group, error)
-//}
+import (
+	"fmt"
+	"github.com/ozonmp/omp-bot/internal/model/location"
+)
 
 type LocationGroupService struct {
 	allEntities []location.Group
@@ -22,6 +21,22 @@ func NewLocationGroupService() *LocationGroupService {
 	}
 }
 
-func (s *LocationGroupService) List() []location.Group {
-	return s.allEntities
+func (s *LocationGroupService) List() *[]location.Group {
+	return &s.allEntities
+}
+
+func (s *LocationGroupService) Get(idx int) (*location.Group, error) {
+	if idx >= len(s.allEntities) {
+		return nil, fmt.Errorf("idx %d not found", idx)
+	}
+	return &s.allEntities[idx], nil
+}
+
+func (s *LocationGroupService) Delete(idx int) (err error) {
+	if idx >= len(s.allEntities) {
+		err = fmt.Errorf("idx %d not found", idx)
+		return
+	}
+	s.allEntities = append(s.allEntities[:idx], s.allEntities[idx+1:]...)
+	return
 }

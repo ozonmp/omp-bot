@@ -9,6 +9,6 @@ type Group struct {
 }
 
 func (g Group) String() (res string) {
-	res = fmt.Sprint(g.Id, g.CountOfLocation, g.Type)
+	res = fmt.Sprintf("%#+v\n", g)
 	return
 }

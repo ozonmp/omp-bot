@@ -8,3 +8,4 @@ import (
 func (c *LocationGroupCommander) CallbackList(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
 
 }
+
