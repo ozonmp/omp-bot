@@ -14,7 +14,7 @@ type Task struct {
 }
 
 func (t *Task) String() string {
-	return fmt.Sprintf("ProductID: %d Name: %s Description: %s", t.Id, t.Title, t.Description)
+	return fmt.Sprintf("ProductID: %d. Title: %s. Description: %s.", t.Id, t.Title, t.Description)
 }
 
 func (t *Task) IsEmpty() bool {

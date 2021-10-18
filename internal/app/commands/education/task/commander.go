@@ -58,7 +58,7 @@ func (c *TaskStruct) HandleCommand(msg *tgbotapi.Message, commandPath path.Comma
 		c.Delete(msg)
 	case "new":
 		c.New(msg)
-	case "edits":
+	case "edit":
 		c.Edit(msg)
 	default:
 		c.Default(msg)

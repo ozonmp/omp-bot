@@ -1,7 +1,6 @@
 package task
 
 import (
-	"fmt"
 	"strconv"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
@@ -26,9 +25,7 @@ func (c *TaskStruct) Get(inputMessage *tgbotapi.Message) {
 		return
 	}
 
-	outputMsgText := fmt.Sprintf("ProductID: %d Name: %s Description: %s", product.Id, product.Title, product.Description)
-
-	msg := tgbotapi.NewMessage(inputMessage.Chat.ID, outputMsgText)
+	msg := tgbotapi.NewMessage(inputMessage.Chat.ID, product.String())
 
 	c.SendMessage(msg)
 }
