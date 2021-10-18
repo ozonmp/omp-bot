@@ -9,28 +9,11 @@ import (
 	"strings"
 )
 
-type AnouncementData struct {
-	Author       string `json:"author"`
-	Title        string `json:"title"`
-	Description  string `json:"description"`
-	TimePlanned  uint64 `json:"time_planned"`
-	ThumbnailUrl string `json:"thumbnail_url"`
-}
-
 func (c *StreamingAnnouncementCommander) New(inputMessage *tgbotapi.Message) {
 	args := strings.Trim(inputMessage.CommandArguments(), "")
 
 	if args == "" {
-		msg := tgbotapi.NewMessage(
-			inputMessage.Chat.ID,
-			"Command format is: /new__streaming__announcement {announcement json}\n" +
-				"JSON fields are:\nauthor(string),\n" +
-				"title(string),\n" +
-				"description(string),\n" +
-				"time_planned(timestamp),\n" +
-				"thumbnail_url(string)",
-		)
-		c.bot.Send(msg)
+		c.sendNewFormatMessage(inputMessage)
 		return
 	}
 
@@ -40,16 +23,7 @@ func (c *StreamingAnnouncementCommander) New(inputMessage *tgbotapi.Message) {
 		log.Printf("StreamingAnnouncementCommander.New: "+
 			"error reading json data for type AnouncementData from "+
 			"input string %v - %v", args, err)
-		msg := tgbotapi.NewMessage(
-			inputMessage.Chat.ID,
-			"Command format is: /new__streaming__announcement {announcement json}\n" +
-				"JSON fields are:\nauthor(string),\n" +
-				"title(string),\n" +
-				"description(string),\n" +
-				"time_planned(timestamp),\n" +
-				"thumbnail_url(string)",
-		)
-		c.bot.Send(msg)
+		c.sendNewFormatMessage(inputMessage)
 		return
 	}
 	newItem := announcement.Announcement{
@@ -75,4 +49,20 @@ func (c *StreamingAnnouncementCommander) New(inputMessage *tgbotapi.Message) {
 		"Announcement with id " + strconv.FormatUint(created, 10) + " created successfully",
 	)
 	c.bot.Send(msg)
+}
+
+func (c *StreamingAnnouncementCommander) sendNewFormatMessage(inputMessage *tgbotapi.Message) {
+	msg := tgbotapi.NewMessage(
+		inputMessage.Chat.ID,
+		"Command format is: /new__streaming__announcement {announcement json}\n" +
+			"JSON fields are:\nauthor(string),\n" +
+			"title(string),\n" +
+			"description(string),\n" +
+			"time_planned(timestamp),\n" +
+			"thumbnail_url(string)",
+	)
+	_, err := c.bot.Send(msg)
+	if err != nil {
+		log.Printf("StreamingAnnouncementCommander.New: error sending reply message to chat - %v", err)
+	}
 }

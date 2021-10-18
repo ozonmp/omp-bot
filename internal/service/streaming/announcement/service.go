@@ -1,5 +1,9 @@
 package announcement
 
+import (
+	"errors"
+)
+
 type AnnouncementService interface {
 	Describe(announcementID uint64) (*Announcement, error)
 	List(cursor uint64, limit uint64) ([]Announcement, error)
@@ -53,16 +57,18 @@ func (d *DummyAnnouncementService) Create(announcement Announcement) (uint64, er
 
 func (d *DummyAnnouncementService) Update(announcementID uint64, announcement Announcement) error {
 	var item *Announcement
-	for _, val := range d.Announcements {
+	idx := -1
+	for i, val := range d.Announcements {
 		if val.ID == announcementID {
-			item = &val
+			idx = i
 			break
 		}
 	}
-	if item == nil {
-		return nil
+	if idx == -1 {
+		return errors.New("item not found")
 	}
 
+	item = &d.Announcements[idx]
 	item.Author = announcement.Author
 	item.TimePlanned = announcement.TimePlanned
 	item.Title = announcement.Title
