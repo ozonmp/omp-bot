@@ -3,6 +3,7 @@ package router
 import (
 	"log"
 	"runtime/debug"
+
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/app/commands/demo"
 	"github.com/ozonmp/omp-bot/internal/app/commands/location/group"
