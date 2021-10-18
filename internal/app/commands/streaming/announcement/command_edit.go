@@ -15,7 +15,7 @@ func (c *StreamingAnnouncementCommander) Edit(inputMessage *tgbotapi.Message) {
 		log.Println("wrong args", args)
 		msg := tgbotapi.NewMessage(
 			inputMessage.Chat.ID,
-			"Usage: /edit__streaming__announcement {announcement index}",
+			"Usage: /edit__streaming__announcement {announcement index} {announcement json}",
 		)
 		_, err = c.bot.Send(msg)
 		if err != nil {

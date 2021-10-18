@@ -1,9 +1,13 @@
 package announcement
 
-import "time"
+import (
+	"strconv"
+	"time"
+)
 
 var allEntities = []Announcement{
 	{
+		ID: 1,
 		Author: "John Doe",
 		TimePlanned: 1634488911,
 		Title: "Sample 1",
@@ -11,6 +15,7 @@ var allEntities = []Announcement{
 		ThumbnailUrl: "example.com",
 	},
 	{
+		ID: 2,
 		Author: "Jane Doe",
 		TimePlanned: 1634488911,
 		Title: "Sample 2",
@@ -18,6 +23,7 @@ var allEntities = []Announcement{
 		ThumbnailUrl: "example.com",
 	},
 	{
+		ID: 3,
 		Author: "John Doe",
 		TimePlanned: 1634488911,
 		Title: "Sample 3",
@@ -25,6 +31,7 @@ var allEntities = []Announcement{
 		ThumbnailUrl: "example.com",
 	},
 	{
+		ID: 4,
 		Author: "Jane Doe",
 		TimePlanned: 1634488911,
 		Title: "Sample 4",
@@ -32,6 +39,7 @@ var allEntities = []Announcement{
 		ThumbnailUrl: "example.com",
 	},
 	{
+		ID: 5,
 		Author: "John Doe",
 		TimePlanned: 1634488911,
 		Title: "Sample 5",
@@ -39,6 +47,7 @@ var allEntities = []Announcement{
 		ThumbnailUrl: "example.com",
 	},
 	{
+		ID: 6,
 		Author: "Jane Doe",
 		TimePlanned: 1634488911,
 		Title: "Sample 6",
@@ -46,6 +55,7 @@ var allEntities = []Announcement{
 		ThumbnailUrl: "example.com",
 	},
 	{
+		ID: 7,
 		Author: "John Doe",
 		TimePlanned: 1634488911,
 		Title: "Sample 7",
@@ -53,6 +63,7 @@ var allEntities = []Announcement{
 		ThumbnailUrl: "example.com",
 	},
 	{
+		ID: 8,
 		Author: "Jane Doe",
 		TimePlanned: 1634488911,
 		Title: "Sample 8",
@@ -60,6 +71,7 @@ var allEntities = []Announcement{
 		ThumbnailUrl: "example.com",
 	},
 	{
+		ID: 9,
 		Author: "John Doe",
 		TimePlanned: 1634488911,
 		Title: "Sample 9",
@@ -67,6 +79,7 @@ var allEntities = []Announcement{
 		ThumbnailUrl: "example.com",
 	},
 	{
+		ID: 10,
 		Author: "Jane Doe",
 		TimePlanned: 1634488911,
 		Title: "Sample 10",
@@ -76,6 +89,7 @@ var allEntities = []Announcement{
 }
 
 type Announcement struct {
+	ID uint64
 	Author string
 	TimePlanned uint64
 	Title string
@@ -88,9 +102,10 @@ func (a *Announcement) FormattedTime() string {
 }
 
 func (a *Announcement) String() string {
-	return "Author: " + a.Author + "\n" +
+	return "ID: " + strconv.FormatUint(a.ID, 10) + "\n" +
+		"Author: " + a.Author + "\n" +
 		"Time: " + a.FormattedTime() + "\n" +
 		"Title: " + a.Title + "\n" +
 		"Description: " + a.Description + "\n" +
-		"Thubnail: " + a.ThumbnailUrl
+		"Thumbnail: " + a.ThumbnailUrl
 }
