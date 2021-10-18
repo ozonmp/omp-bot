@@ -13,7 +13,7 @@ import (
 const (
 	listLimit          = 3
 	listPaginationText = "More"
-	listHeader         = "Id Description Type\n"
+	listHeader         = "Id Description Type"
 )
 
 const (
@@ -39,7 +39,9 @@ func (c *RecommendationProductionCommander) list(chatId int64, data CallbackList
 
 		var builder strings.Builder
 		if data.MessageId == 0 {
-			builder.WriteString(listHeader)
+			if _, err := fmt.Fprintf(&builder, "%v\n", listHeader); err != nil {
+				return textWrong, 0, err
+			}
 		}
 
 		for _, v := range productions {

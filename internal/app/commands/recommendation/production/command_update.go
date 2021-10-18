@@ -15,14 +15,11 @@ const (
 
 func (c *RecommendationProductionCommander) Update(inputMessage *tgbotapi.Message) {
 	text, err := func() (string, error) {
-		var (
-			production recommendation.Production
-			err        error
-		)
+		var production recommendation.Production
 
 		args := inputMessage.CommandArguments()
 
-		err = json.Unmarshal([]byte(args), &production)
+		err := json.Unmarshal([]byte(args), &production)
 		if err != nil {
 			return textWrong, fmt.Errorf("%w %v", errWrongArgs, args)
 		}
