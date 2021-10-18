@@ -25,7 +25,7 @@ func NewSubscriptionCommander(
 	singleSubscriptionService := svc.NewDummySingleSubscriptionService()
 	return &SubscriptionCommander{
 		bot:                         bot,
-		singleSubscriptionCommander: singleSubscription.NewSubdomainCommander(bot, singleSubscriptionService),
+		singleSubscriptionCommander: singleSubscription.NewSingleSubscriptionCommander(bot, singleSubscriptionService),
 	}
 }
 

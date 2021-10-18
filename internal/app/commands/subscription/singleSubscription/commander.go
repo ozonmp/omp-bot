@@ -9,8 +9,8 @@ import (
 )
 
 const (
-	DomainName    = "Subscription"
-	SubdomainName = "SingleSubscription"
+	DomainName    = "subscription"
+	SubdomainName = "singleSubscription"
 )
 
 type SingleSubscriptionCommander interface {
