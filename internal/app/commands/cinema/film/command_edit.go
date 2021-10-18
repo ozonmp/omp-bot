@@ -42,4 +42,3 @@ func (c CinemaFilmCommander) Edit(inputMsg *tgbotapi.Message) {
 
 	c.sendMessage(tgbotapi.NewMessage(inputMsg.Chat.ID, fmt.Sprintf("Updated film:\n%s", newFilm)))
 }
-

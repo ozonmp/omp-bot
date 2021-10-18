@@ -10,7 +10,7 @@ import (
 )
 
 type CinemaFilmCommander struct {
-	bot              *tgbotapi.BotAPI
+	bot         *tgbotapi.BotAPI
 	filmService *film.DummyFilmService
 }
 
@@ -18,7 +18,7 @@ func NewCinemaFilmCommander(bot *tgbotapi.BotAPI) *CinemaFilmCommander {
 	filmService := film.NewDummyFilmService()
 
 	return &CinemaFilmCommander{
-		bot:              bot,
+		bot:         bot,
 		filmService: filmService,
 	}
 }

@@ -39,4 +39,3 @@ func filmFromParameters(params [][]string) (*cinema.Film, error) {
 	}
 	return &film, nil
 }
-

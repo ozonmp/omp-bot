@@ -32,4 +32,3 @@ func (c *CinemaFilmCommander) Delete(inputMessage *tgbotapi.Message) {
 	c.sendMessage(tgbotapi.NewMessage(inputMessage.Chat.ID,
 		fmt.Sprintf("Film '%s' succesfully deleted", filmNameToDelete)))
 }
-

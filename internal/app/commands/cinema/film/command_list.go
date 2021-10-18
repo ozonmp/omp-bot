@@ -27,10 +27,10 @@ var callbackPathPrev = path.CallbackPath{
 }
 
 var keyBoard = tgbotapi.NewInlineKeyboardMarkup(
-		tgbotapi.NewInlineKeyboardRow(
+	tgbotapi.NewInlineKeyboardRow(
 		tgbotapi.NewInlineKeyboardButtonData("Next", callbackPathNext.String()),
 	),
-		tgbotapi.NewInlineKeyboardRow(
+	tgbotapi.NewInlineKeyboardRow(
 		tgbotapi.NewInlineKeyboardButtonData("Prev", callbackPathPrev.String()),
 	),
 )
@@ -53,10 +53,10 @@ func (c *CinemaFilmCommander) List(inputMessage *tgbotapi.Message, next, init bo
 	} else {
 		currentPage -= 1
 	}
-	maxPage := (len(c.filmService.Films) - 1) / pageLength + 1
+	maxPage := (len(c.filmService.Films)-1)/pageLength + 1
 	if currentPage == maxPage && next {
 		currentPage = 0
-	} else if currentPage == -1 && ! next {
+	} else if currentPage == -1 && !next {
 		currentPage = maxPage - 1
 	}
 
@@ -66,13 +66,13 @@ func (c *CinemaFilmCommander) List(inputMessage *tgbotapi.Message, next, init bo
 	filmsToOutput, _ := c.filmService.List(uint64(startIndex), uint64(endIndex), true)
 	filmsOnPage := c.fromFilmsToStrings(filmsToOutput)
 	outputMsgText = strings.Join(filmsOnPage, "\n")
-	outputMsgText += fmt.Sprintf("\npage %d/%d", currentPage + 1, maxPage)
+	outputMsgText += fmt.Sprintf("\npage %d/%d", currentPage+1, maxPage)
 
 	msg.Text = outputMsgText
 	_ = c.sendMessage(msg)
 }
 
-func (c *CinemaFilmCommander) fromFilmsToStrings (films []cinema.Film) []string {
+func (c *CinemaFilmCommander) fromFilmsToStrings(films []cinema.Film) []string {
 	result := make([]string, 0, len(films))
 	for _, film := range films {
 		result = append(result, fmt.Sprintf("%d|'%s'", film.ID, film.Name))

@@ -3,10 +3,10 @@ package cinema
 import "fmt"
 
 type Film struct {
-	ID          uint64 `json:"id"`
-	Name        string `json:"name"`
-	Rating float64 `json:"rating"`
-	ShortDescription string `json:"shortDescription"`
+	ID               uint64  `json:"id"`
+	Name             string  `json:"name"`
+	Rating           float64 `json:"rating"`
+	ShortDescription string  `json:"shortDescription"`
 }
 
 func (f *Film) String() string {
