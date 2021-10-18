@@ -8,17 +8,15 @@ import (
 )
 
 func main() {
-	token, err := lookupToken()
+	config, err := loadConfig()
 	if err != nil {
-		log.Panicf("lookup token: %v", err)
+		log.Panicf("load config: %v", err)
 	}
-	bot, err := tgbotapi.NewBotAPI(token)
+	bot, err := tgbotapi.NewBotAPI(config.Token)
 	if err != nil {
 		log.Panicf("connect to API: %v", err)
 	}
-
-	// Uncomment if you want debugging
-	// bot.Debug = true
+	bot.Debug = config.Debug
 
 	log.Printf("Authorized on account %s", bot.Self.UserName)
 
