@@ -19,7 +19,7 @@ func (c *WorkInternshipCommander) Get(inputMessage *tgbotapi.Message) {
 		}
 		return
 	}
-	product, err := c.internshipService.Get(idx)
+	product, err := c.internshipService.Describe(uint64(idx))
 	var msgText string
 	if err != nil {
 		log.Printf("fail to get product with idx %d: %v", idx, err)

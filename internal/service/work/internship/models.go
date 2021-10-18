@@ -12,8 +12,8 @@ var allEntities = []Internship{
 }
 
 type Internship struct {
-	Id           int
-	Team_id      int
+	Id           uint64
+	Team_id      uint64
 	Description  string
 	Period       string
 	Compensation bool

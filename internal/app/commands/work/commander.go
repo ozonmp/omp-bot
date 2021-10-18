@@ -11,6 +11,13 @@ import (
 type Commander interface {
 	HandleCallback(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath)
 	HandleCommand(message *tgbotapi.Message, commandPath path.CommandPath)
+
+	Help(inputMsg *tgbotapi.Message)
+	Get(inputMsg *tgbotapi.Message)
+	List(inputMsg *tgbotapi.Message)
+	Delete(inputMsg *tgbotapi.Message)
+	New(inputMsg *tgbotapi.Message)
+	Edit(inputMsg *tgbotapi.Message)
 }
 
 type WorkCommander struct {

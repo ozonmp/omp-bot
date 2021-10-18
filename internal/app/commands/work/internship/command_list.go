@@ -6,9 +6,9 @@ import (
 )
 
 func (c *WorkInternshipCommander) List(inputMessage *tgbotapi.Message) {
-	outputMsgText := "Here all the interships: \n\n"
+	outputMsgText := "Interships (id&description): \n\n"
 
-	products := c.internshipService.List()
+	products := c.internshipService.List(0, 0)
 	for _, p := range products {
 		outputMsgText += c.internshipService.ShortString(p)
 		outputMsgText += "\n"

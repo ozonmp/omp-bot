@@ -8,23 +8,12 @@ import (
 	"github.com/ozonmp/omp-bot/internal/service/work/internship"
 )
 
-type WorkCommander interface {
-	Help(inputMsg *tgbotapi.Message)
-	Get(inputMsg *tgbotapi.Message)
-	List(inputMsg *tgbotapi.Message)
-	Delete(inputMsg *tgbotapi.Message)
-	New(inputMsg *tgbotapi.Message)
-	Edit(inputMsg *tgbotapi.Message)
-}
-
 type WorkInternshipCommander struct {
 	bot               *tgbotapi.BotAPI
 	internshipService internship.WorkService
 }
 
-func NewWorkInternshipCommander(
-	bot *tgbotapi.BotAPI,
-) *WorkInternshipCommander {
+func NewWorkInternshipCommander(bot *tgbotapi.BotAPI) *WorkInternshipCommander {
 	internshipService := internship.NewService()
 
 	return &WorkInternshipCommander{

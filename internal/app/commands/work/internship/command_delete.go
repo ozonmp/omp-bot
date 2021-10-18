@@ -19,7 +19,7 @@ func (c *WorkInternshipCommander) Delete(inputMessage *tgbotapi.Message) {
 		}
 		return
 	}
-	delResult := c.internshipService.Delete(idx)
+	delResult, _ := c.internshipService.Remove(uint64(idx))
 	var msgText string
 	if delResult {
 		msgText = "Internship info is deleted!"
