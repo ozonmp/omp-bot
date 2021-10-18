@@ -1,12 +1,18 @@
 package router
 
 import (
+	"fmt"
 	"log"
 	"runtime/debug"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/app/commands/demo"
 	"github.com/ozonmp/omp-bot/internal/app/path"
+)
+
+var (
+	ErrDomainNotImplemented = fmt.Errorf("domain not implemented")
+	ErrUnknownDomain        = fmt.Errorf("unknown domain")
 )
 
 type Commander interface {
@@ -83,7 +89,7 @@ func NewRouter(
 	}
 }
 
-func (c *Router) HandleUpdate(update tgbotapi.Update) {
+func (r *Router) HandleUpdate(update tgbotapi.Update) {
 	defer func() {
 		if panicValue := recover(); panicValue != nil {
 			log.Printf("recovered from panic: %v", panicValue)
@@ -93,13 +99,13 @@ func (c *Router) HandleUpdate(update tgbotapi.Update) {
 
 	switch {
 	case update.CallbackQuery != nil:
-		c.handleCallback(update.CallbackQuery)
+		r.handleCallback(update.CallbackQuery)
 	case update.Message != nil:
-		c.handleMessage(update.Message)
+		r.handleMessage(update.Message)
 	}
 }
 
-func (c *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
+func (r *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
 	callbackPath, err := path.ParseCallback(callback.Data)
 	if err != nil {
 		log.Printf("Router.handleCallback: error parsing callback data `%s` - %v", callback.Data, err)
@@ -108,7 +114,7 @@ func (c *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
 
 	switch callbackPath.Domain {
 	case "demo":
-		c.demoCommander.HandleCallback(callback, callbackPath)
+		r.demoCommander.HandleCallback(callback, callbackPath)
 	case "user":
 		break
 	case "access":
@@ -164,79 +170,117 @@ func (c *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
 	}
 }
 
-func (c *Router) handleMessage(msg *tgbotapi.Message) {
-	if !msg.IsCommand() {
-		c.showCommandFormat(msg)
-
-		return
-	}
-
+func (r *Router) routeCommand(msg *tgbotapi.Message) (resp tgbotapi.MessageConfig, err error) {
 	commandPath, err := path.ParseCommand(msg.Command())
 	if err != nil {
-		log.Printf("Router.handleCallback: error parsing callback data `%s` - %v", msg.Command(), err)
 		return
 	}
 
 	switch commandPath.Domain {
 	case "demo":
-		c.demoCommander.HandleCommand(msg, commandPath)
+		r.demoCommander.HandleCommand(msg, commandPath)
 	case "user":
-		break
+		err = ErrDomainNotImplemented
 	case "access":
-		break
+		err = ErrDomainNotImplemented
 	case "buy":
-		break
+		err = ErrDomainNotImplemented
 	case "delivery":
-		break
+		err = ErrDomainNotImplemented
 	case "recommendation":
-		break
+		err = ErrDomainNotImplemented
 	case "travel":
-		break
+		err = ErrDomainNotImplemented
 	case "loyalty":
-		break
+		err = ErrDomainNotImplemented
 	case "bank":
-		break
+		err = ErrDomainNotImplemented
 	case "subscription":
-		break
+		err = ErrDomainNotImplemented
 	case "license":
-		break
+		err = ErrDomainNotImplemented
 	case "insurance":
-		break
+		err = ErrDomainNotImplemented
 	case "payment":
-		break
+		err = ErrDomainNotImplemented
 	case "storage":
-		break
+		err = ErrDomainNotImplemented
 	case "streaming":
-		break
+		err = ErrDomainNotImplemented
 	case "business":
-		break
+		err = ErrDomainNotImplemented
 	case "work":
-		break
+		err = ErrDomainNotImplemented
 	case "service":
-		break
+		err = ErrDomainNotImplemented
 	case "exchange":
-		break
+		err = ErrDomainNotImplemented
 	case "estate":
-		break
+		err = ErrDomainNotImplemented
 	case "rating":
-		break
+		err = ErrDomainNotImplemented
 	case "security":
-		break
+		err = ErrDomainNotImplemented
 	case "cinema":
-		break
+		err = ErrDomainNotImplemented
 	case "logistic":
-		break
+		err = ErrDomainNotImplemented
 	case "product":
-		break
+		err = ErrDomainNotImplemented
 	case "education":
-		break
+		err = ErrDomainNotImplemented
 	default:
-		log.Printf("Router.handleCallback: unknown domain - %s", commandPath.Domain)
+		err = ErrUnknownDomain
+	}
+	return
+}
+
+func (r *Router) createResponseForCommandError(msg *tgbotapi.Message, err error) (resp tgbotapi.MessageConfig) {
+	resp = tgbotapi.NewMessage(msg.Chat.ID,
+		fmt.Sprintf("I'm sorry, something bad happend with your command (%s): %v", msg.Command(), err),
+	)
+	return
+}
+
+func (r *Router) createResponseForCommand(msg *tgbotapi.Message) (resp tgbotapi.MessageConfig) {
+	resp, err := r.routeCommand(msg)
+	if err != nil {
+		resp = r.createResponseForCommandError(msg, err)
+		return
+	}
+	return
+}
+
+func (r *Router) createResponseForMessage(msg *tgbotapi.Message) (resp tgbotapi.MessageConfig) {
+	if !msg.IsCommand() {
+		resp = createResponseWithHint(msg)
+		return
+	}
+
+	resp = r.createResponseForCommand(msg)
+	return
+}
+
+func (r *Router) handleMessage(msg *tgbotapi.Message) {
+	resp := r.createResponseForMessage(msg)
+
+	if resp.ChatID != 0 {
+		// HACK
+		// TODO: remove this check after we are done with refactoring of
+		// message handling, right now not all paths in the above call
+		// return correct response
+
+		_, err := r.bot.Send(resp)
+		if err != nil {
+			log.Printf("Failed to send response: %v", err)
+		}
 	}
 }
 
-func (c *Router) showCommandFormat(inputMessage *tgbotapi.Message) {
-	outputMsg := tgbotapi.NewMessage(inputMessage.Chat.ID, "Command format: /{command}__{domain}__{subdomain}")
-
-	c.bot.Send(outputMsg)
+func createResponseWithHint(msg *tgbotapi.Message) (resp tgbotapi.MessageConfig) {
+	resp = tgbotapi.NewMessage(msg.Chat.ID,
+		"Hey! I don't know how to chat. You can send me a command:\n"+
+			"Command format: /{command}__{domain}__{subdomain}",
+	)
+	return
 }
