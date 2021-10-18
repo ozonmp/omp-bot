@@ -20,6 +20,10 @@ func (c *WorkInternshipCommander) CallbackList(callback *tgbotapi.CallbackQuery,
 	}
 }
 
+func (c *WorkInternshipCommander) CursorReset() {
+	c.cursor = 0
+}
+
 func (c *WorkInternshipCommander) CursorNextPage() {
 	c.cursor += c.limit
 }

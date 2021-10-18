@@ -27,6 +27,10 @@ func (s *Service) List(cursor uint64, limit uint64) []Internship {
 		return allEntities
 	}
 	l := uint64(len(allEntities))
+	if cursor >= l {
+		return nil
+	}
+	log.Printf("%d  - %d : %d", cursor, limit, l)
 	if cursor+limit >= l {
 		return allEntities[cursor:]
 	}
@@ -69,8 +73,15 @@ func (s *Service) Update(internshipID uint64, internship Internship) error {
 }
 
 func (s *Service) Create(internship Internship) (uint64, error) {
-	err := errors.New("not implemented yet")
-	return 0, err
+	var newID uint64 = 1
+	for i := 0; i < len(allEntities); i++ {
+		if allEntities[i].Id >= newID {
+			newID = allEntities[i].Id + 1
+		}
+	}
+	var i Internship = Internship{Id: newID, Description: "new empty record", Period: "Unknown"}
+	allEntities = append(allEntities, i)
+	return newID, nil
 }
 
 func (s *Service) ShortString(p Internship) string {

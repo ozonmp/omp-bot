@@ -19,13 +19,13 @@ func (c *WorkInternshipCommander) Get(inputMessage *tgbotapi.Message) {
 		}
 		return
 	}
-	product, err := c.internshipService.Describe(uint64(idx))
+	internship, err := c.internshipService.Describe(uint64(idx))
 	var msgText string
 	if err != nil {
 		log.Printf("fail to get product with idx %d: %v", idx, err)
 		msgText = "Can't find internship with this id :("
 	} else {
-		msgText = c.internshipService.FullString(*product)
+		msgText = c.internshipService.FullString(*internship)
 	}
 	msg := tgbotapi.NewMessage(inputMessage.Chat.ID, msgText)
 	_, err = c.bot.Send(msg)

@@ -9,8 +9,7 @@ import (
 func (c *WorkInternshipCommander) List(inputMessage *tgbotapi.Message) {
 	max := len(c.internshipService.List(0, 0))
 	outputMsgText := "Interships (id&description), total: " + strconv.Itoa(max) + "\n\n"
-	internships := c.internshipService.List(c.cursor, c.limit)
-	if len(internships) == 0 {
+	if max == 0 {
 		outputMsgText += "empty\n"
 		msg := tgbotapi.NewMessage(inputMessage.Chat.ID, outputMsgText)
 		_, err := c.bot.Send(msg)
@@ -18,6 +17,15 @@ func (c *WorkInternshipCommander) List(inputMessage *tgbotapi.Message) {
 			log.Printf("WorkInternshipCommander.List: error sending reply message to chat - %v", err)
 		}
 		return
+	}
+	var internships = c.internshipService.List(c.cursor, c.limit)
+	if internships == nil {
+		if c.limit > 0 {
+			c.cursor = (uint64(max) / c.limit) * c.limit
+		} else {
+			c.cursor = 0
+		}
+		internships = c.internshipService.List(c.cursor, c.limit)
 	}
 	for _, p := range internships {
 		outputMsgText += c.internshipService.ShortString(p)
