@@ -36,7 +36,7 @@ func (dummy DummyExchangeService) Update(exchangeID uint64, exchange exchange.Ex
 	return nil
 }
 
-//func (dummy DummyExchangeService) Remove(exchangeID uint64) (bool, error) {
-//
-//	return true, nil
-//}
+func (dummy DummyExchangeService) Remove(exchangeID uint64) (bool, error) {
+
+	return true, nil
+}
