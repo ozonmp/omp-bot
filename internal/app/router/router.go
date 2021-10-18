@@ -102,7 +102,13 @@ func (r *Router) HandleUpdate(update tgbotapi.Update) {
 		r.handleCallback(update.CallbackQuery)
 	case update.Message != nil:
 		r.handleMessage(update.Message)
+	default:
+		r.handleUpdateDefault(update)
 	}
+}
+
+func (r *Router) handleUpdateDefault(update tgbotapi.Update) {
+	log.Printf("Received update of unknown type: %v", update)
 }
 
 func (r *Router) routeCallback(callback *tgbotapi.CallbackQuery) (resp tgbotapi.MessageConfig, err error) {
