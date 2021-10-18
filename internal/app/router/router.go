@@ -17,7 +17,7 @@ var (
 
 type Commander interface {
 	HandleCallback(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath)
-	HandleCommand(callback *tgbotapi.Message, commandPath path.CommandPath)
+	HandleCommand(command *tgbotapi.Message, commandPath path.CommandPath)
 }
 
 type Router struct {
@@ -98,17 +98,16 @@ func (r *Router) HandleUpdate(update tgbotapi.Update) {
 	}()
 
 	switch {
-	case update.CallbackQuery != nil:
+	case update.CallbackQuery != nil && update.CallbackQuery.Message != nil:
 		r.handleCallback(update.CallbackQuery)
 	case update.Message != nil:
 		r.handleMessage(update.Message)
 	}
 }
 
-func (r *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
+func (r *Router) routeCallback(callback *tgbotapi.CallbackQuery) (resp tgbotapi.MessageConfig, err error) {
 	callbackPath, err := path.ParseCallback(callback.Data)
 	if err != nil {
-		log.Printf("Router.handleCallback: error parsing callback data `%s` - %v", callback.Data, err)
 		return
 	}
 
@@ -116,57 +115,90 @@ func (r *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
 	case "demo":
 		r.demoCommander.HandleCallback(callback, callbackPath)
 	case "user":
-		break
+		err = ErrDomainNotImplemented
 	case "access":
-		break
+		err = ErrDomainNotImplemented
 	case "buy":
-		break
+		err = ErrDomainNotImplemented
 	case "delivery":
-		break
+		err = ErrDomainNotImplemented
 	case "recommendation":
-		break
+		err = ErrDomainNotImplemented
 	case "travel":
-		break
+		err = ErrDomainNotImplemented
 	case "loyalty":
-		break
+		err = ErrDomainNotImplemented
 	case "bank":
-		break
+		err = ErrDomainNotImplemented
 	case "subscription":
-		break
+		err = ErrDomainNotImplemented
 	case "license":
-		break
+		err = ErrDomainNotImplemented
 	case "insurance":
-		break
+		err = ErrDomainNotImplemented
 	case "payment":
-		break
+		err = ErrDomainNotImplemented
 	case "storage":
-		break
+		err = ErrDomainNotImplemented
 	case "streaming":
-		break
+		err = ErrDomainNotImplemented
 	case "business":
-		break
+		err = ErrDomainNotImplemented
 	case "work":
-		break
+		err = ErrDomainNotImplemented
 	case "service":
-		break
+		err = ErrDomainNotImplemented
 	case "exchange":
-		break
+		err = ErrDomainNotImplemented
 	case "estate":
-		break
+		err = ErrDomainNotImplemented
 	case "rating":
-		break
+		err = ErrDomainNotImplemented
 	case "security":
-		break
+		err = ErrDomainNotImplemented
 	case "cinema":
-		break
+		err = ErrDomainNotImplemented
 	case "logistic":
-		break
+		err = ErrDomainNotImplemented
 	case "product":
-		break
+		err = ErrDomainNotImplemented
 	case "education":
-		break
+		err = ErrDomainNotImplemented
 	default:
-		log.Printf("Router.handleCallback: unknown domain - %s", callbackPath.Domain)
+		err = ErrUnknownDomain
+	}
+	return
+}
+
+func (r *Router) createResponseForCallbackError(callback *tgbotapi.CallbackQuery, err error) (resp tgbotapi.MessageConfig) {
+	resp = tgbotapi.NewMessage(callback.Message.Chat.ID,
+		fmt.Sprintf("I'm sorry, something bad happend while processing callback (%s): %v", callback.Data, err),
+	)
+	return
+}
+
+func (r *Router) createResponseForCallback(callback *tgbotapi.CallbackQuery) (resp tgbotapi.MessageConfig) {
+	resp, err := r.routeCallback(callback)
+	if err != nil {
+		resp = r.createResponseForCallbackError(callback, err)
+		return
+	}
+	return
+}
+
+func (r *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
+	resp := r.createResponseForCallback(callback)
+
+	if resp.ChatID != 0 {
+		// HACK
+		// TODO: remove this check after we are done with refactoring of
+		// message handling, right now not all paths in the above call
+		// return correct response
+
+		_, err := r.bot.Send(resp)
+		if err != nil {
+			log.Printf("Failed to send callback response: %v", err)
+		}
 	}
 }
 
@@ -272,7 +304,7 @@ func (r *Router) handleMessage(msg *tgbotapi.Message) {
 
 		_, err := r.bot.Send(resp)
 		if err != nil {
-			log.Printf("Failed to send response: %v", err)
+			log.Printf("Failed to send command response: %v", err)
 		}
 	}
 }
