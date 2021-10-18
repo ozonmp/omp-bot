@@ -1,4 +1,4 @@
-package subdomain
+package singleSubscription
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
-func (c *DummySubdomainCommander) Help(inputMsg *tgbotapi.Message) {
+func (c *DummySingleSubscriptionCommander) Help(inputMsg *tgbotapi.Message) {
 	txtCmds := []string{
 		fmt.Sprintf("/%s — print list of commands", CommandHelp),
 		fmt.Sprintf("/%s — get an entity", CommandGet),
@@ -21,6 +21,6 @@ func (c *DummySubdomainCommander) Help(inputMsg *tgbotapi.Message) {
 
 	_, err := c.bot.Send(msg)
 	if err != nil {
-		log.Printf("DummySubdomainCommander.Help: error sending reply message to chat - %v", err)
+		log.Printf("DummySingleSubscriptionCommander.Help: error sending reply message to chat - %v", err)
 	}
 }

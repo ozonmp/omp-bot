@@ -5,7 +5,7 @@ import (
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/app/commands/demo"
-	"github.com/ozonmp/omp-bot/internal/app/commands/domain"
+	"github.com/ozonmp/omp-bot/internal/app/commands/subscription"
 	"github.com/ozonmp/omp-bot/internal/app/path"
 )
 
@@ -29,6 +29,7 @@ type Router struct {
 	// loyalty
 	// bank
 	// subscription
+	subscriptionCommander Commander
 	// license
 	// insurance
 	// payment
@@ -45,7 +46,6 @@ type Router struct {
 	// logistic
 	// product
 	// education
-	domainCommander Commander // TODO: Remove!
 }
 
 func NewRouter(
@@ -65,6 +65,7 @@ func NewRouter(
 		// loyalty
 		// bank
 		// subscription
+		subscriptionCommander: subscription.NewSubscriptionCommander(bot),
 		// license
 		// insurance
 		// payment
@@ -81,7 +82,6 @@ func NewRouter(
 		// logistic
 		// product
 		// education
-		domainCommander: domain.NewDomainCommander(bot), // TODO: Remove!
 	}
 }
 
@@ -127,7 +127,7 @@ func (c *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
 	case "bank":
 		break
 	case "subscription":
-		break
+		c.subscriptionCommander.HandleCallback(callback, callbackPath)
 	case "license":
 		break
 	case "insurance":
@@ -160,8 +160,6 @@ func (c *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
 		break
 	case "education":
 		break
-	case "domain": // TODO: Remove!
-		c.domainCommander.HandleCallback(callback, callbackPath) // TODO: Remove!
 	default:
 		log.Printf("Router.handleCallback: unknown domain - %s", callbackPath.Domain)
 	}
@@ -170,7 +168,6 @@ func (c *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
 func (c *Router) handleMessage(msg *tgbotapi.Message) {
 	if !msg.IsCommand() {
 		c.showCommandFormat(msg)
-
 		return
 	}
 
@@ -200,7 +197,7 @@ func (c *Router) handleMessage(msg *tgbotapi.Message) {
 	case "bank":
 		break
 	case "subscription":
-		break
+		c.subscriptionCommander.HandleCommand(msg, commandPath)
 	case "license":
 		break
 	case "insurance":
@@ -233,8 +230,6 @@ func (c *Router) handleMessage(msg *tgbotapi.Message) {
 		break
 	case "education":
 		break
-	case "domain": // TODO: Remove!
-		c.domainCommander.HandleCommand(msg, commandPath) // TODO: Remove!
 	default:
 		log.Printf("Router.handleCallback: unknown domain - %s", commandPath.Domain)
 	}

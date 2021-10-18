@@ -1,9 +1,9 @@
-package subdomain
+package singleSubscription
 
-import "github.com/ozonmp/omp-bot/internal/model/domain"
+import "github.com/ozonmp/omp-bot/internal/model/subscription"
 
 var (
-	sampleData = []domain.Subdomain{
+	sampleData = []subscription.SingleSubscription{
 		{Name: "Avengers"},
 		{Name: "Spider-Man"},
 		{Name: "Iron Man"},
@@ -19,7 +19,7 @@ var (
 	}
 )
 
-func dataFill(s SubdomainService) {
+func dataFill(s SingleSubscriptionService) {
 	for _, v := range sampleData {
 		s.Create(v)
 	}

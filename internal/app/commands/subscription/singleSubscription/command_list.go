@@ -1,4 +1,4 @@
-package subdomain
+package singleSubscription
 
 import (
 	"errors"
@@ -10,16 +10,16 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
-func (c *DummySubdomainCommander) List(inputMsg *tgbotapi.Message) {
+func (c *DummySingleSubscriptionCommander) List(inputMsg *tgbotapi.Message) {
 	args := inputMsg.CommandArguments()
 
 	cursor, limit, err := parseListCmdArgs(args)
 	if err != nil {
-		log.Println("DummySubdomainCommander.List invalid args", args)
+		log.Println("DummySingleSubscriptionCommander.List invalid args", args)
 		c.bot.Send(tgbotapi.NewMessage(inputMsg.Chat.ID, UsageList))
 		return
 	}
-	pagination := NewPaginationList(c.subdomainService.List, cursor, limit)
+	pagination := NewPaginationList(c.service.List, cursor, limit)
 
 	page := pagination.Page()
 	buttons := pagination.Buttons()
@@ -41,7 +41,7 @@ func (c *DummySubdomainCommander) List(inputMsg *tgbotapi.Message) {
 
 	_, err = c.bot.Send(msg)
 	if err != nil {
-		log.Printf("DummySubdomainCommander.List: error sending reply message to chat - %v", err)
+		log.Printf("DummySingleSubscriptionCommander.List: error sending reply message to chat - %v", err)
 	}
 }
 

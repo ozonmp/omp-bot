@@ -1,4 +1,4 @@
-package subdomain
+package singleSubscription
 
 import (
 	"encoding/json"
@@ -13,17 +13,17 @@ type CallbackListData struct {
 	Limit  uint64 `json:"limit"`
 }
 
-func (c *DummySubdomainCommander) CallbackList(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
+func (c *DummySingleSubscriptionCommander) CallbackList(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
 	parsedData := CallbackListData{}
 	err := json.Unmarshal([]byte(callbackPath.CallbackData), &parsedData)
 	if err != nil {
-		log.Printf("DummySubdomainCommander.CallbackList: "+
+		log.Printf("DummySingleSubscriptionCommander.CallbackList: "+
 			"error reading json data for type CallbackListData from "+
 			"input string %v - %v", callbackPath.CallbackData, err)
 		return
 	}
 
-	pagination := NewPaginationList(c.subdomainService.List, parsedData.Cursor, parsedData.Limit)
+	pagination := NewPaginationList(c.service.List, parsedData.Cursor, parsedData.Limit)
 
 	page := pagination.Page()
 	buttons := pagination.Buttons()
@@ -51,6 +51,6 @@ func (c *DummySubdomainCommander) CallbackList(callback *tgbotapi.CallbackQuery,
 
 	_, err = c.bot.Send(editConf)
 	if err != nil {
-		log.Printf("DummySubdomainCommander.CallbackList: error sending reply message to chat - %v", err)
+		log.Printf("DummySingleSubscriptionCommander.CallbackList: error sending reply message to chat - %v", err)
 	}
 }

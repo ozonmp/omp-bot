@@ -1,4 +1,4 @@
-package subdomain
+package singleSubscription
 
 import (
 	"encoding/json"
@@ -6,21 +6,21 @@ import (
 	"log"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-	"github.com/ozonmp/omp-bot/internal/model/domain"
+	"github.com/ozonmp/omp-bot/internal/model/subscription"
 )
 
-func (c *DummySubdomainCommander) New(inputMsg *tgbotapi.Message) {
+func (c *DummySingleSubscriptionCommander) New(inputMsg *tgbotapi.Message) {
 	args := inputMsg.CommandArguments()
-	tmp := domain.Subdomain{}
+	tmp := subscription.SingleSubscription{}
 
 	err := json.Unmarshal([]byte(args), &tmp)
 	if err != nil {
-		log.Println("DummySubdomainCommander.New invalid body", args)
+		log.Println("DummySingleSubscriptionCommander.New invalid body", args)
 		c.bot.Send(tgbotapi.NewMessage(inputMsg.Chat.ID, UsageNew))
 		return
 	}
 
-	id, _ := c.subdomainService.Create(tmp)
+	id, _ := c.service.Create(tmp)
 
 	msg := tgbotapi.NewMessage(
 		inputMsg.Chat.ID,
@@ -29,6 +29,6 @@ func (c *DummySubdomainCommander) New(inputMsg *tgbotapi.Message) {
 
 	_, err = c.bot.Send(msg)
 	if err != nil {
-		log.Printf("DummySubdomainCommander.New: error sending reply message to chat - %v", err)
+		log.Printf("DummySingleSubscriptionCommander.New: error sending reply message to chat - %v", err)
 	}
 }

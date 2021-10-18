@@ -1,10 +1,10 @@
-package subdomain
+package singleSubscription
 
 import (
 	"encoding/json"
 
 	"github.com/ozonmp/omp-bot/internal/app/path"
-	"github.com/ozonmp/omp-bot/internal/model/domain"
+	"github.com/ozonmp/omp-bot/internal/model/subscription"
 )
 
 type PaginationList struct {
@@ -18,7 +18,7 @@ type button struct {
 	Data string
 }
 
-type getter func(cursor, limit uint64) ([]domain.Subdomain, error)
+type getter func(cursor, limit uint64) ([]subscription.SingleSubscription, error)
 
 func NewPaginationList(g getter, cursor, limit uint64) *PaginationList {
 	if cursor == 0 {
