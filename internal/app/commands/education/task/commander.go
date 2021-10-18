@@ -9,6 +9,8 @@ import (
 	"github.com/ozonmp/omp-bot/internal/service/education/task"
 )
 
+const maxElemListPerPage = 5
+
 type TaskCommander interface {
 	Help(inputMsg *tgbotapi.Message)
 	Get(inputMsg *tgbotapi.Message)

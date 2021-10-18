@@ -1,6 +1,7 @@
 package task
 
 import (
+	"fmt"
 	"strconv"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
@@ -12,15 +13,16 @@ func (c *TaskStruct) Get(inputMessage *tgbotapi.Message) {
 
 	pos, err := strconv.Atoi(args)
 	if err != nil || pos == 0 {
-		msg := tgbotapi.NewMessage(inputMessage.Chat.ID, "id not correct. id > 0")
+		msg := tgbotapi.NewMessage(inputMessage.Chat.ID, "ProductID not correct. id > 0")
 		c.SendMessage(msg)
 		return
 	}
 
-	product, _ := c.taskService.Describe(uint64(pos))
+	product, err := c.taskService.Describe(uint64(pos))
 
-	if product.IsEmpty() {
-		msg := tgbotapi.NewMessage(inputMessage.Chat.ID, "id not found.")
+	if err != nil {
+		msg := tgbotapi.NewMessage(inputMessage.Chat.ID,
+			fmt.Sprintf("Get error. Error = %s", err))
 		c.SendMessage(msg)
 		return
 	}

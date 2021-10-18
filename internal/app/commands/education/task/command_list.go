@@ -11,7 +11,7 @@ func (c *TaskStruct) List(inputMessage *tgbotapi.Message) {
 
 	outputMsgText := "Here the products: \n"
 
-	products, _ := c.taskService.List(0, 5)
+	products, _ := c.taskService.List(0, maxElemListPerPage)
 	for _, p := range products {
 		outputMsgText += p.String()
 		outputMsgText += "\n"
@@ -20,11 +20,11 @@ func (c *TaskStruct) List(inputMessage *tgbotapi.Message) {
 	msg := tgbotapi.NewMessage(inputMessage.Chat.ID, outputMsgText)
 
 	serializedData, _ := json.Marshal(CallbackListData{
-		Cursor: 5,
-		Limit:  5,
+		Cursor: maxElemListPerPage,
+		Limit:  maxElemListPerPage,
 	})
 
-	if c.taskService.CountData() > 5 {
+	if c.taskService.CountData() > maxElemListPerPage {
 		KeyboardMarkup := tgbotapi.NewInlineKeyboardMarkup()
 
 		callbackPath := path.CallbackPath{
@@ -41,7 +41,7 @@ func (c *TaskStruct) List(inputMessage *tgbotapi.Message) {
 		)
 		serializedDataFirst, _ := json.Marshal(CallbackListData{
 			Cursor: 0,
-			Limit:  5,
+			Limit:  maxElemListPerPage,
 		})
 
 		callbackPathFirst := path.CallbackPath{
@@ -52,8 +52,8 @@ func (c *TaskStruct) List(inputMessage *tgbotapi.Message) {
 		}
 
 		serializedDataLast, _ := json.Marshal(CallbackListData{
-			Cursor: uint64(c.taskService.CountData()) - 5,
-			Limit:  5,
+			Cursor: uint64(c.taskService.CountData()/maxElemListPerPage) * maxElemListPerPage,
+			Limit:  maxElemListPerPage,
 		})
 
 		callbackPathLast := path.CallbackPath{

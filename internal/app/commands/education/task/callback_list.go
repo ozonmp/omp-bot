@@ -2,7 +2,6 @@ package task
 
 import (
 	"encoding/json"
-	"fmt"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/app/path"
@@ -22,7 +21,7 @@ func (c *TaskStruct) CallbackList(callback *tgbotapi.CallbackQuery, callbackPath
 	outputMsgText := "Here the products: \n"
 	products, _ := c.taskService.List(parsedData.Cursor, parsedData.Limit)
 	for _, p := range products {
-		outputMsgText += fmt.Sprintf("ProductID: %d Name: %s Description: %s", p.Id, p.Title, p.Description)
+		outputMsgText += p.String()
 		outputMsgText += "\n"
 	}
 
@@ -30,10 +29,12 @@ func (c *TaskStruct) CallbackList(callback *tgbotapi.CallbackQuery, callbackPath
 
 	KeyboardMarkup := tgbotapi.NewInlineKeyboardMarkup()
 
+	maxElem := c.taskService.CountData()
+
 	if parsedData.Cursor > 4 {
 		serializedDataBack, _ := json.Marshal(CallbackListData{
-			Cursor: parsedData.Cursor - 5,
-			Limit:  5,
+			Cursor: parsedData.Cursor - maxElemListPerPage,
+			Limit:  maxElemListPerPage,
 		})
 		callbackPathBack := path.CallbackPath{
 			Domain:       "education",
@@ -47,12 +48,10 @@ func (c *TaskStruct) CallbackList(callback *tgbotapi.CallbackQuery, callbackPath
 		)
 	}
 
-	maxElem := c.taskService.CountData()
-
 	if maxElem > int(parsedData.Cursor)+int(parsedData.Limit) {
 		serializedDataNext, _ := json.Marshal(CallbackListData{
-			Cursor: parsedData.Cursor + 5,
-			Limit:  5,
+			Cursor: parsedData.Cursor + maxElemListPerPage,
+			Limit:  maxElemListPerPage,
 		})
 
 		callbackPathNext := path.CallbackPath{
@@ -68,10 +67,10 @@ func (c *TaskStruct) CallbackList(callback *tgbotapi.CallbackQuery, callbackPath
 
 	}
 
-	if maxElem > 5 {
+	if maxElem > maxElemListPerPage {
 		serializedDataFirst, _ := json.Marshal(CallbackListData{
 			Cursor: 0,
-			Limit:  5,
+			Limit:  maxElemListPerPage,
 		})
 
 		callbackPathFirst := path.CallbackPath{
@@ -82,8 +81,8 @@ func (c *TaskStruct) CallbackList(callback *tgbotapi.CallbackQuery, callbackPath
 		}
 
 		serializedDataLast, _ := json.Marshal(CallbackListData{
-			Cursor: uint64(maxElem) - 5,
-			Limit:  5,
+			Cursor: uint64(maxElem/maxElemListPerPage) * maxElemListPerPage,
+			Limit:  maxElemListPerPage,
 		})
 
 		callbackPathLast := path.CallbackPath{

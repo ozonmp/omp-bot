@@ -13,7 +13,7 @@ func (c *TaskStruct) Delete(inputMessage *tgbotapi.Message) {
 
 	task_id, err := strconv.Atoi(args)
 	if err != nil {
-		msg := tgbotapi.NewMessage(inputMessage.Chat.ID, "Remove error - id is not valid")
+		msg := tgbotapi.NewMessage(inputMessage.Chat.ID, "Remove error - ProductID is not valid")
 		c.SendMessage(msg)
 		return
 	}

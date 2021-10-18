@@ -31,7 +31,7 @@ func (t *TaskModel) FindID(taskID uint64) (int, error) {
 		}
 	}
 
-	return 0, errors.New("id not found")
+	return 0, errors.New("ProductID not found")
 
 }
 
