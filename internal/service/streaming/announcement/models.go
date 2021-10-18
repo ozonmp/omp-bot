@@ -73,13 +73,6 @@ var allEntities = []Announcement{
 		Description: "Sample description",
 		ThumbnailUrl: "example.com",
 	},
-	{
-		Author: "Jane Doe",
-		TimePlanned: 1634488911,
-		Title: "Sample 11",
-		Description: "Sample description",
-		ThumbnailUrl: "example.com",
-	},
 }
 
 type Announcement struct {

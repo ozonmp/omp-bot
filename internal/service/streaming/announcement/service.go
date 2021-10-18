@@ -26,9 +26,9 @@ func (d *DummyAnnouncementService) Describe(announcementID uint64) (*Announcemen
 }
 
 func (d *DummyAnnouncementService) List(cursor uint64, limit uint64) ([]Announcement, error) {
-	start := int(cursor)
-	end := start + int(limit)
-	length := len(d.Announcements)
+	start := cursor * limit
+	end := start + limit
+	length := uint64(len(d.Announcements))
 	if end > length {
 		end = length
 	}

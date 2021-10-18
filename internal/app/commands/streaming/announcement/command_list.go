@@ -9,7 +9,7 @@ import (
 
 func (c *StreamingAnnouncementCommander) List(inputMessage *tgbotapi.Message) {
 	outputMsgText := ""
-	products, _ := c.announcementService.List(0, 5)
+	products, _ := c.announcementService.List(0, pageLimit)
 	for _, p := range products {
 		outputMsgText += p.String()
 		outputMsgText += "\n----------------------\n"
@@ -18,7 +18,7 @@ func (c *StreamingAnnouncementCommander) List(inputMessage *tgbotapi.Message) {
 	msg := tgbotapi.NewMessage(inputMessage.Chat.ID, outputMsgText)
 
 	serializedData, _ := json.Marshal(CallbackListData{
-		Offset: len(products),
+		Offset: 1,
 	})
 
 	callbackPath := path.CallbackPath{
@@ -27,7 +27,6 @@ func (c *StreamingAnnouncementCommander) List(inputMessage *tgbotapi.Message) {
 		CallbackName: "list",
 		CallbackData: string(serializedData),
 	}
-
 	msg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData("Next page", callbackPath.String()),

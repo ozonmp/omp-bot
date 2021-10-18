@@ -22,33 +22,45 @@ func (c *StreamingAnnouncementCommander) CallbackList(callback *tgbotapi.Callbac
 	}
 
 	outputMsgText := ""
-	products, _ := c.announcementService.List(uint64(parsedData.Offset), 5)
+	products, _ := c.announcementService.List(uint64(parsedData.Offset), pageLimit)
 	for _, p := range products {
 		outputMsgText += p.String()
 		outputMsgText += "\n----------------------\n"
 	}
-
+	if outputMsgText == "" {
+		outputMsgText = "No more items :("
+	}
 	msg := tgbotapi.NewMessage(callback.Message.Chat.ID, outputMsgText)
 
-	offsetData, _ := json.Marshal(CallbackListData{
-		Offset: parsedData.Offset + len(products),
-	})
-	callbackPath = path.CallbackPath{
-		Domain:       "streaming",
-		Subdomain:    "announcement",
-		CallbackName: "list",
-		CallbackData: string(offsetData),
-	}
-	buttons := []tgbotapi.InlineKeyboardButton{
-		tgbotapi.NewInlineKeyboardButtonData("Next page", callbackPath.String()),
-	}
+	var buttons []tgbotapi.InlineKeyboardButton
+
 	if parsedData.Offset > 0 {
 		offsetData, _ := json.Marshal(CallbackListData{
-			Offset: parsedData.Offset - len(products),
+			Offset: parsedData.Offset - 1,
 		})
-		callbackPath.CallbackData = string(offsetData)
+		callbackPath = path.CallbackPath{
+			Domain:       "streaming",
+			Subdomain:    "announcement",
+			CallbackName: "list",
+			CallbackData: string(offsetData),
+		}
 		buttons = append(buttons,
 			tgbotapi.NewInlineKeyboardButtonData("Previous page", callbackPath.String()),
+		)
+	}
+
+	if len(products) == pageLimit {
+		offsetData, _ := json.Marshal(CallbackListData{
+			Offset: parsedData.Offset + 1,
+		})
+		callbackPath = path.CallbackPath{
+			Domain:       "streaming",
+			Subdomain:    "announcement",
+			CallbackName: "list",
+			CallbackData: string(offsetData),
+		}
+		buttons = append(buttons,
+			tgbotapi.NewInlineKeyboardButtonData("Next page", callbackPath.String()),
 		)
 	}
 
