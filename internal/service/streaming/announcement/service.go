@@ -44,5 +44,10 @@ func (d *DummyAnnouncementService) Update(announcementID uint64, announcement An
 }
 
 func (d *DummyAnnouncementService) Remove(announcementID uint64) (bool, error) {
-	return false, nil
+	idx := announcementID - 1
+	if idx < 0 || idx > uint64(len(d.Announcements) - 1) {
+		return false, nil
+	}
+	d.Announcements = append(d.Announcements[:idx], d.Announcements[idx + 1:]...)
+	return true, nil
 }
