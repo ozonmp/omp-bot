@@ -30,7 +30,6 @@ func (s *Service) List(cursor uint64, limit uint64) []Internship {
 	if cursor >= l {
 		return nil
 	}
-	log.Printf("%d  - %d : %d", cursor, limit, l)
 	if cursor+limit >= l {
 		return allEntities[cursor:]
 	}
