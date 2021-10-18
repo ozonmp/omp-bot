@@ -1,4 +1,4 @@
-package ground
+package autotransport
 
 import (
 	"fmt"
@@ -20,9 +20,13 @@ type Ground struct {
 	MaxSpeed    uint64
 }
 
-func (c Ground) String() string {
+func (g Ground) String() string {
 	return fmt.Sprintf("%s, \tWheelsCount: %d, \tColor: %s, \tMaxSpeed: %d",
-		strings.Title(c.Name), c.WheelsCount, c.Color, c.MaxSpeed)
+		strings.Title(g.Name), g.WheelsCount, g.Color, g.MaxSpeed)
+}
+
+func AllGrounds() *[]Ground {
+	return &allGrounds
 }
 
 func NewGround(name string, wheelsCount uint64, color string, maxSpeed uint64) Ground {
