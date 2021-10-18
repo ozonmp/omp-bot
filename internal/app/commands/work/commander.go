@@ -20,34 +20,34 @@ type Commander interface {
 	Edit(inputMsg *tgbotapi.Message)
 }
 
-type WorkCommander struct {
+type workCommander struct {
 	bot                 *tgbotapi.BotAPI
 	internshipCommander Commander
 }
 
 func NewWorkCommander(
 	bot *tgbotapi.BotAPI,
-) *WorkCommander {
-	return &WorkCommander{
+) *workCommander {
+	return &workCommander{
 		bot:                 bot,
 		internshipCommander: internship.NewWorkInternshipCommander(bot),
 	}
 }
 
-func (c *WorkCommander) HandleCallback(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
+func (c *workCommander) HandleCallback(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
 	switch callbackPath.Subdomain {
 	case "internship":
 		c.internshipCommander.HandleCallback(callback, callbackPath)
 	default:
-		log.Printf("WorkCommander.HandleCallback: unknown internship - %s", callbackPath.Subdomain)
+		log.Printf("workCommander.HandleCallback: unknown internship - %s", callbackPath.Subdomain)
 	}
 }
 
-func (c *WorkCommander) HandleCommand(msg *tgbotapi.Message, commandPath path.CommandPath) {
+func (c *workCommander) HandleCommand(msg *tgbotapi.Message, commandPath path.CommandPath) {
 	switch commandPath.Subdomain {
 	case "internship":
 		c.internshipCommander.HandleCommand(msg, commandPath)
 	default:
-		log.Printf("WorkCommander.HandleCommand: unknown internship - %s", commandPath.Subdomain)
+		log.Printf("workCommander.HandleCommand: unknown internship - %s", commandPath.Subdomain)
 	}
 }

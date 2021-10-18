@@ -38,32 +38,25 @@ func (s *Service) List(cursor uint64, limit uint64) []Internship {
 
 func (s *Service) Describe(internshipID uint64) (*Internship, error) {
 	var resId uint64
-	var result bool = false
 	for i := 0; i < len(allEntities); i++ {
 		if internshipID == allEntities[i].Id {
 			resId = uint64(i)
-			result = true
-			break
+			return &allEntities[resId], nil
 		}
 	}
-	if !result {
-		err := errors.New("id not found")
-		log.Printf("intership.Service.Get: id not found - %v", err)
-		return nil, err
-	}
-	return &allEntities[resId], nil
+	err := errors.New("internshipID not found")
+	log.Printf("intership.Service.Describe: %v", err)
+	return nil, err
 }
 
 func (s *Service) Remove(internshipID uint64) (bool, error) {
-	var result bool = false
 	for i := 0; i < len(allEntities); i++ {
 		if internshipID == allEntities[i].Id {
-			result = true
 			allEntities = append(allEntities[:i], allEntities[i+1:]...)
-			break
+			return true, nil
 		}
 	}
-	return result, nil
+	return false, nil
 }
 
 func (s *Service) Update(internshipID uint64, internship Internship) error {
@@ -73,41 +66,37 @@ func (s *Service) Update(internshipID uint64, internship Internship) error {
 
 func (s *Service) Create(internship Internship) (uint64, error) {
 	var newID uint64 = 1
-	for i := 0; i < len(allEntities); i++ {
-		if allEntities[i].Id >= newID {
-			newID = allEntities[i].Id + 1
-		}
+	if len(allEntities) > 0 {
+		newID = allEntities[len(allEntities)-1].Id + 1
 	}
-	var i Internship = Internship{Id: newID, Description: "new empty record", Period: "Unknown"}
+	var i = Internship{Id: newID, Description: "new empty record", Period: "unknown"}
 	allEntities = append(allEntities, i)
 	return newID, nil
 }
 
 func (s *Service) ShortString(p Internship) string {
-	var result string = ""
+	var result string
 	result += "ID: " + strconv.FormatUint(p.Id, 10) + ":"
-	if &p.Description != nil {
+	if p.Description != "" {
 		result += " Description: " + p.Description
 	}
 	return result
 }
 
 func (s *Service) FullString(p Internship) string {
-	var result string = ""
+	var result string
 	result += "ID: " + strconv.FormatUint(p.Id, 10) + ":"
 	result += " Team - " + strconv.FormatUint(p.Team_id, 10) + ";"
-	if &p.Description != nil {
+	if p.Description != "" {
 		result += " Description: " + p.Description + ";"
 	}
-	if &p.Period != nil {
+	if p.Period != "" {
 		result += " Period: " + p.Period + ";"
 	}
-	if &p.Compensation != nil {
-		if p.Compensation {
-			result += " compensation: yes."
-		} else {
-			result += " compensation: no."
-		}
+	if p.Compensation {
+		result += " compensation: yes."
+	} else {
+		result += " compensation: no."
 	}
 	return result
 }

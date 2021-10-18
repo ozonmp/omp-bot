@@ -22,7 +22,7 @@ func (c *WorkInternshipCommander) Get(inputMessage *tgbotapi.Message) {
 	internship, err := c.internshipService.Describe(uint64(idx))
 	var msgText string
 	if err != nil {
-		log.Printf("fail to get product with idx %d: %v", idx, err)
+		log.Printf("fail to get internship with idx %d: %v", idx, err)
 		msgText = "Can't find internship with this id :("
 	} else {
 		msgText = c.internshipService.FullString(*internship)

@@ -20,6 +20,6 @@ func (c *WorkInternshipCommander) New(inputMessage *tgbotapi.Message) {
 	msg := tgbotapi.NewMessage(inputMessage.Chat.ID, msgText)
 	_, err = c.bot.Send(msg)
 	if err != nil {
-		log.Printf("WorkInternshipCommander.Get: error sending reply message to chat - %v", err)
+		log.Printf("WorkInternshipCommander.New: error sending reply message to chat - %v", err)
 	}
 }

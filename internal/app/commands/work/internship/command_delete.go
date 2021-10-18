@@ -15,11 +15,14 @@ func (c *WorkInternshipCommander) Delete(inputMessage *tgbotapi.Message) {
 		msg := tgbotapi.NewMessage(inputMessage.Chat.ID, "Please provide an id of internship!")
 		_, err = c.bot.Send(msg)
 		if err != nil {
-			log.Printf("WorkInternshipCommander.Get: error sending reply message to chat - %v", err)
+			log.Printf("WorkInternshipCommander.Delete: error sending reply message to chat - %v", err)
 		}
 		return
 	}
-	delResult, _ := c.internshipService.Remove(uint64(idx))
+	delResult, err := c.internshipService.Remove(uint64(idx))
+	if err != nil {
+		log.Printf("WorkInternshipCommander.Delete: error during remove internship from service - %v", err)
+	}
 	var msgText string
 	if delResult {
 		msgText = "Internship info is deleted!"
@@ -29,6 +32,6 @@ func (c *WorkInternshipCommander) Delete(inputMessage *tgbotapi.Message) {
 	msg := tgbotapi.NewMessage(inputMessage.Chat.ID, msgText)
 	_, err = c.bot.Send(msg)
 	if err != nil {
-		log.Printf("WorkInternshipCommander.Get: error sending reply message to chat - %v", err)
+		log.Printf("WorkInternshipCommander.Delete: error sending reply message to chat - %v", err)
 	}
 }
