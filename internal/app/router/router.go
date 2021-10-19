@@ -7,6 +7,7 @@ import (
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/app/commands/demo"
+	"github.com/ozonmp/omp-bot/internal/app/commands/estate"
 	"github.com/ozonmp/omp-bot/internal/app/path"
 )
 
@@ -51,7 +52,7 @@ type Router struct {
 	// work
 	// service
 	// exchange
-	// estate
+	estateCommander Commander
 	// rating
 	// security
 	// cinema
@@ -65,8 +66,7 @@ func NewRouter(
 ) *Router {
 	return &Router{
 		// bot
-		bot: bot,
-		// demoCommander
+		bot:           bot,
 		demoCommander: demo.NewDemoCommander(),
 		// user
 		// access
@@ -86,7 +86,7 @@ func NewRouter(
 		// work
 		// service
 		// exchange
-		// estate
+		estateCommander: estate.NewEstateCommander(),
 		// rating
 		// security
 		// cinema
@@ -193,7 +193,7 @@ func (r *Router) routeCallback(callback *tgbotapi.CallbackQuery) (resp tgbotapi.
 	case "exchange":
 		err = ErrDomainNotImplemented
 	case "estate":
-		err = ErrDomainNotImplemented
+		resp, err = r.estateCommander.HandleCallback(callback, callbackPath)
 	case "rating":
 		err = ErrDomainNotImplemented
 	case "security":
@@ -282,7 +282,7 @@ func (r *Router) routeCommand(msg *tgbotapi.Message) (resp tgbotapi.MessageConfi
 	case "exchange":
 		err = ErrDomainNotImplemented
 	case "estate":
-		err = ErrDomainNotImplemented
+		resp, err = r.estateCommander.HandleCommand(msg, commandPath)
 	case "rating":
 		err = ErrDomainNotImplemented
 	case "security":
