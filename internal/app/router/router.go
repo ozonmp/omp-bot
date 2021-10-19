@@ -89,13 +89,42 @@ func NewRouter(
 	}
 }
 
-func (r *Router) HandleUpdate(update tgbotapi.Update) {
-	defer func() {
-		if panicValue := recover(); panicValue != nil {
-			log.Printf("recovered from panic: %v", panicValue)
-			log.Printf("stack trace: %s", debug.Stack())
+func (r *Router) createResponseForPanic(chatID int64) (resp tgbotapi.MessageConfig) {
+	resp = tgbotapi.NewMessage(chatID,
+		"Ouch! Your actions nearly took down my server. But I was still able to send you this message!",
+	)
+	return
+}
+
+func (r *Router) handlePanic(chatID int64) {
+	panicValue := recover()
+	if panicValue == nil {
+		return
+	}
+	log.Printf("recovered from panic: %v", panicValue)
+	log.Printf("stack trace: %s", debug.Stack())
+
+	if chatID != 0 {
+		resp := r.createResponseForPanic(chatID)
+		_, err := r.bot.Send(resp)
+		if err != nil {
+			log.Printf("Failed to send panic notification: %v", err)
 		}
-	}()
+	}
+}
+
+func extractChatID(update tgbotapi.Update) (chatID int64) {
+	switch {
+	case update.CallbackQuery != nil && update.CallbackQuery.Message != nil:
+		chatID = update.CallbackQuery.Message.Chat.ID
+	case update.Message != nil:
+		chatID = update.Message.Chat.ID
+	}
+	return
+}
+
+func (r *Router) HandleUpdate(update tgbotapi.Update) {
+	defer r.handlePanic(extractChatID(update))
 
 	switch {
 	case update.CallbackQuery != nil && update.CallbackQuery.Message != nil:
