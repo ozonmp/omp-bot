@@ -35,8 +35,8 @@ func (c *CommunicationNotificationCommander) HandleCallback(callback *tgbotapi.C
 
 func (c *CommunicationNotificationCommander) HandleCommand(msg *tgbotapi.Message, commandPath path.CommandPath) {
 	switch commandPath.CommandName {
-	//case "help":
-	//	c.Help(msg)
+	case "help":
+		c.Help(msg)
 	//case "list":
 	//	c.List(msg)
 	//case "get":
