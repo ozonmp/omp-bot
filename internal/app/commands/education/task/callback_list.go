@@ -31,7 +31,7 @@ func (c *TaskStruct) CallbackList(callback *tgbotapi.CallbackQuery, callbackPath
 
 	maxElem := c.taskService.CountData()
 
-	if parsedData.Cursor > 4 {
+	if parsedData.Cursor > maxElemListPerPage-1 {
 		serializedDataBack, _ := json.Marshal(CallbackListData{
 			Cursor: parsedData.Cursor - maxElemListPerPage,
 			Limit:  maxElemListPerPage,
@@ -81,7 +81,7 @@ func (c *TaskStruct) CallbackList(callback *tgbotapi.CallbackQuery, callbackPath
 		}
 
 		serializedDataLast, _ := json.Marshal(CallbackListData{
-			Cursor: uint64(maxElem/maxElemListPerPage) * maxElemListPerPage,
+			Cursor: uint64((maxElem - 1) / maxElemListPerPage * maxElemListPerPage),
 			Limit:  maxElemListPerPage,
 		})
 

@@ -52,7 +52,7 @@ func (c *TaskStruct) List(inputMessage *tgbotapi.Message) {
 		}
 
 		serializedDataLast, _ := json.Marshal(CallbackListData{
-			Cursor: uint64(c.taskService.CountData()/maxElemListPerPage) * maxElemListPerPage,
+			Cursor: uint64((c.taskService.CountData() - 1) / maxElemListPerPage * maxElemListPerPage),
 			Limit:  maxElemListPerPage,
 		})
 
