@@ -11,3 +11,7 @@ var allEntities = []Employee{
 type Employee struct {
 	Title string
 }
+
+func (employee Employee) String() string {
+	return employee.Title
+}
