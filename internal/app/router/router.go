@@ -5,7 +5,7 @@ import (
 	"runtime/debug"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-	"github.com/ozonmp/omp-bot/internal/app/commands/demo"
+	"github.com/ozonmp/omp-bot/internal/app/commands/estate"
 	"github.com/ozonmp/omp-bot/internal/app/path"
 )
 
@@ -18,8 +18,8 @@ type Router struct {
 	// bot
 	bot *tgbotapi.BotAPI
 
-	// demoCommander
-	demoCommander Commander
+	// estateCommander
+	estateCommander Commander
 	// user
 	// access
 	// buy
@@ -53,8 +53,8 @@ func NewRouter(
 	return &Router{
 		// bot
 		bot: bot,
-		// demoCommander
-		demoCommander: demo.NewDemoCommander(bot),
+		// estateCommander
+		estateCommander: estate.NewEstateCommander(bot),
 		// user
 		// access
 		// buy
@@ -107,7 +107,7 @@ func (c *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
 
 	switch callbackPath.Domain {
 	case "demo":
-		c.demoCommander.HandleCallback(callback, callbackPath)
+		c.estateCommander.HandleCallback(callback, callbackPath)
 	case "user":
 		break
 	case "access":
@@ -178,7 +178,7 @@ func (c *Router) handleMessage(msg *tgbotapi.Message) {
 
 	switch commandPath.Domain {
 	case "demo":
-		c.demoCommander.HandleCommand(msg, commandPath)
+		c.estateCommander.HandleCommand(msg, commandPath)
 	case "user":
 		break
 	case "access":
