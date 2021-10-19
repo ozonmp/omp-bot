@@ -172,7 +172,7 @@ func (c *Router) handleMessage(msg *tgbotapi.Message) {
 
 	commandPath, err := path.ParseCommand(msg.Command())
 	if err != nil {
-		log.Printf("Router.handleCallback: error parsing callback data `%s` - %v", msg.Command(), err)
+		log.Printf("Router.handleMessage: error parsing message data `%s` - %v", msg.Command(), err)
 		return
 	}
 
