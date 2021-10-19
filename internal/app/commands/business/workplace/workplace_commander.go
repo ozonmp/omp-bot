@@ -27,7 +27,7 @@ type BusinessWorkplaceCommander struct {
 }
 
 func NewWorkplaceCommander(bot *tgbotapi.BotAPI,) *BusinessWorkplaceCommander {
-	workplaceService := service.NewDummyWorkplaceService()
+	var workplaceService = service.NewDummyWorkplaceService()
 
 	return &BusinessWorkplaceCommander{
 		bot:              bot,

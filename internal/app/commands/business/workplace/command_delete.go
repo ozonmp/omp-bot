@@ -2,48 +2,33 @@ package workplace
 
 import (
 	"fmt"
-	"log"
 	"strconv"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
 func (c *BusinessWorkplaceCommander) Delete(inputMessage *tgbotapi.Message) {
-	args := inputMessage.CommandArguments()
+	var args = inputMessage.CommandArguments()
 
 	workplaceID, err := strconv.Atoi(args)
 	if err != nil {
-		log.Println("wrong args", args)
-		msg := tgbotapi.NewMessage(
-			inputMessage.Chat.ID,
-			"args must be number. Ex.: /delete__business__workplace 1",
-		)
-		c.bot.Send(msg)
+		description := fmt.Sprintf("Args( %s) processing error", args)
+		c.processError(inputMessage.Chat.ID, description, "Args must be number. Ex.: /delete__business__workplace 1")
 		return
 	}
 
 	deleted, err := c.workplaceService.Remove(uint64(workplaceID))
 	if err != nil {
-		log.Printf("Fail to delete workplace with ID = %d", workplaceID)
-		msg := tgbotapi.NewMessage(
-			inputMessage.Chat.ID,
-			fmt.Sprintf("Workplace with ID %d is not found in DB", workplaceID),
-		)
-		c.bot.Send(msg)
+		description := fmt.Sprintf("Fail to delete workplace with ID = %d", workplaceID)
+		c.processError(inputMessage.Chat.ID, description, "")
 		return
 	}
 
-	msgValue := ""
+	var msgValue = fmt.Sprintf("Workplace with ID %d is deleted from DB", workplaceID)
 	if !deleted {
 		msgValue = fmt.Sprintf("Workplace with ID %d is not deleted from DB", workplaceID)
-	} else {
-		msgValue = fmt.Sprintf("Workplace with ID %d is deleted from DB", workplaceID)
 	}
 
-	msg := tgbotapi.NewMessage(
-		inputMessage.Chat.ID,
-		msgValue,
-	)
-
+	var msg = tgbotapi.NewMessage(inputMessage.Chat.ID, msgValue)
 	c.bot.Send(msg)
 }

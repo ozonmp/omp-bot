@@ -24,14 +24,15 @@ func NewDummyWorkplaceService() *DummyWorkplaceService {
 func (s *DummyWorkplaceService) Describe(workplaceID uint64) (*business.Workplace, error) {
 	workplace, ok := workplaceDB[workplaceID]
 	if !ok {
-		return nil, errors.New(fmt.Sprint("Workplace with ID %d is not found", workplaceID))
+		return nil, errors.New(fmt.Sprintf("Workplace with ID %d is not found", workplaceID))
 	}
 
 	return &workplace, nil
 }
 
 func (s *DummyWorkplaceService) List(cursor uint64, limit uint64) ([]business.Workplace, error) {
-	retVal := make([]business.Workplace, 0, len(workplaceDB))
+	var retVal = make([]business.Workplace, 0, len(workplaceDB))
+
 	for idx, value := range workplaceDB {
 		if idx > cursor && idx <= cursor + limit {
 			retVal = append(retVal, value)
@@ -47,7 +48,7 @@ func (s *DummyWorkplaceService) List(cursor uint64, limit uint64) ([]business.Wo
 
 func (s *DummyWorkplaceService) Create(workplace business.Workplace) (uint64, error) {
 	if _, ok := workplaceDB[workplace.ID]; ok {
-		return 0, errors.New(fmt.Sprint("Workplace with ID %d is exists", workplace.ID))
+		return 0, errors.New(fmt.Sprintf("Workplace with ID %d is exists", workplace.ID))
 	}
 
 	workplaceDB[workplace.ID] = workplace
@@ -55,18 +56,17 @@ func (s *DummyWorkplaceService) Create(workplace business.Workplace) (uint64, er
 }
 
 func (s *DummyWorkplaceService) Update(workplaceID uint64, workplace business.Workplace) error {
-	if _, ok := workplaceDB[workplace.ID]; !ok {
-		return errors.New(fmt.Sprint("Workplace with ID %d is not exists", workplace.ID))
+	if _, ok := workplaceDB[workplaceID]; !ok {
+		return errors.New(fmt.Sprintf("Workplace with ID %d is not exists", workplaceID))
 	}
 
-	workplaceDB[workplace.ID] = workplace
+	workplaceDB[workplaceID] = workplace
 	return nil
 }
 
 func (s *DummyWorkplaceService) Remove(workplaceID uint64) (bool, error) {
-
 	if _, ok := workplaceDB[workplaceID]; !ok {
-		return false, errors.New(fmt.Sprint("Workplace with ID %d is not found", workplaceID))
+		return false, errors.New(fmt.Sprintf("Workplace with ID %d is not found", workplaceID))
 	}
 
 	delete(workplaceDB, workplaceID)

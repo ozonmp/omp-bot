@@ -5,7 +5,7 @@ import (
 )
 
 func (c *BusinessWorkplaceCommander) Help(inputMessage *tgbotapi.Message) {
-	msg := tgbotapi.NewMessage(inputMessage.Chat.ID,
+	var msg = tgbotapi.NewMessage(inputMessage.Chat.ID,
 		"/help__business__workplace — print list of commands\n"+
 			"/get__business__workplace — get a entity\n"+
 			"/list__business__workplace — get a list of your entity\n"+
