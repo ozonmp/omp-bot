@@ -3,6 +3,7 @@ package product
 import (
 	"encoding/json"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+	"github.com/ozonmp/omp-bot/internal/app/commands"
 	"github.com/ozonmp/omp-bot/internal/app/path"
 	"log"
 )
@@ -47,8 +48,8 @@ func (commander *ProductCommander) ShowButtons(cursor uint64, limit uint64, chat
 	var prevButton tgbotapi.InlineKeyboardButton
 	if cursor+limit < uint64(size) {
 		callbackNextPagePath := path.CallbackPath{
-			Domain:       "recommendation",
-			Subdomain:    "product",
+			Domain:       commands.Recommendation,
+			Subdomain:    commands.Product,
 			CallbackName: "list_next",
 			CallbackData: string(serializedData),
 		}
@@ -56,7 +57,7 @@ func (commander *ProductCommander) ShowButtons(cursor uint64, limit uint64, chat
 	}
 	if cursor > 0 {
 		callbackPrevPagePath := path.CallbackPath{
-			Domain:       "recommendation",
+			Domain:       commands.Recommendation,
 			Subdomain:    "product",
 			CallbackName: "list_prev",
 			CallbackData: string(serializedData),

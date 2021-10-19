@@ -1,6 +1,7 @@
 package router
 
 import (
+	"github.com/ozonmp/omp-bot/internal/app/commands"
 	"github.com/ozonmp/omp-bot/internal/app/commands/recommendation"
 	"log"
 
@@ -117,7 +118,7 @@ func (c *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
 		break
 	case "delivery":
 		break
-	case Recommendation:
+	case commands.Recommendation:
 		c.recommendationCommander.HandleCallback(callback, callbackPath)
 	case "travel":
 		break
@@ -188,7 +189,7 @@ func (c *Router) handleMessage(msg *tgbotapi.Message) {
 		break
 	case "delivery":
 		break
-	case Recommendation:
+	case commands.Recommendation:
 		c.recommendationCommander.HandleCommand(msg, commandPath)
 	case "travel":
 		break

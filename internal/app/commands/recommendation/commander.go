@@ -1,6 +1,7 @@
 package recommendation
 
 import (
+	"github.com/ozonmp/omp-bot/internal/app/commands"
 	service "github.com/ozonmp/omp-bot/internal/service/recommendation/product"
 	"log"
 
@@ -26,7 +27,7 @@ func NewRecommendationCommander(
 
 func (commander *RecommendationCommander) HandleCallback(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
 	switch callbackPath.Subdomain {
-	case Product:
+	case commands.Product:
 		commander.productCommander.HandleCallback(callback, callbackPath)
 	default:
 		log.Printf("DemoCommander.HandleCallback: unknown subdomain - %s", callbackPath.Subdomain)
@@ -35,7 +36,7 @@ func (commander *RecommendationCommander) HandleCallback(callback *tgbotapi.Call
 
 func (commander *RecommendationCommander) HandleCommand(msg *tgbotapi.Message, commandPath path.CommandPath) {
 	switch commandPath.Subdomain {
-	case Product:
+	case commands.Product:
 		commander.productCommander.HandleCommand(msg, commandPath)
 	default:
 		log.Printf("DemoCommander.HandleCommand: unknown subdomain - %s", commandPath.Subdomain)
