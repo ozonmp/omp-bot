@@ -3,17 +3,12 @@ package employee
 import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"log"
-	"strconv"
 )
 
 func (c *DemoSubdomainCommander) Create(inputMessage *tgbotapi.Message) {
 	args := inputMessage.CommandArguments()
 
-	employee := c.subdomainService.Create(args)
-
-	msg := tgbotapi.NewMessage(inputMessage.Chat.ID,
-		"Was created employee["+strconv.Itoa(employee.Id)+"] "+employee.Title,
-	)
+	msg := tgbotapi.NewMessage(inputMessage.Chat.ID, c.subdomainService.Create(args))
 
 	_, err := c.bot.Send(msg)
 	if err != nil {

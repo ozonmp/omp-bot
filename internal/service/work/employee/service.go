@@ -42,6 +42,8 @@ func (service *Service) Delete(id int) bool {
 	return false
 }
 
-func (service *Service) Create(title string) Employee {
-	return repository.create(title)
+func (service *Service) Create(title string) string {
+	employee := repository.create(title)
+
+	return "Was created employee[" + employee.idAsString() + "] " + employee.Title
 }
