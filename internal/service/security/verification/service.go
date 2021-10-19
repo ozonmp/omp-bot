@@ -9,6 +9,12 @@ type VerificationService struct {
 	allEntities []Verification
 }
 
+func NewVerificationService(allEntities []Verification) *VerificationService {
+	return &VerificationService{
+		allEntities: allEntities,
+	}
+}
+
 var ErrEntityNotExists = errors.New("Entity Not Exists")
 
 func (s VerificationService) Describe(test_subdomainID uint64) (*Verification, error) {

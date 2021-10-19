@@ -6,6 +6,7 @@ import (
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/app/commands/demo"
+	"github.com/ozonmp/omp-bot/internal/app/commands/security"
 	"github.com/ozonmp/omp-bot/internal/app/path"
 )
 
@@ -41,6 +42,7 @@ type Router struct {
 	// estate
 	// rating
 	// security
+	securityCommander Commander
 	// cinema
 	// logistic
 	// product
@@ -76,6 +78,7 @@ func NewRouter(
 		// estate
 		// rating
 		// security
+		securityCommander: security.NewSecurityCommander(bot),
 		// cinema
 		// logistic
 		// product
@@ -141,7 +144,7 @@ func (c *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
 	case "work":
 		break
 	case "service":
-		break
+		c.securityCommander.HandleCallback(callback, callbackPath)
 	case "exchange":
 		break
 	case "estate":
@@ -220,7 +223,7 @@ func (c *Router) handleMessage(msg *tgbotapi.Message) {
 	case "rating":
 		break
 	case "security":
-		break
+		c.securityCommander.HandleCommand(msg, commandPath)
 	case "cinema":
 		break
 	case "logistic":
