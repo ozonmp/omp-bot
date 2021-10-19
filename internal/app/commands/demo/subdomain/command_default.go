@@ -6,10 +6,8 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
-func (c *DemoSubdomainCommander) Default(inputMessage *tgbotapi.Message) {
+func (c *DemoSubdomainCommander) Default(inputMessage *tgbotapi.Message) (resp tgbotapi.MessageConfig, err error) {
 	log.Printf("[%s] %s", inputMessage.From.UserName, inputMessage.Text)
-
-	msg := tgbotapi.NewMessage(inputMessage.Chat.ID, "You wrote: "+inputMessage.Text)
-
-	c.bot.Send(msg)
+	resp = tgbotapi.NewMessage(inputMessage.Chat.ID, "You wrote: "+inputMessage.Text)
+	return
 }

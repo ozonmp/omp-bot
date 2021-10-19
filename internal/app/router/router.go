@@ -16,8 +16,15 @@ var (
 )
 
 type Commander interface {
-	HandleCallback(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath)
-	HandleCommand(command *tgbotapi.Message, commandPath path.CommandPath)
+	HandleCallback(
+		callback *tgbotapi.CallbackQuery,
+		callbackPath path.CallbackPath,
+	) (resp tgbotapi.MessageConfig, err error)
+
+	HandleCommand(
+		command *tgbotapi.Message,
+		commandPath path.CommandPath,
+	) (resp tgbotapi.MessageConfig, err error)
 }
 
 type Router struct {
@@ -60,7 +67,7 @@ func NewRouter(
 		// bot
 		bot: bot,
 		// demoCommander
-		demoCommander: demo.NewDemoCommander(bot),
+		demoCommander: demo.NewDemoCommander(),
 		// user
 		// access
 		// buy
@@ -148,7 +155,7 @@ func (r *Router) routeCallback(callback *tgbotapi.CallbackQuery) (resp tgbotapi.
 
 	switch callbackPath.Domain {
 	case "demo":
-		r.demoCommander.HandleCallback(callback, callbackPath)
+		resp, err = r.demoCommander.HandleCallback(callback, callbackPath)
 	case "user":
 		err = ErrDomainNotImplemented
 	case "access":
@@ -245,7 +252,7 @@ func (r *Router) routeCommand(msg *tgbotapi.Message) (resp tgbotapi.MessageConfi
 
 	switch commandPath.Domain {
 	case "demo":
-		r.demoCommander.HandleCommand(msg, commandPath)
+		resp, err = r.demoCommander.HandleCommand(msg, commandPath)
 	case "user":
 		err = ErrDomainNotImplemented
 	case "access":

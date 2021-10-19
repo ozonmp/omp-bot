@@ -1,47 +1,62 @@
 package demo
 
 import (
-	"log"
+	"fmt"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/app/commands/demo/subdomain"
 	"github.com/ozonmp/omp-bot/internal/app/path"
 )
 
+var (
+	ErrUnknownSubDomain = fmt.Errorf("unknown subdomain")
+)
+
 type Commander interface {
-	HandleCallback(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath)
-	HandleCommand(message *tgbotapi.Message, commandPath path.CommandPath)
+	HandleCallback(
+		callback *tgbotapi.CallbackQuery,
+		callbackPath path.CallbackPath,
+	) (resp tgbotapi.MessageConfig, err error)
+
+	HandleCommand(
+		command *tgbotapi.Message,
+		commandPath path.CommandPath,
+	) (resp tgbotapi.MessageConfig, err error)
 }
 
 type DemoCommander struct {
-	bot                *tgbotapi.BotAPI
 	subdomainCommander Commander
 }
 
-func NewDemoCommander(
-	bot *tgbotapi.BotAPI,
-) *DemoCommander {
+func NewDemoCommander() *DemoCommander {
 	return &DemoCommander{
-		bot: bot,
 		// subdomainCommander
-		subdomainCommander: subdomain.NewDemoSubdomainCommander(bot),
+		subdomainCommander: subdomain.NewDemoSubdomainCommander(),
 	}
 }
 
-func (c *DemoCommander) HandleCallback(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
+func (c *DemoCommander) HandleCallback(
+	callback *tgbotapi.CallbackQuery,
+	callbackPath path.CallbackPath,
+) (resp tgbotapi.MessageConfig, err error) {
 	switch callbackPath.Subdomain {
 	case "subdomain":
-		c.subdomainCommander.HandleCallback(callback, callbackPath)
+		resp, err = c.subdomainCommander.HandleCallback(callback, callbackPath)
 	default:
-		log.Printf("DemoCommander.HandleCallback: unknown subdomain - %s", callbackPath.Subdomain)
+		err = ErrUnknownSubDomain
 	}
+	return
 }
 
-func (c *DemoCommander) HandleCommand(msg *tgbotapi.Message, commandPath path.CommandPath) {
+func (c *DemoCommander) HandleCommand(
+	command *tgbotapi.Message,
+	commandPath path.CommandPath,
+) (resp tgbotapi.MessageConfig, err error) {
 	switch commandPath.Subdomain {
 	case "subdomain":
-		c.subdomainCommander.HandleCommand(msg, commandPath)
+		resp, err = c.subdomainCommander.HandleCommand(command, commandPath)
 	default:
-		log.Printf("DemoCommander.HandleCommand: unknown subdomain - %s", commandPath.Subdomain)
+		err = ErrUnknownSubDomain
 	}
+	return
 }

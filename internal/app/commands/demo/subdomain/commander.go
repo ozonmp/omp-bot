@@ -1,47 +1,55 @@
 package subdomain
 
 import (
-	"log"
+	"fmt"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/app/path"
 	"github.com/ozonmp/omp-bot/internal/service/demo/subdomain"
 )
 
+var (
+	ErrUnknownCallback = fmt.Errorf("unknown callback")
+)
+
 type DemoSubdomainCommander struct {
-	bot              *tgbotapi.BotAPI
 	subdomainService *subdomain.Service
 }
 
-func NewDemoSubdomainCommander(
-	bot *tgbotapi.BotAPI,
-) *DemoSubdomainCommander {
+func NewDemoSubdomainCommander() *DemoSubdomainCommander {
 	subdomainService := subdomain.NewService()
 
 	return &DemoSubdomainCommander{
-		bot:              bot,
 		subdomainService: subdomainService,
 	}
 }
 
-func (c *DemoSubdomainCommander) HandleCallback(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
+func (c *DemoSubdomainCommander) HandleCallback(
+	callback *tgbotapi.CallbackQuery,
+	callbackPath path.CallbackPath,
+) (resp tgbotapi.MessageConfig, err error) {
 	switch callbackPath.CallbackName {
 	case "list":
-		c.CallbackList(callback, callbackPath)
+		resp, err = c.CallbackList(callback, callbackPath)
 	default:
-		log.Printf("DemoSubdomainCommander.HandleCallback: unknown callback name: %s", callbackPath.CallbackName)
+		err = ErrUnknownCallback
 	}
+	return
 }
 
-func (c *DemoSubdomainCommander) HandleCommand(msg *tgbotapi.Message, commandPath path.CommandPath) {
+func (c *DemoSubdomainCommander) HandleCommand(
+	command *tgbotapi.Message,
+	commandPath path.CommandPath,
+) (resp tgbotapi.MessageConfig, err error) {
 	switch commandPath.CommandName {
 	case "help":
-		c.Help(msg)
+		resp, err = c.Help(command)
 	case "list":
-		c.List(msg)
+		resp, err = c.List(command)
 	case "get":
-		c.Get(msg)
+		resp, err = c.Get(command)
 	default:
-		c.Default(msg)
+		resp, err = c.Default(command)
 	}
+	return
 }

@@ -7,7 +7,7 @@ import (
 	"github.com/ozonmp/omp-bot/internal/app/path"
 )
 
-func (c *DemoSubdomainCommander) List(inputMessage *tgbotapi.Message) {
+func (c *DemoSubdomainCommander) List(inputMessage *tgbotapi.Message) (resp tgbotapi.MessageConfig, err error) {
 	outputMsgText := "Here all the products: \n\n"
 
 	products := c.subdomainService.List()
@@ -16,11 +16,12 @@ func (c *DemoSubdomainCommander) List(inputMessage *tgbotapi.Message) {
 		outputMsgText += "\n"
 	}
 
-	msg := tgbotapi.NewMessage(inputMessage.Chat.ID, outputMsgText)
-
-	serializedData, _ := json.Marshal(CallbackListData{
+	serializedData, err := json.Marshal(CallbackListData{
 		Offset: 21,
 	})
+	if err != nil {
+		return
+	}
 
 	callbackPath := path.CallbackPath{
 		Domain:       "demo",
@@ -29,11 +30,11 @@ func (c *DemoSubdomainCommander) List(inputMessage *tgbotapi.Message) {
 		CallbackData: string(serializedData),
 	}
 
-	msg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(
+	resp = tgbotapi.NewMessage(inputMessage.Chat.ID, outputMsgText)
+	resp.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData("Next page", callbackPath.String()),
 		),
 	)
-
-	c.bot.Send(msg)
+	return
 }
