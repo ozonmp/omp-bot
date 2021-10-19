@@ -51,11 +51,11 @@ func (t *TaskModel) Count() int {
 	return len(*t)
 }
 
-var TaskEntities *TaskModel
+var TaskEntities TaskModel
 
 func TaskEntitiesInit() {
 
-	p := TaskModel{
+	TaskEntities = TaskModel{
 		Task{Id: 1, Championat_id: 1, Difficulty: 5, Title: "First product", Description: "first product desc"},
 		Task{Id: 2, Championat_id: 1, Difficulty: 5, Title: "Second product", Description: "Second product desc"},
 		Task{Id: 3, Championat_id: 1, Difficulty: 5, Title: "Third product", Description: "Third product desc"},
@@ -68,5 +68,4 @@ func TaskEntitiesInit() {
 		Task{Id: 10, Championat_id: 1, Difficulty: 5, Title: "Tenth product", Description: "Tenth product desc"},
 	}
 
-	TaskEntities = &p
 }
