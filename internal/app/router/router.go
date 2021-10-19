@@ -1,6 +1,7 @@
 package router
 
 import (
+	"github.com/ozonmp/omp-bot/internal/app/commands/insurance"
 	"log"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
@@ -30,6 +31,7 @@ type Router struct {
 	// subscription
 	// license
 	// insurance
+	insurance Commander
 	// payment
 	// storage
 	// streaming
@@ -65,6 +67,7 @@ func NewRouter(
 		// subscription
 		// license
 		// insurance
+		insurance: insurance.NewInsuranceCommander(bot),
 		// payment
 		// storage
 		// streaming
@@ -128,7 +131,7 @@ func (c *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
 	case "license":
 		break
 	case "insurance":
-		break
+		c.insurance.HandleCallback(callback, callbackPath)
 	case "payment":
 		break
 	case "storage":
@@ -199,7 +202,7 @@ func (c *Router) handleMessage(msg *tgbotapi.Message) {
 	case "license":
 		break
 	case "insurance":
-		break
+		c.insurance.HandleCommand(msg, commandPath)
 	case "payment":
 		break
 	case "storage":
