@@ -7,9 +7,9 @@ import (
 )
 
 func (commander *ProductCommander) New(inputMessage *tgbotapi.Message) {
-    args := inputMessage.CommandArguments()
+	args := inputMessage.CommandArguments()
 	productToCreate, err := commander.serializer.serialize(args)
-	if err != nil{
+	if err != nil {
 		commander.Send(inputMessage.Chat.ID, fmt.Sprintf("Not valid argument \"%v\"", args))
 		log.Printf(err.Error())
 		return

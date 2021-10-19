@@ -12,7 +12,7 @@ type CallbackListData struct {
 	Limit  uint64 `json:"limit"`
 }
 
-func (commander *ProductCommander) ShowButtons(cursor uint64, limit uint64, chatId int64){
+func (commander *ProductCommander) ShowButtons(cursor uint64, limit uint64, chatId int64) {
 	size := commander.service.Size()
 	if size == 0 {
 		commander.Send(chatId, "Product list is empty")
@@ -35,7 +35,7 @@ func (commander *ProductCommander) ShowButtons(cursor uint64, limit uint64, chat
 
 	serializedData, error := json.Marshal(CallbackListData{
 		Cursor: cursor,
-		Limit: limit,
+		Limit:  limit,
 	})
 
 	if error != nil {
@@ -45,7 +45,7 @@ func (commander *ProductCommander) ShowButtons(cursor uint64, limit uint64, chat
 
 	var nextButton tgbotapi.InlineKeyboardButton
 	var prevButton tgbotapi.InlineKeyboardButton
-	if cursor + limit < uint64(size) {
+	if cursor+limit < uint64(size) {
 		callbackNextPagePath := path.CallbackPath{
 			Domain:       "recommendation",
 			Subdomain:    "product",
@@ -92,7 +92,7 @@ func (commander *ProductCommander) ShowButtons(cursor uint64, limit uint64, chat
 func (commander *ProductCommander) CallbackNextList(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
 	parsedData := CallbackListData{}
 	err := json.Unmarshal([]byte(callbackPath.CallbackData), &parsedData)
-	if err != nil || len(callbackPath.CallbackData) == 0{
+	if err != nil || len(callbackPath.CallbackData) == 0 {
 		log.Println("Not correct data")
 	}
 	cursorStartPos := parsedData.Cursor + parsedData.Limit
@@ -102,7 +102,7 @@ func (commander *ProductCommander) CallbackNextList(callback *tgbotapi.CallbackQ
 func (commander *ProductCommander) CallbackPrevList(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
 	parsedData := CallbackListData{}
 	err := json.Unmarshal([]byte(callbackPath.CallbackData), &parsedData)
-	if err != nil || len(callbackPath.CallbackData) == 0{
+	if err != nil || len(callbackPath.CallbackData) == 0 {
 		log.Println("Not correct data")
 	}
 	cursorStartPos := parsedData.Cursor - parsedData.Limit

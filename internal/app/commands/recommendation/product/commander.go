@@ -19,15 +19,14 @@ type Serializer interface {
 }
 
 type ProductCommander struct {
-	bot *tgbotapi.BotAPI
-	service service.Service
+	bot        *tgbotapi.BotAPI
+	service    service.Service
 	serializer Serializer
-
 }
 
 func NewProductCommander(bot *tgbotapi.BotAPI, service service.Service) *ProductCommander {
 	ser := &JsonSerializer{}
-   return &ProductCommander{bot : bot, service: service, serializer: ser}
+	return &ProductCommander{bot: bot, service: service, serializer: ser}
 }
 func (commander *ProductCommander) HandleCallback(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
 	switch callbackPath.CallbackName {
@@ -46,9 +45,9 @@ func (commander *ProductCommander) HandleCommand(msg *tgbotapi.Message, commandP
 	case "help":
 		commander.Help(msg)
 	case "new":
-	    commander.New(msg)
+		commander.New(msg)
 	case "delete":
-	    commander.Delete(msg)
+		commander.Delete(msg)
 	case "list":
 		commander.List(msg)
 	case "get":
@@ -60,7 +59,7 @@ func (commander *ProductCommander) HandleCommand(msg *tgbotapi.Message, commandP
 	}
 }
 
-func (commander *ProductCommander) Send(chatId int64, text string){
-	msg := tgbotapi.NewMessage(chatId,text)
+func (commander *ProductCommander) Send(chatId int64, text string) {
+	msg := tgbotapi.NewMessage(chatId, text)
 	commander.bot.Send(msg)
 }

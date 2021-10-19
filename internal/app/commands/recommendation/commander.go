@@ -15,8 +15,8 @@ type Commander interface {
 }
 
 type RecomendationCommander struct {
-	bot                *tgbotapi.BotAPI
-	productCommander   commander.Commander
+	bot              *tgbotapi.BotAPI
+	productCommander commander.Commander
 }
 
 func NewRecommendationCommander(
@@ -24,7 +24,7 @@ func NewRecommendationCommander(
 ) *RecomendationCommander {
 	service := service.NewDummyProductService()
 	return &RecomendationCommander{
-		bot: bot,
+		bot:              bot,
 		productCommander: commander.NewProductCommander(bot, service),
 	}
 }

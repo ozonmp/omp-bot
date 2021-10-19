@@ -8,16 +8,16 @@ import (
 )
 
 func (commander *ProductCommander) Get(inputMessage *tgbotapi.Message) {
-    args := inputMessage.CommandArguments()
+	args := inputMessage.CommandArguments()
 	productId, err := strconv.ParseUint(args, 10, 64)
-	if err != nil{
+	if err != nil {
 		commander.Send(inputMessage.Chat.ID,
-		fmt.Sprintf("Not valid argument \"%v\"", args))
+			fmt.Sprintf("Not valid argument \"%v\"", args))
 		log.Printf("ProductCommander.Get: %s", err.Error())
 		return
 	}
 	product, err := commander.service.Describe(productId)
-	if err != nil{
+	if err != nil {
 		commander.Send(inputMessage.Chat.ID,
 			fmt.Sprintf("Error: %s", err.Error()))
 		log.Printf("ProductCommander.Get: %s", err.Error())
@@ -25,7 +25,7 @@ func (commander *ProductCommander) Get(inputMessage *tgbotapi.Message) {
 	}
 
 	text, err := commander.serializer.deserialize(product)
-	if err != nil{
+	if err != nil {
 		text = "Error in data serializing"
 		log.Printf("ProductCommander.Get: %s", err.Error())
 	}

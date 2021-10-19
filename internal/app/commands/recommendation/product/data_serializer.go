@@ -16,10 +16,10 @@ func (serialize *JsonSerializer) serialize(data string) (recomendation.Product, 
 		return recomendation.Product{}, err
 	} else {
 		product := recomendation.Product{
-			Id: parsedData.Id,
-			Title: parsedData.Title,
+			Id:          parsedData.Id,
+			Title:       parsedData.Title,
 			Description: parsedData.Description,
-			Rating: parsedData.Rating}
+			Rating:      parsedData.Rating}
 		return product, nil
 	}
 }
