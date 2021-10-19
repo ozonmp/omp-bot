@@ -1,6 +1,7 @@
 package router
 
 import (
+	"github.com/ozonmp/omp-bot/internal/app/commands/work"
 	"log"
 	"runtime/debug"
 
@@ -35,7 +36,7 @@ type Router struct {
 	// storage
 	// streaming
 	// business
-	// work
+	work Commander
 	// service
 	// exchange
 	// estate
@@ -70,7 +71,7 @@ func NewRouter(
 		// storage
 		// streaming
 		// business
-		// work
+		work: work.NewWorkCommander(bot),
 		// service
 		// exchange
 		// estate
@@ -139,7 +140,7 @@ func (c *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
 	case "business":
 		break
 	case "work":
-		break
+		c.work.HandleCallback(callback, callbackPath)
 	case "service":
 		break
 	case "exchange":
@@ -210,7 +211,7 @@ func (c *Router) handleMessage(msg *tgbotapi.Message) {
 	case "business":
 		break
 	case "work":
-		break
+		c.work.HandleCommand(msg, commandPath)
 	case "service":
 		break
 	case "exchange":
