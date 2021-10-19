@@ -6,6 +6,7 @@ import (
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/app/commands/demo"
+	"github.com/ozonmp/omp-bot/internal/app/commands/streaming"
 	"github.com/ozonmp/omp-bot/internal/app/path"
 )
 
@@ -34,6 +35,7 @@ type Router struct {
 	// payment
 	// storage
 	// streaming
+	streamingCommander Commander
 	// business
 	// work
 	// service
@@ -69,6 +71,7 @@ func NewRouter(
 		// payment
 		// storage
 		// streaming
+		streamingCommander: streaming.NewCommander(bot),
 		// business
 		// work
 		// service
@@ -135,7 +138,7 @@ func (c *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
 	case "storage":
 		break
 	case "streaming":
-		break
+		c.streamingCommander.HandleCallback(callback, callbackPath)
 	case "business":
 		break
 	case "work":
@@ -172,7 +175,7 @@ func (c *Router) handleMessage(msg *tgbotapi.Message) {
 
 	commandPath, err := path.ParseCommand(msg.Command())
 	if err != nil {
-		log.Printf("Router.handleCallback: error parsing callback data `%s` - %v", msg.Command(), err)
+		log.Printf("Router.handleCallback: error parsing command data `%s` - %v", msg.Command(), err)
 		return
 	}
 
@@ -206,7 +209,7 @@ func (c *Router) handleMessage(msg *tgbotapi.Message) {
 	case "storage":
 		break
 	case "streaming":
-		break
+		c.streamingCommander.HandleCommand(msg, commandPath)
 	case "business":
 		break
 	case "work":
