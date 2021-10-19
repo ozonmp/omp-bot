@@ -39,7 +39,6 @@ func (c *GroundCommander) HandleCallback(callback *tgbotapi.CallbackQuery, callb
 	}
 }
 
-// TODO catch errors
 func (c *GroundCommander) HandleCommand(msg *tgbotapi.Message, commandPath path.CommandPath) {
 	switch commandPath.CommandName {
 	case "help":

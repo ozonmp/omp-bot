@@ -11,9 +11,10 @@ type GroundService interface {
 	Create(ground autotransport.Ground) (uint64, error)
 	Update(groundID uint64, ground autotransport.Ground) error
 	Remove(groundID uint64) (bool, error)
+
+	Count() uint64
 }
 
 func NewAutotransportGroundService() GroundService {
 	return &ground.DummyGroundService{}
 }
-

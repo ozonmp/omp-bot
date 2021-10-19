@@ -26,6 +26,12 @@ func (s *DummyGroundService) List(cursor uint64, limit uint64) ([]autotransport.
 }
 
 func (s *DummyGroundService) Create(ground autotransport.Ground) (uint64, error) {
+
+	err := ground.ValidateFields()
+	if err != nil {
+		return 0, fmt.Errorf("Error: %s", err)
+	}
+
 	allGrounds := autotransport.AllGrounds()
 	*allGrounds = append(*allGrounds, ground)
 	length := len(*allGrounds)
@@ -36,9 +42,17 @@ func (s *DummyGroundService) Update(groundID uint64, ground autotransport.Ground
 	if err := s.checkSliceIndex(groundID); err != nil {
 		return err
 	}
+
 	allGrounds := *autotransport.AllGrounds()
-	allGrounds[groundID] = ground
-	return nil
+	origGround := allGrounds[groundID]
+	success := origGround.Copy(ground)
+
+	if success {
+		allGrounds[groundID] = origGround
+		return nil
+	}
+
+	return fmt.Errorf("Invalid fileeds")
 }
 
 func (s *DummyGroundService) Remove(groundID uint64) (bool, error) {
@@ -49,6 +63,10 @@ func (s *DummyGroundService) Remove(groundID uint64) (bool, error) {
 	allGrounds := autotransport.AllGrounds()
 	*allGrounds = append((*allGrounds)[:groundID], (*allGrounds)[groundID+1:]...)
 	return true, nil
+}
+
+func (s *DummyGroundService) Count() uint64 {
+	return uint64(len(*autotransport.AllGrounds()))
 }
 
 func (s *DummyGroundService) checkSliceIndex(groundID uint64) error {

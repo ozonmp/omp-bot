@@ -3,44 +3,58 @@ package ground
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/app/path"
 )
 
-func (c *GroundCommander) List(inputMessage *tgbotapi.Message)  {
-	outputMsgText := "Here all the grounds: \n\n"
+const (
+	Limit        = 2
+	PrevPageText = "Prev page"
+	NextPageText = "Next Page"
+)
 
-	grounds, err := c.service.List(0, 10000)
+type CallbackListData struct {
+	Cursor uint64 `json:"cursor"`
+	Limit  uint64 `json:"limit"`
+}
+
+func (c *GroundCommander) List(inputMessage *tgbotapi.Message) {
+	msgText := "All grounds: \n\n"
+
+	grounds, err := c.service.List(0, Limit)
 	if err != nil {
-		// return err
-	}
-	for i, p := range grounds {
-		outputMsgText += fmt.Sprintf("%d. %s", i, p.String())
-		outputMsgText += "\n"
+		log.Printf("Internal error %v", err)
+		c.Send(inputMessage.Chat.ID, "Failed to get a list of grounds")
+		return
 	}
 
-	serializedData, err := json.Marshal(CallbackListData{
-		Offset: 0,
-	})
-	if err != nil {
-		// return err
+	for i, g := range grounds {
+		msgText += fmt.Sprintf("%d. %s", i, g.String())
+		msgText += "\n"
 	}
 
-	callbackPath := path.CallbackPath{
-		Domain:       "autotransport",
-		Subdomain:    "ground",
-		CallbackName: "list",
-		CallbackData: string(serializedData),
+	if c.service.Count() > Limit {
+		serializedData, _ := json.Marshal(CallbackListData{
+			Cursor: Limit,
+			Limit:  Limit,
+		})
+
+		callbackPath := path.CallbackPath{
+			Domain:       "autotransport",
+			Subdomain:    "ground",
+			CallbackName: "list",
+			CallbackData: string(serializedData),
+		}
+
+		replyMarkup := tgbotapi.NewInlineKeyboardMarkup(
+			tgbotapi.NewInlineKeyboardRow(
+				tgbotapi.NewInlineKeyboardButtonData(NextPageText, callbackPath.String()),
+			),
+		)
+
+		c.SendWithReply(inputMessage.Chat.ID, msgText, replyMarkup)
+		msgText = ""
 	}
-
-	replyMarkup := tgbotapi.NewInlineKeyboardMarkup(
-		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonData("Next page", callbackPath.String()),
-		),
-	)
-
-	// c.Send(msg)
-	c.SendWithReply(inputMessage.Chat.ID, outputMsgText, replyMarkup)
-	// return err
 }
