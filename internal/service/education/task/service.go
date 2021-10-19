@@ -15,19 +15,18 @@ type TaskService interface {
 }
 
 type DummyTaskService struct {
-	data *education.TaskModel
 }
 
 func NewDummyTaskService() *DummyTaskService {
 
-	education.TaskEntities.Init()
+	education.TaskEntitiesInit()
 
-	return &DummyTaskService{education.TaskEntities}
+	return &DummyTaskService{}
 }
 
 func (s *DummyTaskService) Describe(taskID uint64) (*education.Task, error) {
 
-	data := *s.data
+	data := *education.TaskEntities
 
 	id, err := data.FindID(taskID)
 	if err != nil {
@@ -40,15 +39,14 @@ func (s *DummyTaskService) Describe(taskID uint64) (*education.Task, error) {
 
 func (s *DummyTaskService) List(cursor, limit uint64) ([]education.Task, error) {
 
-	lenSlice := uint64(len(*s.data))
+	data := *education.TaskEntities
+	dataCount := data.Count()
 
-	if cursor > lenSlice {
+	if cursor > uint64(dataCount) {
 		cursor = 0
 	}
 
-	data := *s.data
-
-	if cursor+limit < lenSlice {
+	if cursor+limit < uint64(dataCount) {
 		return data[cursor : cursor+limit], nil
 	}
 
@@ -58,7 +56,7 @@ func (s *DummyTaskService) List(cursor, limit uint64) ([]education.Task, error) 
 
 func (s *DummyTaskService) Create(Task education.Task) (uint64, error) {
 
-	data := *s.data
+	data := *education.TaskEntities
 
 	if _, err := data.FindID(Task.Id); err == nil {
 		return 0, errors.New("product id found on another product")
@@ -68,14 +66,14 @@ func (s *DummyTaskService) Create(Task education.Task) (uint64, error) {
 
 	data = append(data, Task)
 
-	s.data = &data
+	education.TaskEntities = &data
 
 	return Task.Id, nil
 }
 
 func (s *DummyTaskService) Update(taskID uint64, Task education.Task) error {
 
-	data := *s.data
+	data := *education.TaskEntities
 
 	id, err := data.FindID(taskID)
 	if err != nil {
@@ -90,7 +88,7 @@ func (s *DummyTaskService) Update(taskID uint64, Task education.Task) error {
 
 func (s *DummyTaskService) Remove(taskID uint64) (bool, error) {
 
-	data := *s.data
+	data := *education.TaskEntities
 
 	id, err := data.FindID(taskID)
 	if err != nil {
@@ -99,12 +97,11 @@ func (s *DummyTaskService) Remove(taskID uint64) (bool, error) {
 
 	data = append(data[:id], data[id+1:]...)
 
-	s.data = &data
+	education.TaskEntities = &data
 
 	return true, nil
 }
 
-// TODO - Как такое лучше организовывать ?
 func (s *DummyTaskService) CountData() int {
-	return s.data.Count()
+	return education.TaskEntities.Count()
 }

@@ -53,7 +53,7 @@ func (t *TaskModel) Count() int {
 
 var TaskEntities *TaskModel
 
-func (t *TaskModel) Init() {
+func TaskEntitiesInit() {
 
 	p := TaskModel{
 		Task{Id: 1, Championat_id: 1, Difficulty: 5, Title: "First product", Description: "first product desc"},
