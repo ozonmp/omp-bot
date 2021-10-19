@@ -4,6 +4,7 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/app/commands/exchange/exchange"
 	"github.com/ozonmp/omp-bot/internal/app/path"
+	exchange2 "github.com/ozonmp/omp-bot/internal/service/exchange/exchange"
 	"log"
 )
 
@@ -21,7 +22,7 @@ func NewExchangeDomainCommander(bot *tgbotapi.BotAPI) *ExchangeDomainCommander {
 
 	return &ExchangeDomainCommander {
 		bot:               bot,
-		exchangeCommander: exchange.NewExchangeCommander(bot, nil),
+		exchangeCommander: exchange.NewExchangeCommander(bot, exchange2.NewDummyExchangeService()),
 	}
 }
 

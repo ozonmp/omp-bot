@@ -42,11 +42,10 @@ func (ma *ModelAccessor) Remove(id uint64) bool {
 }
 
 func (ma *ModelAccessor) Replace(id uint64, entity Exchange) bool {
-	if updatingEntity, ok := ma.Get(id); ok {
-		updatingEntity.From    = entity.From
-		updatingEntity.To      = entity.To
-		updatingEntity.Package = entity.Package
-		updatingEntity.Status  = entity.Status
+	for key, item := range entities {
+		if item.Id == id {
+			entities[key] = entity
+		}
 		return true
 	}
 	return false

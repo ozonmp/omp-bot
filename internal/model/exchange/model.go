@@ -1,6 +1,14 @@
 package exchange
 
-var entities = []Exchange{}
+var entities = []Exchange {
+	{
+		1,
+		"Book: Scott Meyers: Effective and Modern C++",
+		"Evgeniy Elizarov",
+		"Labirinth",
+		"In progress",
+	},
+}
 
 type Exchange struct {
 	Id      uint64
