@@ -35,20 +35,21 @@ func (s *DummyTaskService) Describe(taskID uint64) (*education.Task, error) {
 
 }
 
-func (s *DummyTaskService) List(cursor, limit uint64) ([]education.Task, error) {
+func (s *DummyTaskService) List(cursor, limit uint64) (result []education.Task, err error) {
 
 	dataCount := education.TaskEntities.Count()
 
 	if cursor > uint64(dataCount) {
-		cursor = 0
+		return []education.Task{}, errors.New("cursor out of data")
 	}
 
 	if cursor+limit < uint64(dataCount) {
-		return education.TaskEntities[cursor : cursor+limit], nil
+		result = education.TaskEntities[cursor : cursor+limit]
+	} else {
+		result = education.TaskEntities[cursor:]
 	}
 
-	return education.TaskEntities[cursor:], nil
-
+	return
 }
 
 func (s *DummyTaskService) Create(Task education.Task) (uint64, error) {

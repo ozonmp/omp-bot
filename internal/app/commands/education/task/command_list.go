@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-	"github.com/ozonmp/omp-bot/internal/app/path"
 )
 
 func (c *TaskCommandStruct) List(inputMessage *tgbotapi.Message) {
@@ -19,54 +18,41 @@ func (c *TaskCommandStruct) List(inputMessage *tgbotapi.Message) {
 
 	msg := tgbotapi.NewMessage(inputMessage.Chat.ID, outputMsgText)
 
-	serializedData, _ := json.Marshal(CallbackListData{
-		Cursor: maxElemListPerPage,
-		Limit:  maxElemListPerPage,
-	})
-
 	if c.taskService.CountData() > maxElemListPerPage {
+
 		KeyboardMarkup := tgbotapi.NewInlineKeyboardMarkup()
 
-		callbackPath := path.CallbackPath{
-			Domain:       "education",
-			Subdomain:    "task",
-			CallbackName: "list",
-			CallbackData: string(serializedData),
-		}
+		serializedData, _ := json.Marshal(
+			CallbackListData{
+				PageNumber: 0,
+				Direction:  1,
+			},
+		)
 
 		KeyboardMarkup.InlineKeyboard = append(KeyboardMarkup.InlineKeyboard,
 			tgbotapi.NewInlineKeyboardRow(
-				tgbotapi.NewInlineKeyboardButtonData("Next page", callbackPath.String()),
+				tgbotapi.NewInlineKeyboardButtonData("Next page",
+					getCallbackPathList(string(serializedData)).String(),
+				),
 			),
 		)
-		serializedDataFirst, _ := json.Marshal(CallbackListData{
-			Cursor: 0,
-			Limit:  maxElemListPerPage,
-		})
 
-		callbackPathFirst := path.CallbackPath{
-			Domain:       "education",
-			Subdomain:    "task",
-			CallbackName: "list",
-			CallbackData: string(serializedDataFirst),
-		}
+		serializedDataFirst, _ := json.Marshal(
+			CallbackListData{
+				FirstLast: -1,
+			},
+		)
 
-		serializedDataLast, _ := json.Marshal(CallbackListData{
-			Cursor: uint64((c.taskService.CountData() - 1) / maxElemListPerPage * maxElemListPerPage),
-			Limit:  maxElemListPerPage,
-		})
-
-		callbackPathLast := path.CallbackPath{
-			Domain:       "education",
-			Subdomain:    "task",
-			CallbackName: "list",
-			CallbackData: string(serializedDataLast),
-		}
+		serializedDataLast, _ := json.Marshal(
+			CallbackListData{
+				FirstLast: 1,
+			},
+		)
 
 		KeyboardMarkup.InlineKeyboard = append(KeyboardMarkup.InlineKeyboard,
 			tgbotapi.NewInlineKeyboardRow(
-				tgbotapi.NewInlineKeyboardButtonData("First page", callbackPathFirst.String()),
-				tgbotapi.NewInlineKeyboardButtonData("Last page", callbackPathLast.String()),
+				tgbotapi.NewInlineKeyboardButtonData("First page", getCallbackPathList(string(serializedDataFirst)).String()),
+				tgbotapi.NewInlineKeyboardButtonData("Last page", getCallbackPathList(string(serializedDataLast)).String()),
 			),
 		)
 
