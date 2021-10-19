@@ -17,7 +17,7 @@ func (commander *ProductCommander) New(inputMessage *tgbotapi.Message) {
 	_, err = commander.service.Create(productToCreate)
 	if err != nil {
 		commander.Send(inputMessage.Chat.ID, err.Error())
-	} else {
-		commander.Send(inputMessage.Chat.ID, "Ok")
+		return
 	}
+	commander.Send(inputMessage.Chat.ID, "Ok")
 }

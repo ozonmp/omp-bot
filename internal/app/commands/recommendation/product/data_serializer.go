@@ -14,14 +14,14 @@ func (serialize *JsonSerializer) serialize(data string) (recomendation.Product, 
 	if err := json.Unmarshal([]byte(data), &parsedData); err != nil {
 		log.Printf("JsonSerializer.serialize: %s\n Data: %s\n", err.Error(), data)
 		return recomendation.Product{}, err
-	} else {
-		product := recomendation.Product{
-			Id:          parsedData.Id,
-			Title:       parsedData.Title,
-			Description: parsedData.Description,
-			Rating:      parsedData.Rating}
-		return product, nil
 	}
+
+	product := recomendation.Product{
+		Id:          parsedData.Id,
+		Title:       parsedData.Title,
+		Description: parsedData.Description,
+		Rating:      parsedData.Rating}
+	return product, nil
 }
 
 func (serialize *JsonSerializer) deserialize(product *recomendation.Product) (string, error) {
@@ -34,7 +34,6 @@ func (serialize *JsonSerializer) deserialize(product *recomendation.Product) (st
 	if err != nil {
 		log.Printf("JsonSerializer.deserialize: %s\n", err.Error())
 		return "", err
-	} else {
-		return string(serializedData), nil
 	}
+	return string(serializedData), nil
 }

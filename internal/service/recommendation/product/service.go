@@ -30,11 +30,12 @@ func (service *DummyProductService) Create(product recomendation.Product) (uint6
 	if _, ok := service.products[product.Id]; !ok {
 		service.products[product.Id] = product
 		return product.Id, nil
-	} else {
-		msg := fmt.Sprintf("product with id %d already exist", product.Id)
-		log.Printf("DummyProductService.Create: %s", msg)
-		return 0, errors.New(msg)
 	}
+
+	msg := fmt.Sprintf("product with id %d already exist", product.Id)
+	log.Printf("DummyProductService.Create: %s", msg)
+	return 0, errors.New(msg)
+
 }
 
 func (service *DummyProductService) Update(id uint64, product recomendation.Product) error {
@@ -42,31 +43,32 @@ func (service *DummyProductService) Update(id uint64, product recomendation.Prod
 		msg := fmt.Sprintf("Product with id %d not found", id)
 		log.Printf("DummyProductService.Update: %s\n", msg)
 		return fmt.Errorf(msg)
-	} else {
-		if id != product.Id {
-			if _, errCreate := service.Create(product); errCreate != nil {
-				return errCreate
-			}
-			if _, errRemove := service.Remove(id); errRemove != nil {
-				return errRemove
-			}
-		} else {
-			service.products[id] = product
-			return nil
-		}
 	}
+
+	if id != product.Id {
+		if _, errCreate := service.Create(product); errCreate != nil {
+			return errCreate
+		}
+		if _, errRemove := service.Remove(id); errRemove != nil {
+			return errRemove
+		}
+		return nil
+	}
+
+	service.products[id] = product
 	return nil
 }
 
 func (service *DummyProductService) Describe(id uint64) (*recomendation.Product, error) {
-	if product, ok := service.products[id]; !ok {
+	product, ok := service.products[id]
+	if !ok {
 		err := fmt.Errorf("Product with id %d not found", id)
 		log.Printf("DummyProductService.Describe: %s", err.Error())
 		return nil, err
-	} else {
-		log.Printf("Get product with id %d", id)
-		return &product, nil
 	}
+
+	log.Printf("Get product with id %d", id)
+	return &product, nil
 }
 
 func (service *DummyProductService) List(cursor uint64, limit uint64) ([]recomendation.Product, error) {
@@ -83,9 +85,9 @@ func (service *DummyProductService) List(cursor uint64, limit uint64) ([]recomen
 	})
 	if cursor+limit < mapSize {
 		return productsList[cursor : cursor+limit : cursor+limit], nil
-	} else {
-		return productsList[cursor:], nil
 	}
+
+	return productsList[cursor:], nil
 }
 
 func (service *DummyProductService) Size() int {
@@ -96,9 +98,9 @@ func (service *DummyProductService) Remove(id uint64) (bool, error) {
 	if _, ok := service.products[id]; !ok {
 		log.Printf("DummyProductService.Remove: Product with id %d not found", id)
 		return false, fmt.Errorf("Product with id %d not found", id)
-	} else {
-		log.Printf("Product with id %d removed", id)
-		delete(service.products, id)
-		return true, nil
 	}
+
+	log.Printf("Product with id %d removed", id)
+	delete(service.products, id)
+	return true, nil
 }

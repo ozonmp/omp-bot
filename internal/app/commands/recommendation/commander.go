@@ -9,38 +9,33 @@ import (
 	"github.com/ozonmp/omp-bot/internal/app/path"
 )
 
-type Commander interface {
-	HandleCallback(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath)
-	HandleCommand(message *tgbotapi.Message, commandPath path.CommandPath)
-}
-
-type RecomendationCommander struct {
+type RecommendationCommander struct {
 	bot              *tgbotapi.BotAPI
 	productCommander commander.Commander
 }
 
 func NewRecommendationCommander(
 	bot *tgbotapi.BotAPI,
-) *RecomendationCommander {
+) *RecommendationCommander {
 	service := service.NewDummyProductService()
-	return &RecomendationCommander{
+	return &RecommendationCommander{
 		bot:              bot,
 		productCommander: commander.NewProductCommander(bot, service),
 	}
 }
 
-func (commander *RecomendationCommander) HandleCallback(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
+func (commander *RecommendationCommander) HandleCallback(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
 	switch callbackPath.Subdomain {
-	case "product":
+	case Product:
 		commander.productCommander.HandleCallback(callback, callbackPath)
 	default:
 		log.Printf("DemoCommander.HandleCallback: unknown subdomain - %s", callbackPath.Subdomain)
 	}
 }
 
-func (commander *RecomendationCommander) HandleCommand(msg *tgbotapi.Message, commandPath path.CommandPath) {
+func (commander *RecommendationCommander) HandleCommand(msg *tgbotapi.Message, commandPath path.CommandPath) {
 	switch commandPath.Subdomain {
-	case "product":
+	case Product:
 		commander.productCommander.HandleCommand(msg, commandPath)
 	default:
 		log.Printf("DemoCommander.HandleCommand: unknown subdomain - %s", commandPath.Subdomain)

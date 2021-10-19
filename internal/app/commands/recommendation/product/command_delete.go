@@ -21,7 +21,6 @@ func (commander *ProductCommander) Delete(inputMessage *tgbotapi.Message) {
 			fmt.Sprintf("Error: %s", err.Error()))
 		log.Printf(err.Error())
 		return
-	} else {
-		commander.Send(inputMessage.Chat.ID, "Ok")
 	}
+	commander.Send(inputMessage.Chat.ID, "Ok")
 }

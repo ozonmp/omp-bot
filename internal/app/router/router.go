@@ -117,7 +117,7 @@ func (c *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
 		break
 	case "delivery":
 		break
-	case "recommendation":
+	case Recommendation:
 		c.recommendationCommander.HandleCallback(callback, callbackPath)
 	case "travel":
 		break
@@ -188,7 +188,7 @@ func (c *Router) handleMessage(msg *tgbotapi.Message) {
 		break
 	case "delivery":
 		break
-	case "recommendation":
+	case Recommendation:
 		c.recommendationCommander.HandleCommand(msg, commandPath)
 	case "travel":
 		break

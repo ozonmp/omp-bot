@@ -32,7 +32,8 @@ func (commander *ProductCommander) Edit(inputMessage *tgbotapi.Message) {
 	err = commander.service.Update(productId, productToEdit)
 	if err != nil {
 		commander.Send(inputMessage.Chat.ID, err.Error())
-	} else {
-		commander.Send(inputMessage.Chat.ID, "Ok")
+		return
 	}
+	commander.Send(inputMessage.Chat.ID, "Ok")
+
 }
