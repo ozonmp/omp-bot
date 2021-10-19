@@ -32,7 +32,7 @@ func (c *CinemaFilmCommander) List(inputMessage *tgbotapi.Message, next, init bo
 	} else {
 		tempPaginator.CurrentPage -= 1
 	}
-	maxPage := (len(c.filmService.Films) - 1) / tempPaginator.PageLength + 1
+	maxPage := (len(c.filmService.Films)-1)/tempPaginator.PageLength + 1
 	if tempPaginator.CurrentPage == maxPage && next {
 		tempPaginator.CurrentPage = 0
 	} else if tempPaginator.CurrentPage == -1 && !next {
@@ -44,7 +44,7 @@ func (c *CinemaFilmCommander) List(inputMessage *tgbotapi.Message, next, init bo
 	filmsToOutput, _ := c.filmService.List(uint64(startIndex), uint64(tempPaginator.PageLength))
 	filmsOnPage := c.fromFilmsToStrings(filmsToOutput)
 	outputMsgText = strings.Join(filmsOnPage, "\n")
-	outputMsgText += fmt.Sprintf("\npage %d/%d", tempPaginator.CurrentPage + 1, maxPage)
+	outputMsgText += fmt.Sprintf("\npage %d/%d", tempPaginator.CurrentPage+1, maxPage)
 
 	msg.Text = outputMsgText
 	_ = c.sendMessage(msg)

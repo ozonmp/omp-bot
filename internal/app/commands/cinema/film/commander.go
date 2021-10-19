@@ -22,7 +22,7 @@ func NewCinemaFilmCommander(bot *tgbotapi.BotAPI) *CinemaFilmCommander {
 	return &CinemaFilmCommander{
 		bot:         bot,
 		filmService: filmService,
-		paginators: make(map[int64]*paginator.CinemaPaginator),
+		paginators:  make(map[int64]*paginator.CinemaPaginator),
 	}
 }
 

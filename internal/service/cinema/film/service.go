@@ -48,7 +48,7 @@ func (s *DummyFilmService) List(cursor, limit uint64) ([]cinema.Film, error) {
 		startIndex = 0
 	}
 
-	if startIndex + endIndex > uint64(len(s.Films)) {
+	if startIndex+endIndex > uint64(len(s.Films)) {
 		endIndex = uint64(len(s.Films))
 	}
 

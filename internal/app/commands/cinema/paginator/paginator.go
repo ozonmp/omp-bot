@@ -32,8 +32,8 @@ var keyBoard = tgbotapi.NewInlineKeyboardMarkup(
 
 type CinemaPaginator struct {
 	CurrentPage int
-	PageLength int
-	Keyboard tgbotapi.InlineKeyboardMarkup
+	PageLength  int
+	Keyboard    tgbotapi.InlineKeyboardMarkup
 }
 
 func NewCinemaPaginator() *CinemaPaginator {
