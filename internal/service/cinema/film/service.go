@@ -41,24 +41,18 @@ func (s *DummyFilmService) Describe(filmID uint64) (*cinema.Film, error) {
 	return foundFilm, nil
 }
 
-func (s *DummyFilmService) List(cursor, limit uint64, ignoreBoards bool) ([]cinema.Film, error) {
-	if cursor < 0 {
-		if ignoreBoards {
-			cursor = 0
-		} else {
-			return nil, fmt.Errorf("cursor can't be lower than 0")
-		}
+func (s *DummyFilmService) List(cursor, limit uint64) ([]cinema.Film, error) {
+	startIndex := cursor
+	endIndex := cursor + limit
+	if startIndex < 0 {
+		startIndex = 0
 	}
 
-	if limit > uint64(len(s.Films)) {
-		if ignoreBoards {
-			limit = uint64(len(s.Films))
-		} else {
-			return nil, fmt.Errorf("limit can't be lower greater then count of films %d", len(s.Films))
-		}
+	if startIndex + endIndex > uint64(len(s.Films)) {
+		endIndex = uint64(len(s.Films))
 	}
 
-	return s.Films[cursor:limit], nil
+	return s.Films[startIndex:endIndex], nil
 }
 
 func (s *DummyFilmService) Create(film *cinema.Film) (uint64, error) {

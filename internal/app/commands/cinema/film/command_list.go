@@ -3,42 +3,21 @@ package film
 import (
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-	"github.com/ozonmp/omp-bot/internal/app/path"
+	"github.com/ozonmp/omp-bot/internal/app/commands/cinema/paginator"
 	"github.com/ozonmp/omp-bot/internal/model/cinema"
 	"strings"
 )
 
-const pageLength = 10
-
-var currentPage = 0
-
-var callbackPathNext = path.CallbackPath{
-	Domain:       "cinema",
-	Subdomain:    "film",
-	CallbackName: "list",
-	CallbackData: "next",
-}
-
-var callbackPathPrev = path.CallbackPath{
-	Domain:       "cinema",
-	Subdomain:    "film",
-	CallbackName: "list",
-	CallbackData: "prev",
-}
-
-var keyBoard = tgbotapi.NewInlineKeyboardMarkup(
-	tgbotapi.NewInlineKeyboardRow(
-		tgbotapi.NewInlineKeyboardButtonData("Next", callbackPathNext.String()),
-	),
-	tgbotapi.NewInlineKeyboardRow(
-		tgbotapi.NewInlineKeyboardButtonData("Prev", callbackPathPrev.String()),
-	),
-)
-
 func (c *CinemaFilmCommander) List(inputMessage *tgbotapi.Message, next, init bool) {
+	tempPaginator, ok := c.paginators[inputMessage.Chat.ID]
+	if !ok {
+		c.paginators[inputMessage.Chat.ID] = paginator.NewCinemaPaginator()
+		tempPaginator = c.paginators[inputMessage.Chat.ID]
+	}
+
 	answerText := "You dont have films. Add at least one"
 	msg := tgbotapi.NewMessage(inputMessage.Chat.ID, answerText)
-	msg.ReplyMarkup = keyBoard
+	msg.ReplyMarkup = tempPaginator.Keyboard
 	if len(c.filmService.Films) == 0 {
 		_ = c.sendMessage(msg)
 		return
@@ -47,26 +26,25 @@ func (c *CinemaFilmCommander) List(inputMessage *tgbotapi.Message, next, init bo
 	outputMsgText := "Films: \n\n"
 
 	if init {
-		currentPage = 0
+		tempPaginator.CurrentPage = 0
 	} else if next {
-		currentPage += 1
+		tempPaginator.CurrentPage += 1
 	} else {
-		currentPage -= 1
+		tempPaginator.CurrentPage -= 1
 	}
-	maxPage := (len(c.filmService.Films)-1)/pageLength + 1
-	if currentPage == maxPage && next {
-		currentPage = 0
-	} else if currentPage == -1 && !next {
-		currentPage = maxPage - 1
+	maxPage := (len(c.filmService.Films) - 1) / tempPaginator.PageLength + 1
+	if tempPaginator.CurrentPage == maxPage && next {
+		tempPaginator.CurrentPage = 0
+	} else if tempPaginator.CurrentPage == -1 && !next {
+		tempPaginator.CurrentPage = maxPage - 1
 	}
 
-	startIndex := currentPage * pageLength
-	endIndex := (currentPage + 1) * pageLength
+	startIndex := tempPaginator.CurrentPage * tempPaginator.PageLength
 
-	filmsToOutput, _ := c.filmService.List(uint64(startIndex), uint64(endIndex), true)
+	filmsToOutput, _ := c.filmService.List(uint64(startIndex), uint64(tempPaginator.PageLength))
 	filmsOnPage := c.fromFilmsToStrings(filmsToOutput)
 	outputMsgText = strings.Join(filmsOnPage, "\n")
-	outputMsgText += fmt.Sprintf("\npage %d/%d", currentPage+1, maxPage)
+	outputMsgText += fmt.Sprintf("\npage %d/%d", tempPaginator.CurrentPage + 1, maxPage)
 
 	msg.Text = outputMsgText
 	_ = c.sendMessage(msg)

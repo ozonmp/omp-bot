@@ -2,6 +2,7 @@ package film
 
 import (
 	"fmt"
+	"github.com/ozonmp/omp-bot/internal/app/commands/cinema/paginator"
 	"github.com/ozonmp/omp-bot/internal/service/cinema/film"
 	"log"
 
@@ -12,6 +13,7 @@ import (
 type CinemaFilmCommander struct {
 	bot         *tgbotapi.BotAPI
 	filmService *film.DummyFilmService
+	paginators  map[int64]*paginator.CinemaPaginator
 }
 
 func NewCinemaFilmCommander(bot *tgbotapi.BotAPI) *CinemaFilmCommander {
@@ -20,6 +22,7 @@ func NewCinemaFilmCommander(bot *tgbotapi.BotAPI) *CinemaFilmCommander {
 	return &CinemaFilmCommander{
 		bot:         bot,
 		filmService: filmService,
+		paginators: make(map[int64]*paginator.CinemaPaginator),
 	}
 }
 
