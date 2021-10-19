@@ -1,5 +1,7 @@
 package employee
 
+import "strconv"
+
 type Service struct{}
 
 var repository = NewEmployeeRepository()
@@ -12,8 +14,14 @@ func (service *Service) List() map[int]Employee {
 	return repository.all()
 }
 
-func (service *Service) Get(idx int) (Employee, error) {
-	return repository.find(idx), nil
+func (service *Service) Get(idx int) string {
+	if !repository.existsById(idx) {
+		return "Error: employee[" + strconv.Itoa(idx) + "] not found!"
+	}
+
+	employee := repository.find(idx)
+
+	return "Employee[" + employee.idAsString() + "] - " + employee.Title
 }
 
 func (service *Service) Delete(id int) bool {

@@ -8,24 +8,17 @@ import (
 )
 
 func (c *DemoSubdomainCommander) Get(inputMessage *tgbotapi.Message) {
+	msgText := ""
 	args := inputMessage.CommandArguments()
 
 	idx, err := strconv.Atoi(args)
 	if err != nil {
-		log.Println("wrong args", args)
-		return
+		msgText = "Error: wrong args"
+	} else {
+		msgText = c.subdomainService.Get(idx)
 	}
 
-	product, err := c.subdomainService.Get(idx)
-	if err != nil {
-		log.Printf("fail to get product with idx %d: %v", idx, err)
-		return
-	}
-
-	msg := tgbotapi.NewMessage(
-		inputMessage.Chat.ID,
-		product.Title,
-	)
+	msg := tgbotapi.NewMessage(inputMessage.Chat.ID, msgText)
 
 	_, err = c.bot.Send(msg)
 	if err != nil {
