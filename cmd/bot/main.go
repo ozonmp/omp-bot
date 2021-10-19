@@ -23,7 +23,7 @@ func main() {
 	}
 
 	// Uncomment if you want debugging
-	// bot.Debug = true
+	bot.Debug = true
 
 	log.Printf("Authorized on account %s", bot.Self.UserName)
 

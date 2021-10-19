@@ -1,6 +1,7 @@
 package router
 
 import (
+	"github.com/ozonmp/omp-bot/internal/app/commands/service"
 	"log"
 	"runtime/debug"
 
@@ -37,6 +38,7 @@ type Router struct {
 	// business
 	// work
 	// service
+	serviceCommander Commander
 	// exchange
 	// estate
 	// rating
@@ -72,6 +74,7 @@ func NewRouter(
 		// business
 		// work
 		// service
+		serviceCommander: service.NewServiceCommander(bot),
 		// exchange
 		// estate
 		// rating
@@ -141,7 +144,7 @@ func (c *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
 	case "work":
 		break
 	case "service":
-		break
+		c.serviceCommander.HandleCallback(callback, callbackPath)
 	case "exchange":
 		break
 	case "estate":
@@ -159,7 +162,7 @@ func (c *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
 	case "education":
 		break
 	default:
-		log.Printf("Router.handleCallback: unknown domain - %s", callbackPath.Domain)
+		log.Printf("Router.handleCallback: unknown service - %s", callbackPath.Domain)
 	}
 }
 
@@ -212,7 +215,7 @@ func (c *Router) handleMessage(msg *tgbotapi.Message) {
 	case "work":
 		break
 	case "service":
-		break
+		c.serviceCommander.HandleCommand(msg, commandPath)
 	case "exchange":
 		break
 	case "estate":
@@ -230,12 +233,12 @@ func (c *Router) handleMessage(msg *tgbotapi.Message) {
 	case "education":
 		break
 	default:
-		log.Printf("Router.handleCallback: unknown domain - %s", commandPath.Domain)
+		log.Printf("Router.handleCallback: unknown service - %s", commandPath.Domain)
 	}
 }
 
 func (c *Router) showCommandFormat(inputMessage *tgbotapi.Message) {
-	outputMsg := tgbotapi.NewMessage(inputMessage.Chat.ID, "Command format: /{command}__{domain}__{subdomain}")
+	outputMsg := tgbotapi.NewMessage(inputMessage.Chat.ID, "Command format: /{command}__{service}__{verification}")
 
 	_, err := c.bot.Send(outputMsg)
 	if err != nil {
