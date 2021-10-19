@@ -11,7 +11,7 @@ func NewService() *Service {
 }
 
 func (service *Service) List() string {
-	outputMsgText := "Here all the employees: \n\n"
+	outputMsgText := "Success -> Here all the employees: \n\n"
 
 	employees := repository.all()
 	for _, p := range employees {
@@ -24,26 +24,26 @@ func (service *Service) List() string {
 
 func (service *Service) Get(idx int) string {
 	if !repository.existsById(idx) {
-		return "Error: employee[" + strconv.Itoa(idx) + "] not found!"
+		return "Error -> employee[" + strconv.Itoa(idx) + "] not found!"
 	}
 
 	employee := repository.find(idx)
 
-	return "Employee[" + employee.idAsString() + "] - " + employee.Title
+	return "Success -> Employee[" + employee.idAsString() + "] - " + employee.Title
 }
 
-func (service *Service) Delete(id int) bool {
+func (service *Service) Delete(id int) string {
 	if repository.existsById(id) {
 		repository.delete(id)
 
-		return true
+		return "Success -> Deleted Employee[" + strconv.Itoa(id) + "]"
 	}
 
-	return false
+	return "Error -> Employee[" + strconv.Itoa(id) + "] not found"
 }
 
 func (service *Service) Create(title string) string {
 	employee := repository.create(title)
 
-	return "Was created employee[" + employee.idAsString() + "] " + employee.Title
+	return "Error -> Was created employee[" + employee.idAsString() + "] " + employee.Title
 }

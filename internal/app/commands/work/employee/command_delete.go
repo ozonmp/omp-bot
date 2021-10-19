@@ -9,15 +9,7 @@ import (
 func (c *DemoSubdomainCommander) Delete(inputMessage *tgbotapi.Message) {
 	id, _ := strconv.Atoi(inputMessage.CommandArguments())
 
-	msgText := ""
-
-	if c.subdomainService.Delete(id) {
-		msgText = "Deleted Employee[" + strconv.Itoa(id) + "]"
-	} else {
-		msgText = "Employee[" + strconv.Itoa(id) + "] not found"
-	}
-
-	msg := tgbotapi.NewMessage(inputMessage.Chat.ID, msgText)
+	msg := tgbotapi.NewMessage(inputMessage.Chat.ID, c.subdomainService.Delete(id))
 
 	_, err := c.bot.Send(msg)
 	if err != nil {
