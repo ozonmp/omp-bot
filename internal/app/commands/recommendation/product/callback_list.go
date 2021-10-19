@@ -64,19 +64,19 @@ func (commander *ProductCommander) ShowButtons(cursor uint64, limit uint64, chat
 		prevButton = tgbotapi.NewInlineKeyboardButtonData("Prev page", callbackPrevPagePath.String())
 	}
 
-	if len(nextButton.Text) != 0 && len(prevButton.Text) != 0{
+	if len(nextButton.Text) != 0 && len(prevButton.Text) != 0 {
 		msg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(
 			tgbotapi.NewInlineKeyboardRow(
 				prevButton, nextButton,
 			),
 		)
-	} else if len(prevButton.Text) != 0{
+	} else if len(prevButton.Text) != 0 {
 		msg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(
 			tgbotapi.NewInlineKeyboardRow(
 				prevButton,
 			),
 		)
-	} else {
+	} else if len(nextButton.Text) != 0 {
 		msg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(
 			tgbotapi.NewInlineKeyboardRow(
 				nextButton,
