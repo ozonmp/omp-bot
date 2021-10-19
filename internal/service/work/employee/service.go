@@ -10,8 +10,16 @@ func NewService() *Service {
 	return &Service{}
 }
 
-func (service *Service) List() map[int]Employee {
-	return repository.all()
+func (service *Service) List() string {
+	outputMsgText := "Here all the employees: \n\n"
+
+	employees := repository.all()
+	for _, p := range employees {
+		outputMsgText += p.Title
+		outputMsgText += "\n"
+	}
+
+	return outputMsgText
 }
 
 func (service *Service) Get(idx int) string {
