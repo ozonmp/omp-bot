@@ -1,22 +1,22 @@
-package subdomain
+package employee
 
 import (
 	"log"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/app/path"
-	"github.com/ozonmp/omp-bot/internal/service/work/work"
+	"github.com/ozonmp/omp-bot/internal/service/work/employee"
 )
 
 type DemoSubdomainCommander struct {
 	bot              *tgbotapi.BotAPI
-	subdomainService *work.Service
+	subdomainService *employee.Service
 }
 
 func NewDemoSubdomainCommander(
 	bot *tgbotapi.BotAPI,
 ) *DemoSubdomainCommander {
-	subdomainService := work.NewService()
+	subdomainService := employee.NewService()
 
 	return &DemoSubdomainCommander{
 		bot:              bot,

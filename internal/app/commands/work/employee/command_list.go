@@ -1,4 +1,4 @@
-package subdomain
+package employee
 
 import (
 	"encoding/json"
@@ -24,7 +24,7 @@ func (c *DemoSubdomainCommander) List(inputMessage *tgbotapi.Message) {
 	})
 
 	callbackPath := path.CallbackPath{
-		Domain:       "work",
+		Domain:       "employee",
 		Subdomain:    "employee",
 		CallbackName: "list",
 		CallbackData: string(serializedData),

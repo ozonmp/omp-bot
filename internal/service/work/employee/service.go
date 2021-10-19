@@ -1,4 +1,4 @@
-package work
+package employee
 
 type Service struct{}
 

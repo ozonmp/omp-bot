@@ -4,7 +4,7 @@ import (
 	"log"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-	"github.com/ozonmp/omp-bot/internal/app/commands/work/subdomain"
+	"github.com/ozonmp/omp-bot/internal/app/commands/work/employee"
 	"github.com/ozonmp/omp-bot/internal/app/path"
 )
 
@@ -23,7 +23,7 @@ func NewDemoCommander(
 ) *WorkCommander {
 	return &WorkCommander{
 		bot:               bot,
-		employeeCommander: subdomain.NewDemoSubdomainCommander(bot),
+		employeeCommander: employee.NewDemoSubdomainCommander(bot),
 	}
 }
 

@@ -35,7 +35,7 @@ type Router struct {
 	// storage
 	// streaming
 	// business
-	// work
+	// employee
 	// service
 	// exchange
 	// estate
@@ -70,7 +70,7 @@ func NewRouter(
 		// storage
 		// streaming
 		// business
-		// work
+		// employee
 		// service
 		// exchange
 		// estate
