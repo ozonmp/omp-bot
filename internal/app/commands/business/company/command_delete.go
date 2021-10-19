@@ -17,7 +17,7 @@ func (c *CompanyCommander) Delete(inputMessage *tgbotapi.Message) {
 		return
 	}
 
-	isDeleted, err := c.companyService.Delete(idx)
+	isDeleted, err := c.companyService.Remove(uint64(idx))
 	if err != nil {
 		log.Printf("Unable to delete %d element - %v", idx, err)
 	}

@@ -16,7 +16,7 @@ func (c *CompanyCommander) Get(inputMessage *tgbotapi.Message) {
 		return
 	}
 
-	company, err := c.companyService.Get(idx)
+	company, err := c.companyService.Describe(uint64(idx))
 	if err != nil {
 		log.Printf("fail to get company with idx %d: %v", idx, err)
 		return
