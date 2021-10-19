@@ -29,6 +29,7 @@ func NewDemoCommander(
 }
 
 func (c *DemoCommander) HandleCallback(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
+	log.Printf("HandleCallback demo")
 	switch callbackPath.Subdomain {
 	case "subdomain":
 		c.subdomainCommander.HandleCallback(callback, callbackPath)

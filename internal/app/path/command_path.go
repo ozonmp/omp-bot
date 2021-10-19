@@ -29,7 +29,6 @@ func ParseCommand(commandText string) (CommandPath, error) {
 
 func (c CommandPath) WithCommandName(commandName string) CommandPath {
 	c.CommandName = commandName
-
 	return c
 }
 
