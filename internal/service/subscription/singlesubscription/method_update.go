@@ -1,4 +1,4 @@
-package singleSubscription
+package singlesubscription
 
 import "github.com/ozonmp/omp-bot/internal/model/subscription"
 
@@ -10,7 +10,12 @@ func (s *DummySingleSubscriptionService) Update(
 		return ErrSingleSubsriptionNotFound
 	} else {
 		v.ID = singleSubscription.ID
-		v.Name = singleSubscription.Name
+		v.UserID = singleSubscription.UserID
+		v.ServiceID = singleSubscription.ServiceID
+		v.IsDeleted = singleSubscription.IsDeleted
+		v.CreatedAt = singleSubscription.CreatedAt
+		v.DeletedAt = singleSubscription.DeletedAt
+		v.ExpireAt = singleSubscription.ExpireAt
 		return nil
 	}
 }

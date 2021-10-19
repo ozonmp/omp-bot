@@ -1,11 +1,11 @@
-package singleSubscription
+package singlesubscription
 
 import (
 	"log"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/app/path"
-	service "github.com/ozonmp/omp-bot/internal/service/subscription/singleSubscription"
+	service "github.com/ozonmp/omp-bot/internal/service/subscription/singlesubscription"
 )
 
 const (

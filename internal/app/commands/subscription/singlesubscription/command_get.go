@@ -1,4 +1,4 @@
-package singleSubscription
+package singlesubscription
 
 import (
 	"log"

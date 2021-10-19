@@ -4,9 +4,9 @@ import (
 	"log"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-	"github.com/ozonmp/omp-bot/internal/app/commands/subscription/singleSubscription"
+	"github.com/ozonmp/omp-bot/internal/app/commands/subscription/singlesubscription"
 	"github.com/ozonmp/omp-bot/internal/app/path"
-	svc "github.com/ozonmp/omp-bot/internal/service/subscription/singleSubscription"
+	svc "github.com/ozonmp/omp-bot/internal/service/subscription/singlesubscription"
 )
 
 type Commander interface {
@@ -25,7 +25,7 @@ func NewSubscriptionCommander(
 	singleSubscriptionService := svc.NewDummySingleSubscriptionService()
 	return &SubscriptionCommander{
 		bot:                         bot,
-		singleSubscriptionCommander: singleSubscription.NewSingleSubscriptionCommander(bot, singleSubscriptionService),
+		singleSubscriptionCommander: singlesubscription.NewSingleSubscriptionCommander(bot, singleSubscriptionService),
 	}
 }
 
