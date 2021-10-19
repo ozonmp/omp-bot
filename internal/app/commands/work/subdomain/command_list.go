@@ -24,8 +24,8 @@ func (c *DemoSubdomainCommander) List(inputMessage *tgbotapi.Message) {
 	})
 
 	callbackPath := path.CallbackPath{
-		Domain:       "demo",
-		Subdomain:    "subdomain",
+		Domain:       "work",
+		Subdomain:    "employee",
 		CallbackName: "list",
 		CallbackData: string(serializedData),
 	}

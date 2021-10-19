@@ -5,7 +5,7 @@ import (
 	"runtime/debug"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-	"github.com/ozonmp/omp-bot/internal/app/commands/demo"
+	"github.com/ozonmp/omp-bot/internal/app/commands/work"
 	"github.com/ozonmp/omp-bot/internal/app/path"
 )
 
@@ -18,8 +18,8 @@ type Router struct {
 	// bot
 	bot *tgbotapi.BotAPI
 
-	// demoCommander
-	demoCommander Commander
+	// workCommander
+	workCommander Commander
 	// user
 	// access
 	// buy
@@ -53,8 +53,8 @@ func NewRouter(
 	return &Router{
 		// bot
 		bot: bot,
-		// demoCommander
-		demoCommander: demo.NewDemoCommander(bot),
+		// workCommander
+		workCommander: work.NewDemoCommander(bot),
 		// user
 		// access
 		// buy
@@ -106,8 +106,8 @@ func (c *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
 	}
 
 	switch callbackPath.Domain {
-	case "demo":
-		c.demoCommander.HandleCallback(callback, callbackPath)
+	case "work":
+		c.workCommander.HandleCallback(callback, callbackPath)
 	case "user":
 		break
 	case "access":
@@ -137,8 +137,6 @@ func (c *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
 	case "streaming":
 		break
 	case "business":
-		break
-	case "work":
 		break
 	case "service":
 		break
@@ -177,8 +175,8 @@ func (c *Router) handleMessage(msg *tgbotapi.Message) {
 	}
 
 	switch commandPath.Domain {
-	case "demo":
-		c.demoCommander.HandleCommand(msg, commandPath)
+	case "work":
+		c.workCommander.HandleCommand(msg, commandPath)
 	case "user":
 		break
 	case "access":
@@ -209,8 +207,6 @@ func (c *Router) handleMessage(msg *tgbotapi.Message) {
 		break
 	case "business":
 		break
-	case "work":
-		break
 	case "service":
 		break
 	case "exchange":
@@ -235,7 +231,7 @@ func (c *Router) handleMessage(msg *tgbotapi.Message) {
 }
 
 func (c *Router) showCommandFormat(inputMessage *tgbotapi.Message) {
-	outputMsg := tgbotapi.NewMessage(inputMessage.Chat.ID, "Command format: /{command}__{domain}__{subdomain}")
+	outputMsg := tgbotapi.NewMessage(inputMessage.Chat.ID, "Command format: /{command}__{domain}__{employee}")
 
 	_, err := c.bot.Send(outputMsg)
 	if err != nil {
