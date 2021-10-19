@@ -8,12 +8,12 @@ import (
 	"github.com/ozonmp/omp-bot/internal/app/path"
 )
 
-func (c *GroundCommander) List(inputMessage *tgbotapi.Message) error {
+func (c *GroundCommander) List(inputMessage *tgbotapi.Message)  {
 	outputMsgText := "Here all the grounds: \n\n"
 
-	grounds, err := c.groundService.List(0, 10000)
+	grounds, err := c.service.List(0, 10000)
 	if err != nil {
-		return err
+		// return err
 	}
 	for i, p := range grounds {
 		outputMsgText += fmt.Sprintf("%d. %s", i, p.String())
@@ -24,7 +24,7 @@ func (c *GroundCommander) List(inputMessage *tgbotapi.Message) error {
 		Offset: 0,
 	})
 	if err != nil {
-		return err
+		// return err
 	}
 
 	callbackPath := path.CallbackPath{
@@ -42,5 +42,5 @@ func (c *GroundCommander) List(inputMessage *tgbotapi.Message) error {
 
 	// c.Send(msg)
 	c.SendWithReply(inputMessage.Chat.ID, outputMsgText, replyMarkup)
-	return err
+	// return err
 }

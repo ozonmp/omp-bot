@@ -1,25 +1,32 @@
 package ground
 
 import (
-	"errors"
 	"log"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/app/path"
-	"github.com/ozonmp/omp-bot/internal/service/autotransport/ground"
+	"github.com/ozonmp/omp-bot/internal/service/autotransport"
 )
 
-type GroundCommander struct {
-	bot           *tgbotapi.BotAPI
-	groundService *ground.DummyGroundService
+type Commander interface {
+	Help(inputMsg *tgbotapi.Message)
+	Get(inputMsg *tgbotapi.Message)
+	List(inputMsg *tgbotapi.Message)
+	Delete(inputMsg *tgbotapi.Message)
+
+	New(inputMsg *tgbotapi.Message)
+	Edit(inputMsg *tgbotapi.Message)
 }
 
-func NewGroundCommander(bot *tgbotapi.BotAPI) *GroundCommander {
-	groundService := ground.NewDummyGroundService()
+type GroundCommander struct {
+	bot     *tgbotapi.BotAPI
+	service autotransport.GroundService
+}
 
+func NewGroundCommander(bot *tgbotapi.BotAPI, service autotransport.GroundService) *GroundCommander {
 	return &GroundCommander{
-		bot:           bot,
-		groundService: groundService,
+		bot:     bot,
+		service: service,
 	}
 }
 
@@ -32,38 +39,22 @@ func (c *GroundCommander) HandleCallback(callback *tgbotapi.CallbackQuery, callb
 	}
 }
 
+// TODO catch errors
 func (c *GroundCommander) HandleCommand(msg *tgbotapi.Message, commandPath path.CommandPath) {
-	var err error
 	switch commandPath.CommandName {
 	case "help":
 		c.Help(msg)
 	case "list":
-		err = c.List(msg)
+		c.List(msg)
 	case "get":
-		err = c.Get(msg)
+		c.Get(msg)
 	case "delete":
-		err = c.Delete(msg)
+		c.Delete(msg)
 	case "new":
-		err = errors.New("not yet implemented")
+		c.New(msg)
 	case "edit":
-		err = errors.New("not yet implemented")
+		c.Edit(msg)
 	default:
 		c.Default(msg)
 	}
-	if err == nil {
-		return
-	}
-	var userError error
-	var outMsg tgbotapi.MessageConfig
-	if errors.As(err, &userError) {
-		outMsg = tgbotapi.NewMessage(msg.Chat.ID, "Input data were wrong: "+userError.Error())
-	} else {
-		log.Printf("Internal error %v", err)
-		outMsg = tgbotapi.NewMessage(msg.Chat.ID, "Got internal exception")
-	}
-
-	if _, err := c.bot.Send(outMsg); err != nil {
-		log.Printf("Send message errro %v", err)
-	}
-
 }
