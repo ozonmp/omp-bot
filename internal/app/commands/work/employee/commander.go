@@ -16,11 +16,11 @@ type DemoSubdomainCommander struct {
 func NewDemoSubdomainCommander(
 	bot *tgbotapi.BotAPI,
 ) *DemoSubdomainCommander {
-	subdomainService := employee.NewService()
+	service := employee.NewService()
 
 	return &DemoSubdomainCommander{
 		bot:              bot,
-		subdomainService: subdomainService,
+		subdomainService: service,
 	}
 }
 
@@ -41,6 +41,10 @@ func (c *DemoSubdomainCommander) HandleCommand(msg *tgbotapi.Message, commandPat
 		c.List(msg)
 	case "get":
 		c.Get(msg)
+	case "create":
+		c.Create(msg)
+	case "delete":
+		c.Delete(msg)
 	default:
 		c.Default(msg)
 	}

@@ -18,7 +18,7 @@ type WorkCommander struct {
 	employeeCommander Commander
 }
 
-func NewDemoCommander(
+func NewWorkCommander(
 	bot *tgbotapi.BotAPI,
 ) *WorkCommander {
 	return &WorkCommander{

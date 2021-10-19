@@ -54,7 +54,7 @@ func NewRouter(
 		// bot
 		bot: bot,
 		// workCommander
-		workCommander: work.NewDemoCommander(bot),
+		workCommander: work.NewWorkCommander(bot),
 		// user
 		// access
 		// buy
