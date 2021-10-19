@@ -5,6 +5,7 @@ import (
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/app/commands/demo"
+	"github.com/ozonmp/omp-bot/internal/app/commands/education"
 	"github.com/ozonmp/omp-bot/internal/app/path"
 )
 
@@ -44,6 +45,7 @@ type Router struct {
 	// logistic
 	// product
 	// education
+	educationCommander Commander
 }
 
 func NewRouter(
@@ -79,6 +81,7 @@ func NewRouter(
 		// logistic
 		// product
 		// education
+		educationCommander: education.NewEducationCommander(bot),
 	}
 }
 
@@ -227,6 +230,7 @@ func (c *Router) handleMessage(msg *tgbotapi.Message) {
 	case "product":
 		break
 	case "education":
+		c.educationCommander.HandleCommand(msg, commandPath)
 		break
 	default:
 		log.Printf("Router.handleCallback: unknown domain - %s", commandPath.Domain)
