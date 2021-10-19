@@ -34,19 +34,43 @@ func (dummy *DummyExchangeService) Describe(exchangeID uint64) (*exchange.Exchan
 }
 
 func (dummy *DummyExchangeService) List(cursor uint64, limit uint64) ([]exchange.Exchange, error) {
-	exchages := dummy.accessor.Entities()
-	return exchages, nil
+	exchanges := dummy.accessor.Entities()
+	exchangesLength := uint64(len(exchanges))
+	if cursor >= exchangesLength {
+		return nil, errors.New(fmt.Sprintf("Cursor has overran the last index of the list.\n"+
+			"Last index = %d\nCursor position = %d\n", exchangesLength - 1, cursor))
+	}
+	var last uint64
+	if (cursor + limit) >= exchangesLength {
+		last = exchangesLength
+	} else {
+		last = cursor + limit
+	}
+	return exchanges[cursor:last + 1], nil
 }
 
 func (dummy *DummyExchangeService) Create(exchange exchange.Exchange) (uint64, error) {
+	if _, isExistsWithSameId := dummy.accessor.Get(exchange.Id); isExistsWithSameId {
+		errorMessage := fmt.Sprintf("Unable to create Exchange with the same id %v.\n", exchange.Id)
+		return 0, errors.New(errorMessage)
+	}
 	return dummy.accessor.Add(exchange), nil
 }
 
 func (dummy *DummyExchangeService) Update(exchangeID uint64, exchange exchange.Exchange) error {
-
-	return nil
+	if dummy.accessor.Replace(exchangeID, exchange) {
+		return nil
+	}
+	errorMessage := fmt.Sprintf("Unable to update Exchange with id %v.\n"+
+		"Reason: Exchange not found.", exchangeID)
+	return errors.New(errorMessage)
 }
 
 func (dummy *DummyExchangeService) Remove(exchangeID uint64) (bool, error) {
-	return dummy.accessor.Remove(exchangeID)
+	if dummy.accessor.Remove(exchangeID) == false {
+		errorMessage := fmt.Sprintf("Unable to remove Exchange with id %v.\n"+
+			"Reason: Exchange not found.", exchangeID)
+		return false, errors.New(errorMessage)
+	}
+	return true, nil
 }
