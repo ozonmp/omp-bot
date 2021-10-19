@@ -230,17 +230,9 @@ func (r *Router) createResponseForCallback(callback *tgbotapi.CallbackQuery) (re
 
 func (r *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
 	resp := r.createResponseForCallback(callback)
-
-	if resp.ChatID != 0 {
-		// HACK
-		// TODO: remove this check after we are done with refactoring of
-		// message handling, right now not all paths in the above call
-		// return correct response
-
-		_, err := r.bot.Send(resp)
-		if err != nil {
-			log.Printf("Failed to send callback response: %v", err)
-		}
+	_, err := r.bot.Send(resp)
+	if err != nil {
+		log.Printf("Failed to send callback response: %v", err)
 	}
 }
 
@@ -337,17 +329,9 @@ func (r *Router) createResponseForMessage(msg *tgbotapi.Message) (resp tgbotapi.
 
 func (r *Router) handleMessage(msg *tgbotapi.Message) {
 	resp := r.createResponseForMessage(msg)
-
-	if resp.ChatID != 0 {
-		// HACK
-		// TODO: remove this check after we are done with refactoring of
-		// message handling, right now not all paths in the above call
-		// return correct response
-
-		_, err := r.bot.Send(resp)
-		if err != nil {
-			log.Printf("Failed to send command response: %v", err)
-		}
+	_, err := r.bot.Send(resp)
+	if err != nil {
+		log.Printf("Failed to send command response: %v", err)
 	}
 }
 
