@@ -37,6 +37,8 @@ func (c *CompanyCommander) HandleCommand(msg *tgbotapi.Message, commandPath path
 	switch commandPath.CommandName {
 	case "help":
 		c.Help(msg)
+	case "list":
+		c.List(msg)
 	case "get":
 		c.Get(msg)
 	default:

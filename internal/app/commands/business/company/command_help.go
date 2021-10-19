@@ -11,7 +11,7 @@ func (c *CompanyCommander) Help(inputMessage *tgbotapi.Message) {
 		"/help__business__company - show this Help\n"+
 			"/get__business__company — get a entity\n"+
 			"/list__business__company — get a list of your entity\n"+
-			"/delere__business__company — delete an existing entity\n\n"+
+			"/delete__business__company — delete an existing entity\n\n"+
 			"/new__business__company — create a new entity // not implemented\n"+
 			"/edit__business__company — create a new entity // not implemented\n",
 	)

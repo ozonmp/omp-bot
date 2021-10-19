@@ -6,7 +6,16 @@ type Company struct {
 }
 
 var allEntities = []Company{
-	{Name: "Company_one", ZipCode: 100001},
-	{Name: "Company_two", ZipCode: 100002},
-	{Name: "Company_three", ZipCode: 100003},
+	{Name: "Company_01", ZipCode: 100001},
+	{Name: "Company_02", ZipCode: 100002},
+	{Name: "Company_03", ZipCode: 100003},
+	{Name: "Company_04", ZipCode: 100004},
+	{Name: "Company_05", ZipCode: 100005},
+	{Name: "Company_06", ZipCode: 100006},
+	{Name: "Company_07", ZipCode: 100007},
+	{Name: "Company_08", ZipCode: 100008},
+	{Name: "Company_09", ZipCode: 100009},
+	{Name: "Company_10", ZipCode: 100010},
+	{Name: "Company_11", ZipCode: 100011},
+	{Name: "Company_12", ZipCode: 100012},
 }
