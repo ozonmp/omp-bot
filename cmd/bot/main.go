@@ -12,6 +12,10 @@ func main() {
 	if err != nil {
 		log.Panicf("load config: %v", err)
 	}
+	if config.Debug {
+		log.SetFlags(log.LstdFlags | log.Lshortfile)
+	}
+
 	bot, err := tgbotapi.NewBotAPI(config.Token)
 	if err != nil {
 		log.Panicf("connect to API: %v", err)
@@ -20,11 +24,9 @@ func main() {
 
 	log.Printf("Authorized on account %s", bot.Self.UserName)
 
-	u := tgbotapi.UpdateConfig{
+	updates, err := bot.GetUpdatesChan(tgbotapi.UpdateConfig{
 		Timeout: 60,
-	}
-
-	updates, err := bot.GetUpdatesChan(u)
+	})
 	if err != nil {
 		log.Panic(err)
 	}
@@ -34,4 +36,5 @@ func main() {
 	for update := range updates {
 		router.HandleUpdate(update)
 	}
+	log.Printf("Exited after updates channel was closed")
 }
