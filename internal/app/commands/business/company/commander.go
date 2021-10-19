@@ -9,7 +9,7 @@ import (
 )
 
 type CompanyCommander struct {
-	bot			   *tgbotapi.BotAPI
+	bot            *tgbotapi.BotAPI
 	companyService *company.DummyCompanyService
 }
 
@@ -19,7 +19,7 @@ func NewCompanyCommander(
 	companyService := company.NewDummyCompanyService()
 
 	return &CompanyCommander{
-		bot:			bot,
+		bot:            bot,
 		companyService: companyService,
 	}
 }
@@ -37,6 +37,8 @@ func (c *CompanyCommander) HandleCommand(msg *tgbotapi.Message, commandPath path
 	switch commandPath.CommandName {
 	case "help":
 		c.Help(msg)
+	case "get":
+		c.Get(msg)
 	default:
 		c.Default(msg)
 	}
