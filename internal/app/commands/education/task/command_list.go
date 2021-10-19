@@ -7,7 +7,7 @@ import (
 	"github.com/ozonmp/omp-bot/internal/app/path"
 )
 
-func (c *TaskStruct) List(inputMessage *tgbotapi.Message) {
+func (c *TaskCommandStruct) List(inputMessage *tgbotapi.Message) {
 
 	outputMsgText := "Here the products: \n"
 

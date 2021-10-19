@@ -13,7 +13,7 @@ type createProductData struct {
 	Description string `json:"description"`
 }
 
-func (c *TaskStruct) New(inputMessage *tgbotapi.Message) {
+func (c *TaskCommandStruct) New(inputMessage *tgbotapi.Message) {
 
 	messageText := "Create new product - "
 

@@ -7,7 +7,7 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
-func (c *TaskStruct) Get(inputMessage *tgbotapi.Message) {
+func (c *TaskCommandStruct) Get(inputMessage *tgbotapi.Message) {
 
 	args := inputMessage.CommandArguments()
 

@@ -24,7 +24,7 @@ type TaskCommander interface {
 	HandleCommand(message *tgbotapi.Message, commandPath path.CommandPath)
 }
 
-type TaskStruct struct {
+type TaskCommandStruct struct {
 	bot         *tgbotapi.BotAPI
 	taskService *task.DummyTaskService
 }
@@ -33,13 +33,13 @@ func NewTaskCommander(bot *tgbotapi.BotAPI) TaskCommander {
 
 	taskService := task.NewDummyTaskService()
 
-	return &TaskStruct{
+	return &TaskCommandStruct{
 		bot:         bot,
 		taskService: taskService,
 	}
 }
 
-func (c *TaskStruct) HandleCallback(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
+func (c *TaskCommandStruct) HandleCallback(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
 	switch callbackPath.CallbackName {
 	case "list":
 		c.CallbackList(callback, callbackPath)
@@ -48,7 +48,7 @@ func (c *TaskStruct) HandleCallback(callback *tgbotapi.CallbackQuery, callbackPa
 	}
 }
 
-func (c *TaskStruct) HandleCommand(msg *tgbotapi.Message, commandPath path.CommandPath) {
+func (c *TaskCommandStruct) HandleCommand(msg *tgbotapi.Message, commandPath path.CommandPath) {
 	switch commandPath.CommandName {
 	case "help":
 		c.Help(msg)
@@ -67,7 +67,7 @@ func (c *TaskStruct) HandleCommand(msg *tgbotapi.Message, commandPath path.Comma
 	}
 }
 
-func (c *TaskStruct) SendMessage(msg tgbotapi.MessageConfig) {
+func (c *TaskCommandStruct) SendMessage(msg tgbotapi.MessageConfig) {
 
 	_, err := c.bot.Send(msg)
 	if err != nil {

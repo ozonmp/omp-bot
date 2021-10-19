@@ -14,7 +14,7 @@ type updateProductData struct {
 	Description string `json:"description"`
 }
 
-func (c *TaskStruct) Edit(inputMessage *tgbotapi.Message) {
+func (c *TaskCommandStruct) Edit(inputMessage *tgbotapi.Message) {
 
 	args := inputMessage.CommandArguments()
 

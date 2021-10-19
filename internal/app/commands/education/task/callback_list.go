@@ -12,7 +12,7 @@ type CallbackListData struct {
 	Limit  uint64 `json:"limit"`
 }
 
-func (c *TaskStruct) CallbackList(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
+func (c *TaskCommandStruct) CallbackList(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
 
 	parsedData := CallbackListData{}
 
