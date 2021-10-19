@@ -60,7 +60,7 @@ func NewRouter(
 		// buy
 		// delivery
 		// recommendation
-		recommendationCommander: recommendation.NewRecomendationCommander(bot),
+		recommendationCommander: recommendation.NewRecommendationCommander(bot),
 		// travel
 		// loyalty
 		// bank

@@ -10,5 +10,5 @@ type Product struct {
 }
 
 func (product *Product) String() string{
-	return fmt.Sprintf("%d", product.Id) + product.Title
+	return fmt.Sprintf( "%d %s", product.Id, product.Title)
 }

@@ -19,13 +19,12 @@ type RecomendationCommander struct {
 	productCommander   commander.Commander
 }
 
-func NewRecomendationCommander(
+func NewRecommendationCommander(
 	bot *tgbotapi.BotAPI,
 ) *RecomendationCommander {
 	service := service.NewDummyProductService()
 	return &RecomendationCommander{
 		bot: bot,
-		// subdomainCommander
 		productCommander: commander.NewProductCommander(bot, service),
 	}
 }

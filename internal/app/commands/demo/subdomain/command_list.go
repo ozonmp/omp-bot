@@ -13,7 +13,7 @@ func (c *DemoSubdomainCommander) List(inputMessage *tgbotapi.Message) {
 	products := c.subdomainService.List()
 	for _, p := range products {
 		outputMsgText += p.Title
-		outputMsgText += "\n"
+	outputMsgText += "\n"
 	}
 
 	msg := tgbotapi.NewMessage(inputMessage.Chat.ID, outputMsgText)
@@ -34,6 +34,6 @@ func (c *DemoSubdomainCommander) List(inputMessage *tgbotapi.Message) {
 			tgbotapi.NewInlineKeyboardButtonData("Next page", callbackPath.String()),
 		),
 	)
-
 	c.bot.Send(msg)
+
 }
