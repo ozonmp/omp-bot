@@ -9,5 +9,5 @@ type Order struct {
 }
 
 func (o Order) String() string {
-	return fmt.Sprintf("Order {id: %v, title: %v, quantity: %v", o.Id, o.Title, o.Quantity)
+	return fmt.Sprintf(`Order{id: %v, title: "%v", quantity: %v}`, o.Id, o.Title, o.Quantity)
 }

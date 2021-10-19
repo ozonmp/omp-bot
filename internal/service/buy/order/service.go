@@ -35,7 +35,7 @@ func (s *DummyOrderService) List(cursor uint64, limit uint64) ([]buy.Order, erro
 	}
 
 	cache := s.GetCache()
-	l := max(limit+cursor, uint64(len(cache)))
+	l := min(limit+cursor, uint64(len(cache)))
 	return cache[cursor:l], nil
 }
 
@@ -86,13 +86,13 @@ func (s *DummyOrderService) GetCache() []buy.Order {
 
 	len := len(s.orders)
 
-	keys := make([]uint64, len)
+	keys := make([]uint64, 0, len)
 	for k, _ := range s.orders {
 		keys = append(keys, k)
 	}
 	sort.Slice(keys, func(i, j int) bool { return keys[i] < keys[j] })
 
-	s.cache = make([]buy.Order, len)
+	s.cache = make([]buy.Order, 0, len)
 	for _, k := range keys {
 		s.cache = append(s.cache, s.orders[k])
 	}
@@ -101,8 +101,8 @@ func (s *DummyOrderService) GetCache() []buy.Order {
 	return s.cache
 }
 
-func max(a uint64, b uint64) uint64 {
-	if a > b {
+func min(a uint64, b uint64) uint64 {
+	if a < b {
 		return a
 	}
 	return b
