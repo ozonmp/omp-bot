@@ -88,7 +88,7 @@ func (s *DummyOrderService) GetCache() []buy.Order {
 	len := len(s.orders)
 
 	keys := make([]uint64, 0, len)
-	for k, _ := range s.orders {
+	for k := range s.orders {
 		keys = append(keys, k)
 	}
 	sort.Slice(keys, func(i, j int) bool { return keys[i] < keys[j] })
