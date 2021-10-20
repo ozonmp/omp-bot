@@ -3,16 +3,25 @@ package film
 import (
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+	"github.com/ozonmp/omp-bot/internal/model/cinema"
 	"strconv"
 	"strings"
 )
 
 func (c CinemaFilmCommander) Edit(inputMsg *tgbotapi.Message) {
 	entityArgsString := strings.TrimSpace(inputMsg.CommandArguments())
-	params, err := getParameters(entityArgsString)
+	newFilm, err := c.editCommandLogic(entityArgsString)
 	if err != nil {
 		c.sendMessage(tgbotapi.NewMessage(inputMsg.Chat.ID, fmt.Sprintf("%s", err)))
 		return
+	}
+	c.sendMessage(tgbotapi.NewMessage(inputMsg.Chat.ID, fmt.Sprintf("Updated film:\n%s", newFilm)))
+}
+
+func (c *CinemaFilmCommander) editCommandLogic(entityArgsString string) (*cinema.Film, error) {
+	params, err := getParameters(entityArgsString)
+	if err != nil {
+		return nil, err
 	}
 
 	strIDToFind := ""
@@ -25,20 +34,17 @@ func (c CinemaFilmCommander) Edit(inputMsg *tgbotapi.Message) {
 
 	idToFind, err := strconv.Atoi(strIDToFind)
 	if err != nil || idToFind < 0 {
-		c.sendMessage(tgbotapi.NewMessage(inputMsg.Chat.ID, "Message must contain 'search' argument with film ID, to find a film for update.\nExample: search:10;name:Harry Potter;rating:9.8;description:good story"))
-		return
+		return nil, fmt.Errorf("Message must contain 'search' argument with film ID, to find a film for update.\nExample: search:10;name:Harry Potter;rating:9.8;description:good story")
 	}
 
 	newFilm, err := filmFromParameters(params)
 	if err != nil {
-		c.sendMessage(tgbotapi.NewMessage(inputMsg.Chat.ID, fmt.Sprintf("%s", err)))
-		return
+		return nil, err
 	}
 
 	if err := c.filmService.Update(uint64(idToFind), newFilm); err != nil {
-		c.sendMessage(tgbotapi.NewMessage(inputMsg.Chat.ID, fmt.Sprintf("%s", err)))
-		return
+		return nil, err
 	}
 
-	c.sendMessage(tgbotapi.NewMessage(inputMsg.Chat.ID, fmt.Sprintf("Updated film:\n%s", newFilm)))
+	return newFilm, nil
 }
