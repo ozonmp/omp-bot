@@ -6,7 +6,8 @@ type Repository struct {
 
 func NewRepository() Repository {
 	storage := map[int]Employee{
-		1: {Id: 1, Title: "Artem"},
+		0: {Id: 0, Title: "Artem"},
+		1: {Id: 1, Title: "Dmitrii"},
 		2: {Id: 2, Title: "Vasya"},
 		3: {Id: 3, Title: "Petya"},
 	}
@@ -14,8 +15,16 @@ func NewRepository() Repository {
 	return Repository{storage}
 }
 
-func (repo Repository) all() map[int]Employee {
-	return repo.storage
+func (repo Repository) paginate(page int, limit int) []Employee {
+	offset := limit * page
+
+	var employees = make([]Employee, limit)
+
+	for i := offset; i < limit; i++ {
+		employees[i] = repo.storage[i]
+	}
+
+	return employees
 }
 
 func (repo Repository) delete(id int) {

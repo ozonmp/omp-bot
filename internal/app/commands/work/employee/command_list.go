@@ -9,14 +9,14 @@ import (
 )
 
 func (c *DemoSubdomainCommander) List(inputMessage *tgbotapi.Message) {
-	msg := tgbotapi.NewMessage(inputMessage.Chat.ID, c.subdomainService.List())
+	msg := tgbotapi.NewMessage(inputMessage.Chat.ID, c.subdomainService.List(0, 3))
 
 	serializedData, _ := json.Marshal(CallbackListData{
-		Offset: 21,
+		Page: 0,
 	})
 
 	callbackPath := path.CallbackPath{
-		Domain:       "employee",
+		Domain:       "work",
 		Subdomain:    "employee",
 		CallbackName: "list",
 		CallbackData: string(serializedData),

@@ -3,7 +3,7 @@ package employee
 import "strconv"
 
 type EmployeeService interface {
-	List() string
+	List(cursor int, limit int) string
 
 	Get(idx int) string
 
@@ -22,10 +22,10 @@ func NewService() EmployeeService {
 	return &Service{}
 }
 
-func (service *Service) List() string {
-	outputMsgText := "Success -> Here all the employees: \n\n"
+func (service *Service) List(cursor int, limit int) string {
+	outputMsgText := "Success -> Here paginate the employees: \n\n"
 
-	for _, p := range repository.all() {
+	for _, p := range repository.paginate(cursor, limit) {
 		outputMsgText += p.idAsString() + " | " + p.Title
 		outputMsgText += "\n"
 	}

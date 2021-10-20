@@ -10,7 +10,7 @@ import (
 )
 
 type CallbackListData struct {
-	Offset int `json:"offset"`
+	Page int `json:"page"`
 }
 
 func (c *DemoSubdomainCommander) CallbackList(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
