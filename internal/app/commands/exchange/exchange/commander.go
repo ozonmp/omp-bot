@@ -1,10 +1,10 @@
 package exchange
 
 import (
-	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/app/path"
 	"github.com/ozonmp/omp-bot/internal/service/exchange/exchange"
+	"log"
 )
 
 type ExchangeCommander interface {
@@ -36,7 +36,7 @@ func (c *SubdomainCommander) HandleCommand(msg *tgbotapi.Message, commandPath pa
 	case "get":
 		c.Get(msg)
 	case "list":
-		return
+		c.List(msg)
 	case "delete":
 		c.Delete(msg)
 	case "new":
@@ -49,5 +49,10 @@ func (c *SubdomainCommander) HandleCommand(msg *tgbotapi.Message, commandPath pa
 }
 
 func (c *SubdomainCommander) HandleCallback(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
-	fmt.Println("TBD")
+	switch callbackPath.CallbackName {
+	case "list":
+		c.CallbackList(callback, callbackPath)
+	default:
+		log.Printf("DemoSubdomainCommander.HandleCallback: unknown callback name: %s", callbackPath.CallbackName)
+	}
 }

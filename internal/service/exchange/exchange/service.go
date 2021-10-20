@@ -46,7 +46,7 @@ func (dummy *DummyExchangeService) List(cursor uint64, limit uint64) ([]exchange
 	} else {
 		last = cursor + limit
 	}
-	return exchanges[cursor:last + 1], nil
+	return exchanges[cursor:last], nil
 }
 
 func (dummy *DummyExchangeService) Create(exchange exchange.Exchange) (uint64, error) {

@@ -8,6 +8,48 @@ var entities = []Exchange {
 		"Labirinth",
 		"In progress",
 	},
+	{
+		2,
+		"Ticket: Moscow - Vladivostok - Tokyo",
+		"Tatiana Kuznetsova",
+		"Aeroflot",
+		"In progress",
+	},
+	{
+		3,
+		"Rope: 10 meters",
+		"Glen",
+		"Dirty shop",
+		"Registred",
+	},
+	{
+		4,
+		"Nintendo Switch",
+		"Yuri Petrov",
+		"Nintendo",
+		"In progress",
+	},
+	{
+		5,
+		"Item",
+		"Person",
+		"Organization",
+		"Delivered",
+	},
+	{
+		6,
+		"Zygote",
+		"X",
+		"Y",
+		"Aborted",
+	},
+	{
+		7,
+		"BFG9000",
+		"Doomguy",
+		"Hell on Earth",
+		"Nightmare",
+	},
 }
 
 type Exchange struct {
