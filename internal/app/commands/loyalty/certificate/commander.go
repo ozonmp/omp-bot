@@ -40,6 +40,10 @@ func (c *LoyaltyCertificateCommander) HandleCommand(msg *tgbotapi.Message, comma
 		c.List(msg)
 	case "get":
 		c.Get(msg)
+	case "delete":
+		c.Delete(msg)
+	case "new":
+		c.New(msg)
 	default:
 		c.Default(msg)
 	}
