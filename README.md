@@ -22,3 +22,4 @@ make run
 | /get__work__employee {ID}  | Показать сотрудника по ID  |
 | /delete__work__employee {ID}  | Удалить сотрудника по ID  |
 | /new__work__employee {NAME} | Создать запись сотрудника  |
+| /edit__work__employee {ID} {NAME} | Обновить запись сотрудника  |

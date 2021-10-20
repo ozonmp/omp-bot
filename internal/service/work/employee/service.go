@@ -10,6 +10,8 @@ type EmployeeService interface {
 	Delete(id int) string
 
 	Create(title string) string
+
+	Update(id int, title string) string
 }
 
 type Service struct{}
@@ -55,4 +57,17 @@ func (service *Service) Create(title string) string {
 	employee := repository.create(title)
 
 	return "Error -> Was created employee[" + employee.idAsString() + "] " + employee.Title
+}
+
+func (service *Service) Update(id int, title string) string {
+	if !repository.existsById(id) {
+		return "Error -> Employee[" + strconv.Itoa(id) + "] not found"
+	}
+
+	employee := repository.find(id)
+	employee.Title = title
+
+	repository.update(employee)
+
+	return "Success -> Employee[" + employee.idAsString() + "] was updated"
 }

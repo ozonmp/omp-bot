@@ -45,7 +45,20 @@ func (c *DemoSubdomainCommander) HandleCommand(msg *tgbotapi.Message, commandPat
 		c.New(msg)
 	case "delete":
 		c.Delete(msg)
+	case "edit":
+		c.Update(msg)
 	default:
 		c.Default(msg)
 	}
+}
+
+func (c *DemoSubdomainCommander) sendMessage(input *tgbotapi.Message, text string) {
+	_, err := c.bot.Send(tgbotapi.NewMessage(input.Chat.ID, text))
+	if err != nil {
+		log.Printf("Error sending reply message to chat - %v", err)
+	}
+}
+
+func (c *DemoSubdomainCommander) sendWrongArgs(input *tgbotapi.Message) {
+	c.sendMessage(input, "Error -> Wrong Args")
 }

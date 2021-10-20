@@ -44,3 +44,7 @@ func (repo Repository) create(title string) Employee {
 func (repo Repository) find(id int) Employee {
 	return repo.storage[id]
 }
+
+func (repo Repository) update(employee Employee) {
+	repo.storage[employee.Id] = employee
+}
