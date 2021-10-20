@@ -43,6 +43,8 @@ func (c *PointCommander) HandleCommand(msg *tgbotapi.Message, commandPath path.C
 		c.Get(msg)
 	case "delete":
 		c.Delete(msg)
+	case "create":
+		c.Create(msg)
 	default:
 		c.Default(msg)
 	}

@@ -2,6 +2,7 @@ package point
 
 import (
 	"fmt"
+	"errors"
 	"github.com/ozonmp/omp-bot/internal/model/loyalty"
 )
 
@@ -90,4 +91,18 @@ func (s *DummyPointService) Delete(PointId uint64) (bool, error) {
 	}
 
 	return false, fmt.Errorf("Can't find entity with id %d", PointId)
+}
+
+func (s *DummyPointService) Create(o loyalty.Point) (uint64, error) {
+	if len(o.Name) == 0 {
+		return 0, errors.New("field 'Name' is required")
+	}
+
+	if len(o.Description) == 0 {
+		return 0, errors.New("field 'Description' is required")
+	}
+
+	s.allEntities = append(s.allEntities, o)
+
+	return uint64(len(s.allEntities) - 1), nil
 }

@@ -9,7 +9,9 @@ func (c *PointCommander) Help(inputMessage *tgbotapi.Message) {
 	msg := tgbotapi.NewMessage(inputMessage.Chat.ID,
 		"/help__loyalty__point - help\n"+
 		"/list__loyalty__point - list products\n"+
-		"/get__loyalty__point - get product by id\n",
+		"/get__loyalty__point - get product by id\n"+
+		"/delete__loyalty__point - remove entity by id\n" + 
+		"/create__loyalty__point {name | description} - create new entity by args",
 	)
 
 	_, err := c.bot.Send(msg)
