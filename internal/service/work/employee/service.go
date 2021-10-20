@@ -2,11 +2,21 @@ package employee
 
 import "strconv"
 
+type EmployeeService interface {
+	List() string
+
+	Get(idx int) string
+
+	Delete(id int) string
+
+	Create(title string) string
+}
+
 type Service struct{}
 
 var repository = NewRepository()
 
-func NewService() *Service {
+func NewService() EmployeeService {
 	return &Service{}
 }
 

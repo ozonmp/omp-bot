@@ -10,7 +10,7 @@ import (
 
 type DemoSubdomainCommander struct {
 	bot              *tgbotapi.BotAPI
-	subdomainService *employee.Service
+	subdomainService employee.EmployeeService
 }
 
 func NewDemoSubdomainCommander(
