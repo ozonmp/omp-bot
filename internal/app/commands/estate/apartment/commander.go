@@ -5,7 +5,7 @@ import (
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/app/path"
-	service "github.com/ozonmp/omp-bot/internal/service/estate/apartment"
+	"github.com/ozonmp/omp-bot/internal/model/estate"
 )
 
 var (
@@ -22,11 +22,19 @@ type ApartmentCommander interface {
 	Edit(inputMsg *tgbotapi.Message) (resp tgbotapi.MessageConfig, err error)
 }
 
-type DummyApartmentCommander struct {
-	service service.ApartmentService
+type ApartmentService interface {
+	Describe(apartmentID uint64) (*estate.Apartment, error)
+	List(cursor uint64, limit uint64) ([]estate.Apartment, error)
+	Create(estate.Apartment) (uint64, error)
+	Update(apartmentID uint64, apartment estate.Apartment) error
+	Remove(apartmentID uint64) (bool, error)
 }
 
-func NewDummyApartmentCommander(service service.ApartmentService) *DummyApartmentCommander {
+type DummyApartmentCommander struct {
+	service ApartmentService
+}
+
+func NewDummyApartmentCommander(service ApartmentService) *DummyApartmentCommander {
 	return &DummyApartmentCommander{
 		service: service,
 	}

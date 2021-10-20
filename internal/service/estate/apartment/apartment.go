@@ -2,14 +2,6 @@ package apartment
 
 import "github.com/ozonmp/omp-bot/internal/model/estate"
 
-type ApartmentService interface {
-	Describe(apartmentID uint64) (*estate.Apartment, error)
-	List(cursor uint64, limit uint64) ([]estate.Apartment, error)
-	Create(estate.Apartment) (uint64, error)
-	Update(apartmentID uint64, apartment estate.Apartment) error
-	Remove(apartmentID uint64) (bool, error)
-}
-
 type ApartmentStorage interface {
 	Describe(apartmentID uint64) (*estate.Apartment, error)
 	List(cursor uint64, limit uint64) ([]estate.Apartment, error)
