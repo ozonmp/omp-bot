@@ -8,6 +8,7 @@ type Point struct {
 	Description string `json:"description"`
 }
 
+
 func (o *Point) String() string {
 	return fmt.Sprintf("id:%d, Point name:%s Description:%s", o.Id, o.Name, o.Description)
 }
