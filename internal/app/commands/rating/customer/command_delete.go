@@ -11,12 +11,12 @@ import (
 func (c *CustomerCommander) Delete(inputMessage *tgbotapi.Message) error {
 	args := inputMessage.CommandArguments()
 
-	idx, err := strconv.ParseInt(args, 10, 64)
+	idx, err := strconv.ParseUint(args, 10, 64)
 	if err != nil {
 		return rating.NewUserError("wrong args: " + args)
 	}
 
-	isRemoved, err := c.customerService.Remove(uint64(idx))
+	isRemoved, err := c.customerService.Remove(idx)
 	if err != nil {
 		return fmt.Errorf("fail to get customer with idx %d: %w", idx, err)
 	}
