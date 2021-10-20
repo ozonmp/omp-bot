@@ -50,6 +50,6 @@ func (c *PaymentProviderCommander) Create(inputMessage *tgbotapi.Message) {
 
 	_, err = c.bot.Send(msg)
 	if err != nil {
-		log.Printf("PaymentProviderCommander.Get: error sending reply message to chat - %v", err)
+		log.Printf("PaymentProviderCommander.Create: error sending reply message to chat - %v", err)
 	}
 }

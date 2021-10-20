@@ -39,6 +39,6 @@ func (c *PaymentProviderCommander) Delete(inputMessage *tgbotapi.Message) {
 
 	_, err = c.bot.Send(msg)
 	if err != nil {
-		log.Printf("PaymentProviderCommander.Get: error sending reply message to chat - %v", err)
+		log.Printf("PaymentProviderCommander.Delete: error sending reply message to chat - %v", err)
 	}
 }
