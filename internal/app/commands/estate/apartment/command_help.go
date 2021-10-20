@@ -7,7 +7,9 @@ import (
 const helpText = "/help__estate__apartment - help\n" +
 	"/list__estate__apartment - list apartments (via pagination)\n" +
 	"/get__estate__apartment <id> - get apartment with <id>\n" +
-	"/delete__estate__apartment <id> - delete apartment with <id>\n"
+	"/delete__estate__apartment <id> - delete apartment with <id>\n" +
+	"/new__estate__apartment <apartment name> <price>\n" +
+	"/edit__estate__apartment <id> <apartment name> <price>"
 
 func (c *DummyApartmentCommander) Help(inputMessage *tgbotapi.Message) (resp tgbotapi.MessageConfig, err error) {
 	resp = tgbotapi.NewMessage(inputMessage.Chat.ID, helpText)

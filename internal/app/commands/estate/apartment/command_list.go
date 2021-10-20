@@ -17,6 +17,10 @@ func (c *DummyApartmentCommander) prepareListResponse(chatID int64, offset uint6
 	if err != nil {
 		return
 	}
+	if len(apartments) == 0 {
+		resp = tgbotapi.NewMessage(chatID, "Oops! You reached end of the list")
+		return
+	}
 	var outputMsgText string
 	for _, a := range apartments {
 		outputMsgText += a.String()

@@ -66,6 +66,10 @@ func (c *DummyApartmentCommander) HandleCommand(
 		resp, err = c.Get(command)
 	case "delete":
 		resp, err = c.Delete(command)
+	case "new":
+		resp, err = c.New(command)
+	case "edit":
+		resp, err = c.Edit(command)
 	default:
 		resp, err = c.Default(command)
 	}

@@ -10,7 +10,7 @@ import (
 func (c *DummyApartmentCommander) Get(inputMessage *tgbotapi.Message) (resp tgbotapi.MessageConfig, err error) {
 	args := inputMessage.CommandArguments()
 
-	id, err := strconv.Atoi(args)
+	id, err := strconv.ParseInt(args, 10, 64)
 	if err != nil {
 		err = fmt.Errorf("wrong args: %v", args)
 		return
