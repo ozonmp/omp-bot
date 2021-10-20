@@ -10,5 +10,5 @@ type Point struct {
 
 
 func (o *Point) String() string {
-	return fmt.Sprintf("id:%d, Point name:%s Description:%s", o.Id, o.Name, o.Description)
+	return fmt.Sprintf("id:%d\nPoint name:%s\nDescription:%s", o.Id, o.Name, o.Description)
 }

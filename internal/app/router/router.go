@@ -7,6 +7,7 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/app/commands/demo"
 	"github.com/ozonmp/omp-bot/internal/app/path"
+	"github.com/ozonmp/omp-bot/internal/app/commands/loyalty/point"
 )
 
 type Commander interface {
@@ -35,6 +36,7 @@ type Router struct {
 	// storage
 	// streaming
 	// loyalty
+	loyaltyCommander Commander
 	// work
 	// service
 	// exchange
@@ -70,6 +72,7 @@ func NewRouter(
 		// storage
 		// streaming
 		// loyalty
+		loyaltyCommander : point.NewPointCommander(bot),
 		// work
 		// service
 		// exchange
@@ -135,7 +138,7 @@ func (c *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
 	case "streaming":
 		break
 	case "loyalty":
-		break
+		c.loyaltyCommander.HandleCallback(callback, callbackPath)
 	case "work":
 		break
 	case "service":
@@ -204,7 +207,7 @@ func (c *Router) handleMessage(msg *tgbotapi.Message) {
 	case "streaming":
 		break
 	case "loyalty":
-		break
+		c.loyaltyCommander.HandleCommand(msg, commandPath)
 	case "work":
 		break
 	case "service":

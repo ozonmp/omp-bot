@@ -31,53 +31,44 @@ func NewDummyPointService() *DummyPointService {
 		},
 		{
 			Id:          3,
-			Name:        "three",
+			Name:        "Three",
 			Description: "Point tree",
 		},
 		{
 			Id:          4,
-			Name:        "four",
+			Name:        "Four",
 			Description: "Point four",
 		},
 		{
 			Id:          5,
-			Name:        "five",
+			Name:        "Five",
 			Description: "Point 5",
 		},
 		{
 			Id:          6,
-			Name:        "six",
+			Name:        "Six",
 			Description: "Point 6",
 		},
 		{
 			Id:          7,
-			Name:        "seven",
+			Name:        "Seven",
 			Description: "Point 7",
 		},
 		{
 			Id:          8,
-			Name:        "eight",
+			Name:        "Eight",
 			Description: "Point 8",
 		},
 		{
 			Id:          9,
-			Name:        "eight",
+			Name:        "Nine",
 			Description: "Point 9",
 		},
 	}}
 }
 
-func (s *DummyPointService) List(cursor uint64, limit uint64) ([]loyalty.Point, error) {
-	// когда сущеностей осталось меньше, чем лимит на выдачу, но их надо показать
-	if uint64(len(s.allEntities)) > cursor && uint64(len(s.allEntities)) < cursor+limit {
-		return s.allEntities[cursor:], nil
-	}
-
-	if uint64(len(s.allEntities)) < cursor || uint64(len(s.allEntities)) < cursor+limit {
-		return nil, fmt.Errorf("the requested page is out of range")
-	}
-
-	return s.allEntities[cursor : cursor+limit], nil
+func (s *DummyPointService) List() ([]loyalty.Point, error) {
+	return s.allEntities[:], nil
 }
 
 func (s *DummyPointService) Get(pointId uint64) (*loyalty.Point, error) {
