@@ -35,3 +35,7 @@ func (s *DummyChampionatService) Remove(championatId uint64) error {
 	allChampionats = append(allChampionats[:championatId], allChampionats[championatId+1:]...)
 	return nil
 }
+
+func (ch *Championat) String() string {
+	return "Title: " + ch.Title
+}

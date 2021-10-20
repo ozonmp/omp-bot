@@ -12,9 +12,9 @@ import (
 func (c *ChampionatCommander) List(inputMessage *tgbotapi.Message) {
 	const defaultLimit = 3
 	outputMsgText := fmt.Sprintf("List of the championat (from %v to %v)\n\n", 0, defaultLimit-1)
-	products := c.championatService.List(0, defaultLimit)
-	for _, p := range products {
-		outputMsgText += p.Title
+	championats := c.championatService.List(0, defaultLimit)
+	for _, p := range championats {
+		outputMsgText += p.String()
 		outputMsgText += "\n"
 	}
 

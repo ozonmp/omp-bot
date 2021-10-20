@@ -26,13 +26,13 @@ func (c *ChampionatCommander) CallbackList(callback *tgbotapi.CallbackQuery, cal
 
 	const defaultLimit = 3
 	outputMsgText := fmt.Sprintf("List of the championat (from %v to %v)\n\n", parsedData.Offset, parsedData.Offset+defaultLimit-1)
-	products := c.championatService.List(parsedData.Offset, defaultLimit)
-	for _, p := range products {
-		outputMsgText += p.Title
+	championats := c.championatService.List(parsedData.Offset, defaultLimit)
+	for _, p := range championats {
+		outputMsgText += p.String()
 		outputMsgText += "\n"
 	}
 
-	if len(products) == 0 {
+	if len(championats) == 0 {
 		msg := tgbotapi.NewMessage(callback.Message.Chat.ID, "No more championat!")
 		_, err = c.bot.Send(msg)
 		if err != nil {
