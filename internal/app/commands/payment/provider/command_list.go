@@ -1,4 +1,4 @@
-package subdomain
+package provider
 
 import (
 	"encoding/json"
@@ -8,12 +8,12 @@ import (
 	"github.com/ozonmp/omp-bot/internal/app/path"
 )
 
-func (c *DemoSubdomainCommander) List(inputMessage *tgbotapi.Message) {
+func (c *PaymentProviderCommander) List(inputMessage *tgbotapi.Message) {
 	outputMsgText := "Here all the products: \n\n"
 
-	products := c.subdomainService.List()
+	products := c.providerService.List(0, 0)
 	for _, p := range products {
-		outputMsgText += p.Title
+		outputMsgText += p.Name
 		outputMsgText += "\n"
 	}
 
@@ -24,8 +24,8 @@ func (c *DemoSubdomainCommander) List(inputMessage *tgbotapi.Message) {
 	})
 
 	callbackPath := path.CallbackPath{
-		Domain:       "demo",
-		Subdomain:    "subdomain",
+		Domain:       "payment",
+		Subdomain:    "provider",
 		CallbackName: "list",
 		CallbackData: string(serializedData),
 	}
@@ -38,6 +38,6 @@ func (c *DemoSubdomainCommander) List(inputMessage *tgbotapi.Message) {
 
 	_, err := c.bot.Send(msg)
 	if err != nil {
-		log.Printf("DemoSubdomainCommander.List: error sending reply message to chat - %v", err)
+		log.Printf("PaymentProviderCommander.List: error sending reply message to chat - %v", err)
 	}
 }

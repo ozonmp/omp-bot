@@ -1,4 +1,4 @@
-package subdomain
+package provider
 
 import (
 	"encoding/json"
@@ -13,11 +13,11 @@ type CallbackListData struct {
 	Offset int `json:"offset"`
 }
 
-func (c *DemoSubdomainCommander) CallbackList(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
+func (c *PaymentProviderCommander) CallbackList(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
 	parsedData := CallbackListData{}
 	err := json.Unmarshal([]byte(callbackPath.CallbackData), &parsedData)
 	if err != nil {
-		log.Printf("DemoSubdomainCommander.CallbackList: "+
+		log.Printf("PaymentProviderCommander.CallbackList: "+
 			"error reading json data for type CallbackListData from "+
 			"input string %v - %v", callbackPath.CallbackData, err)
 		return
@@ -28,6 +28,6 @@ func (c *DemoSubdomainCommander) CallbackList(callback *tgbotapi.CallbackQuery, 
 	)
 	_, err = c.bot.Send(msg)
 	if err != nil {
-		log.Printf("DemoSubdomainCommander.CallbackList: error sending reply message to chat - %v", err)
+		log.Printf("PaymentProviderCommander.CallbackList: error sending reply message to chat - %v", err)
 	}
 }

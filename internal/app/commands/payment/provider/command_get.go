@@ -1,4 +1,4 @@
-package subdomain
+package provider
 
 import (
 	"log"
@@ -7,16 +7,16 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
-func (c *DemoSubdomainCommander) Get(inputMessage *tgbotapi.Message) {
+func (c *PaymentProviderCommander) Get(inputMessage *tgbotapi.Message) {
 	args := inputMessage.CommandArguments()
 
-	idx, err := strconv.Atoi(args)
+	idx, err := strconv.ParseUint(args, 0, 64)
 	if err != nil {
 		log.Println("wrong args", args)
 		return
 	}
 
-	product, err := c.subdomainService.Get(idx)
+	provider, err := c.providerService.Describe(idx)
 	if err != nil {
 		log.Printf("fail to get product with idx %d: %v", idx, err)
 		return
@@ -24,11 +24,11 @@ func (c *DemoSubdomainCommander) Get(inputMessage *tgbotapi.Message) {
 
 	msg := tgbotapi.NewMessage(
 		inputMessage.Chat.ID,
-		product.Title,
+		provider.Name,
 	)
 
 	_, err = c.bot.Send(msg)
 	if err != nil {
-		log.Printf("DemoSubdomainCommander.Get: error sending reply message to chat - %v", err)
+		log.Printf("PaymentProviderCommander.Get: error sending reply message to chat - %v", err)
 	}
 }
