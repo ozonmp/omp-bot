@@ -13,7 +13,7 @@ func (c *SubdomainCommander) List(inputMsg *tgbotapi.Message) {
 }
 
 func (c *SubdomainCommander) ShowPage(inputMsg *tgbotapi.Message, cursor uint64) {
-	outputMsgText := "Here all the exchange requests: \n\n"
+	outputMsgText := ""
 
 	exchangeRequestList, err := c.exchangeService.List(cursor, 5)
 	if err != nil {
