@@ -34,7 +34,7 @@ type Router struct {
 	// payment
 	// storage
 	// streaming
-	// business
+	// loyalty
 	// work
 	// service
 	// exchange
@@ -69,7 +69,7 @@ func NewRouter(
 		// payment
 		// storage
 		// streaming
-		// business
+		// loyalty
 		// work
 		// service
 		// exchange
@@ -120,8 +120,6 @@ func (c *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
 		break
 	case "travel":
 		break
-	case "loyalty":
-		break
 	case "bank":
 		break
 	case "subscription":
@@ -136,7 +134,7 @@ func (c *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
 		break
 	case "streaming":
 		break
-	case "business":
+	case "loyalty":
 		break
 	case "work":
 		break
@@ -191,8 +189,6 @@ func (c *Router) handleMessage(msg *tgbotapi.Message) {
 		break
 	case "travel":
 		break
-	case "loyalty":
-		break
 	case "bank":
 		break
 	case "subscription":
@@ -207,7 +203,7 @@ func (c *Router) handleMessage(msg *tgbotapi.Message) {
 		break
 	case "streaming":
 		break
-	case "business":
+	case "loyalty":
 		break
 	case "work":
 		break
