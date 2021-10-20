@@ -8,6 +8,10 @@ import (
 	"log"
 )
 
+const (
+	cursorStep uint64 = 5
+)
+
 func (c *SubdomainCommander) List(inputMsg *tgbotapi.Message) {
 	c.ShowPage(inputMsg, 0)
 }
@@ -15,7 +19,7 @@ func (c *SubdomainCommander) List(inputMsg *tgbotapi.Message) {
 func (c *SubdomainCommander) ShowPage(inputMsg *tgbotapi.Message, cursor uint64) {
 	outputMsgText := ""
 
-	exchangeRequestList, err := c.exchangeService.List(cursor, 5)
+	exchangeRequestList, err := c.exchangeService.List(cursor, cursorStep)
 	if err != nil {
 		msg := tgbotapi.NewMessage(inputMsg.Chat.ID,
 			"You've reached end of list",
@@ -33,23 +37,55 @@ func (c *SubdomainCommander) ShowPage(inputMsg *tgbotapi.Message, cursor uint64)
 		outputMsgText += "\n"
 	}
 
+	var nextCursor, prevCursor uint64
+	nextCursor = cursor + uint64(len(exchangeRequestList))
+	if cursor == 0 {
+		prevCursor = 0
+	} else if cursor % cursorStep != 0 {
+		prevCursor = cursor - (cursor % cursorStep)
+	} else {
+		prevCursor = cursor - cursorStep
+	}
+
 	msg := tgbotapi.NewMessage(inputMsg.Chat.ID, outputMsgText)
 
-	serializedData, _ := json.Marshal(CallbackListData{
-		Cursor: cursor + 5,
+	var buttons []tgbotapi.InlineKeyboardButton
+
+	exchangeRequestList, _ = c.exchangeService.List(cursor + 1, cursorStep)
+	hasNext     := uint64(len(exchangeRequestList)) >= cursorStep
+	hasPrevious := cursor > 0
+
+	serializedDataNext, _ := json.Marshal(CallbackListData{
+		Cursor: nextCursor,
 	})
 
-	callbackPath := path.CallbackPath{
+	serializedDataPrev, _ := json.Marshal(CallbackListData{
+		Cursor: prevCursor,
+	})
+
+	callbackNextPath := path.CallbackPath{
 		Domain:       "exchange",
 		Subdomain:    "exchange",
 		CallbackName: "list",
-		CallbackData: string(serializedData),
+		CallbackData: string(serializedDataNext),
+	}
+
+	callbackPrevPath := path.CallbackPath{
+		Domain:       "exchange",
+		Subdomain:    "exchange",
+		CallbackName: "list",
+		CallbackData: string(serializedDataPrev),
+	}
+
+	if hasPrevious {
+		buttons = append(buttons, tgbotapi.NewInlineKeyboardButtonData("Prev page", callbackPrevPath.String()))
+	}
+	if hasNext {
+		buttons = append(buttons, tgbotapi.NewInlineKeyboardButtonData("Next page", callbackNextPath.String()))
 	}
 
 	msg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(
-		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonData("Next page", callbackPath.String()),
-		),
+		tgbotapi.NewInlineKeyboardRow(buttons...),
 	)
 
 	_, err = c.bot.Send(msg)

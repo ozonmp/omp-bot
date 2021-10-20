@@ -18,8 +18,8 @@ var entities = []Exchange {
 	{
 		3,
 		"Rope: 10 meters",
-		"Glen",
-		"Dirty shop",
+		"Glen Quagmire",
+		"Shibari shop",
 		"Registred",
 	},
 	{
@@ -48,7 +48,42 @@ var entities = []Exchange {
 		"BFG9000",
 		"Doomguy",
 		"Hell on Earth",
-		"Nightmare",
+		"Ultra-Violence",
+	},
+	{
+		8,
+		"PS5: Cyberpunk 2077 edition",
+		"Sonyboy",
+		"pleer.ru",
+		"Registered",
+	},
+	{
+		9,
+		"Christian Jokes",
+		"George Carlin",
+		"The God",
+		"Unknown",
+	},
+	{
+		10,
+		"Hydralisk den",
+		"Sarah Kerrigan",
+		"Overmind",
+		"Declined",
+	},
+	{
+		11,
+		"Christian Jokes",
+		"George Carlin",
+		"The God",
+		"Unknown",
+	},
+	{
+		12,
+		"CD: The Prodigy - The Fat Of The Land (1997)",
+		"Konstantin Kondratenko",
+		"Pirate CD Store",
+		"In progress",
 	},
 }
 
