@@ -26,6 +26,6 @@ func (c *WorkCourseCommander) Delete(inputMessage *tgbotapi.Message) {
 	msg := tgbotapi.NewMessage(inputMessage.Chat.ID, text)
 	_, err = c.bot.Send(msg)
 	if err != nil {
-		log.Printf("WorkInternshipCommander.Delete: error sending reply message to chat - %v", err)
+		log.Printf("WorkCourseCommander.Delete: error sending reply message to chat - %v", err)
 	}
 }
