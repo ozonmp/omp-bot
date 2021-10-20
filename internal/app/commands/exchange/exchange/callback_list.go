@@ -21,5 +21,5 @@ func (c *SubdomainCommander) CallbackList(callback *tgbotapi.CallbackQuery, call
 		return
 	}
 
-	c.ShowPage(callback.Message, parsedData.Cursor)
+	c.showPage(callback.Message, parsedData.Cursor)
 }

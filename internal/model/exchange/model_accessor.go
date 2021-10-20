@@ -28,7 +28,7 @@ func (ma *ModelAccessor) Get(id uint64) (*Exchange, bool) {
 			}
 		}
 	}
-	return &Exchange{}, false
+	return nil, false
 }
 
 func (ma *ModelAccessor) Remove(id uint64) bool {

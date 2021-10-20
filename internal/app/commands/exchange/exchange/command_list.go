@@ -13,10 +13,10 @@ const (
 )
 
 func (c *SubdomainCommander) List(inputMsg *tgbotapi.Message) {
-	c.ShowPage(inputMsg, 0)
+	c.showPage(inputMsg, 0)
 }
 
-func (c *SubdomainCommander) ShowPage(inputMsg *tgbotapi.Message, cursor uint64) {
+func (c *SubdomainCommander) showPage(inputMsg *tgbotapi.Message, cursor uint64) {
 	outputMsgText := ""
 
 	exchangeRequestList, err := c.exchangeService.List(cursor, cursorStep)
@@ -25,9 +25,9 @@ func (c *SubdomainCommander) ShowPage(inputMsg *tgbotapi.Message, cursor uint64)
 			"You've reached end of list",
 		)
 
-		_, err2 := c.bot.Send(msg)
-		if err2 != nil {
-			log.Printf("SubdomainCommander.List: error sending reply message to chat - %v", err2)
+		_, err = c.bot.Send(msg)
+		if err != nil {
+			log.Printf("SubdomainCommander.List: error sending reply message to chat - %v", err)
 		}
 		return
 	}

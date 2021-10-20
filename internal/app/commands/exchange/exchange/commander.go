@@ -13,8 +13,8 @@ type ExchangeCommander interface {
 	List(inputMsg *tgbotapi.Message)
 	Delete(inputMsg *tgbotapi.Message)
 
-	New(inputMsg *tgbotapi.Message)    // return error not implemented
-	Edit(inputMsg *tgbotapi.Message)   // return error not implemented
+	New(inputMsg *tgbotapi.Message)
+	Edit(inputMsg *tgbotapi.Message)
 }
 
 type SubdomainCommander struct {
