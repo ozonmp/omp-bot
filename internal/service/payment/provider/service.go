@@ -6,11 +6,13 @@ import (
 )
 
 type ProviderService interface {
-	Describe(providerID uint64) (*Provider, error)
+	Get(providerID uint64) (*Provider, error)
 	Create(Provider) (uint64, error)
 	Remove(providerID uint64) (bool, error)
 	Update(providerID uint64, provider Provider) error
 	List(cursor uint64, limit uint64) []Provider
+	ShortDescription(provider *Provider) string
+	LongDescription(provider *Provider) string
 }
 
 type Service struct{}
@@ -33,13 +35,28 @@ func (s *Service) Update(providerID uint64, provider Provider) error {
 	return nil
 }
 
-func (s *Service) Describe(providerID uint64) (*Provider, error) {
+func (s *Service) Get(providerID uint64) (*Provider, error) {
 	for i := 0; i < len(allEntities); i++ {
 		if providerID == allEntities[i].Id {
 			return &allEntities[uint64(i)], nil
 		}
 	}
 	err := fmt.Errorf("provider with ID %d not found", providerID)
-	log.Printf("provider.Service.Describe: %v", err)
+	log.Printf("provider.Service.Get: %v", err)
 	return nil, err
+}
+
+func (s *Service) ShortDescription(provider *Provider) string {
+	return fmt.Sprintf("ID: %d\nName: %s",
+		provider.Id,
+		provider.Name)
+}
+
+func (s *Service) LongDescription(provider *Provider) string {
+	return fmt.Sprintf(
+		"ID : %d\nName: %s\nDescription: %s\nIsImplemented: %v",
+		provider.Id,
+		provider.Name,
+		provider.Description,
+		provider.IsImplemented)
 }

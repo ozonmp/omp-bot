@@ -16,15 +16,15 @@ func (c *PaymentProviderCommander) Get(inputMessage *tgbotapi.Message) {
 		return
 	}
 
-	provider, err := c.providerService.Describe(idx)
+	provider, err := c.providerService.Get(idx)
 	if err != nil {
-		log.Printf("fail to get product with idx %d: %v", idx, err)
+		log.Printf("failed to get payment provider by id %d: %v", idx, err)
 		return
 	}
 
 	msg := tgbotapi.NewMessage(
 		inputMessage.Chat.ID,
-		provider.Name,
+		c.providerService.LongDescription(provider),
 	)
 
 	_, err = c.bot.Send(msg)
