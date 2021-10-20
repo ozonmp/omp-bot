@@ -29,7 +29,7 @@ func (c *OrderCommander) Delete(inputMessage *tgbotapi.Message) {
 
 		c.Reply(
 			inputMessage.Chat.ID,
-			fmt.Sprintf(`Failed to delete order with id %d: %v`, id, err))
+			fmt.Sprintf(`Failed to delete order: %v`, err))
 		return
 	}
 

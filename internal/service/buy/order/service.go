@@ -40,8 +40,6 @@ func (s *DummyOrderService) List(cursor uint64, limit uint64) ([]buy.Order, erro
 }
 
 func (s *DummyOrderService) Create(order buy.Order) (uint64, error) {
-	s.listCached = false
-
 	id := s.curId
 	s.curId++
 	s.orders[id] = buy.Order{
@@ -50,6 +48,7 @@ func (s *DummyOrderService) Create(order buy.Order) (uint64, error) {
 		Quantity: order.Quantity,
 	}
 
+	s.listCached = false
 	return id, nil
 }
 
@@ -65,6 +64,7 @@ func (s *DummyOrderService) Update(orderID uint64, order buy.Order) error {
 		Quantity: order.Quantity,
 	}
 
+	s.listCached = false
 	return nil
 }
 
@@ -74,8 +74,9 @@ func (s *DummyOrderService) Remove(orderID uint64) (bool, error) {
 		return false, fmt.Errorf("No order with id %v found", orderID)
 	}
 
-	s.listCached = false
 	delete(s.orders, orderID)
+
+	s.listCached = false
 	return true, nil
 }
 

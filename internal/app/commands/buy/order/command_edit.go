@@ -9,41 +9,45 @@ import (
 	"github.com/ozonmp/omp-bot/internal/model/buy"
 )
 
-type NewOrderData struct {
+type EditOrderData struct {
+	Id       uint64 `json:"id"`
 	Title    string `json:"title"`
 	Quantity uint64 `json:"quantity"`
 }
 
-func (c *OrderCommander) New(inputMessage *tgbotapi.Message) {
+func (c *OrderCommander) Edit(inputMessage *tgbotapi.Message) {
 	data := inputMessage.CommandArguments()
 
-	parsedData := NewOrderData{}
+	parsedData := EditOrderData{}
 	err := json.Unmarshal([]byte(data), &parsedData)
 	if err != nil {
-		log.Printf("OrderCommander.New: "+
+		log.Printf("OrderCommander.Edit: "+
 			"error reading json data from "+
 			"input string %v - %v", data, err)
 
 		c.Reply(
 			inputMessage.Chat.ID,
-			"Failed to parse json! Correct syntax for 'new' command is:\n"+
-				`/new__buy__order {"title": <string>, "quantity": <number>}`)
+			"Failed to parse json! Correct syntax for 'edit' command is:\n"+
+				`/edit__buy__order {"id": <number>, "title": <string>, "quantity": <number>}`)
 		return
 	}
 
-	newId, err := c.orderService.Create(
+	err = c.orderService.Update(
+		parsedData.Id,
 		buy.Order{
 			Title:    parsedData.Title,
 			Quantity: parsedData.Quantity,
 		})
 
 	if err != nil {
-		log.Printf("Fail to create order: %v", err)
+		log.Printf("Fail to update order: %v", err)
+		c.Reply(
+			inputMessage.Chat.ID,
+			fmt.Sprintf("Fail to update order: %v", err))
 		return
 	}
 
 	c.Reply(
 		inputMessage.Chat.ID,
-		fmt.Sprintf("Order with id %v created", newId),
-	)
+		fmt.Sprintf("Order with id %d updated successfully", parsedData.Id))
 }

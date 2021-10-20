@@ -1,19 +1,18 @@
 package order
 
 import (
-	"log"
-
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
 func (c *OrderCommander) Help(inputMessage *tgbotapi.Message) {
-	msg := tgbotapi.NewMessage(inputMessage.Chat.ID,
-		"/help - help\n"+
-			"/list - list products",
+	c.Reply(
+		inputMessage.Chat.ID,
+		"Available commands:\n"+
+			`		/help__buy__order — print list of commands
+		/get__buy__order <id> (id >= 0) — get an order
+		/list__buy__order   — get a list of orders
+		/delete__buy__order <id> (id >= 0) — delete an existing order
+		/new__buy__order {"title": <string>, "quantity": <number>} — place a new order
+		/edit__buy__order {"id": <number>, "title": <string>, "quantity": <number>} — edit an existing order`,
 	)
-
-	_, err := c.bot.Send(msg)
-	if err != nil {
-		log.Printf("OrderCommander.Help: error sending reply message to chat - %v", err)
-	}
 }

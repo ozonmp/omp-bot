@@ -29,7 +29,7 @@ func (c *OrderCommander) Get(inputMessage *tgbotapi.Message) {
 
 		c.Reply(
 			inputMessage.Chat.ID,
-			fmt.Sprintf(`Failed to get order with id %d: %v`, id, err))
+			fmt.Sprintf(`Failed to get order: %v`, err))
 		return
 	}
 

@@ -7,12 +7,6 @@ import (
 )
 
 func (c *OrderCommander) Default(inputMessage *tgbotapi.Message) {
-	log.Printf("[%s] %s", inputMessage.From.UserName, inputMessage.Text)
-
-	msg := tgbotapi.NewMessage(inputMessage.Chat.ID, "You wrote: "+inputMessage.Text)
-
-	_, err := c.bot.Send(msg)
-	if err != nil {
-		log.Printf("OrderCommander.Help: error sending reply message to chat - %v", err)
-	}
+	log.Printf("Unknown command from [%s]: %s", inputMessage.From.UserName, inputMessage.Text)
+	c.Help(inputMessage)
 }
