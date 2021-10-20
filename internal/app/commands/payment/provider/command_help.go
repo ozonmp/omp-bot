@@ -8,11 +8,11 @@ import (
 func (c *PaymentProviderCommander) Help(inputMessage *tgbotapi.Message) {
 	msg := tgbotapi.NewMessage(inputMessage.Chat.ID,
 		"/help__payment__provider - shows this help\n"+
-			"/get__payment__provider - get provider by id\n"+
-			"/list__payment__provider - get all provider\n"+
-			"/new__payment__provider - create new payment provider\n"+
-			"/delete__payment__provider - deletes provider by id\n"+
-			"/edit__payment__provider - edit provider attributes",
+			"/get__payment__provider <id>- get provider by id\n"+
+			"/list__payment__provider - get all providers,\n"+
+			"/new__payment__provider <jsonString> - create new payment provider\n"+
+			"/delete__payment__provider <id> - deletes provider by id\n"+
+			"/edit__payment__provider <jsonString>- edit provider attributes",
 	)
 
 	_, err := c.bot.Send(msg)
