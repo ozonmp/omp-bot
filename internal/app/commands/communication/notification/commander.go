@@ -10,13 +10,13 @@ import (
 
 type CommunicationNotificationCommander struct {
 	bot                 *tgbotapi.BotAPI
-	notificationService *notification.Service
+	notificationService *notification.DummyNotificationService
 }
 
 func NewCommunicationNotificationCommander(
 	bot *tgbotapi.BotAPI,
 ) *CommunicationNotificationCommander {
-	notificationService := notification.NewService()
+	notificationService := notification.NewDummyNotificationService()
 
 	return &CommunicationNotificationCommander{
 		bot:                 bot,
@@ -37,11 +37,26 @@ func (c *CommunicationNotificationCommander) HandleCommand(msg *tgbotapi.Message
 	switch commandPath.CommandName {
 	case "help":
 		c.Help(msg)
-	//case "list":
-	//	c.List(msg)
-	//case "get":
-	//	c.Get(msg)
+	case "list":
+		c.List(msg)
+	case "get":
+		c.Get(msg)
+	case "new":
+		c.New(msg)
+	case "edit":
+		c.Edit(msg)
+	case "delete":
+		c.Delete(msg)
 	default:
 		c.Default(msg)
+	}
+}
+
+func (c *CommunicationNotificationCommander) SendErrorMessage(chatID int64, text string) {
+	msg := tgbotapi.NewMessage(chatID, text)
+
+	_, err := c.bot.Send(msg)
+	if err != nil {
+		log.Printf("CommunicationNotificationCommander: error sending reply message to chat - %v", err)
 	}
 }
