@@ -42,7 +42,7 @@ func (c *ChampionatCommander) HandleCommand(msg *tgbotapi.Message, commandPath p
 	case "get":
 		c.Get(msg)
 	case "delete":
-		c.Get(msg)
+		c.Delete(msg)
 	case "new":
 		c.New(msg)
 	case "edit":
