@@ -21,17 +21,17 @@ func (s *DummyChampionatService) List(cursor uint64, limit uint64) []Championat 
 	return allChampionats[cursor : cursor+limit]
 }
 
-func (s *DummyChampionatService) Create(title string) error {
-	newEntity(title)
+func (s *DummyChampionatService) Create(championat Championat) error {
+	allChampionats = append(allChampionats, championat)
 	return nil
 }
 
-func (s *DummyChampionatService) Update(championatId uint64, title string) error {
-	editEntity(championatId, title)
+func (s *DummyChampionatService) Update(championatId uint64, championat Championat) error {
+	allChampionats[championatId] = championat
 	return nil
 }
 
 func (s *DummyChampionatService) Remove(championatId uint64) error {
-	deleteEntity(championatId)
+	allChampionats = append(allChampionats[:championatId], allChampionats[championatId+1:]...)
 	return nil
 }

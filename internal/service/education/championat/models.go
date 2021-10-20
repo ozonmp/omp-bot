@@ -12,19 +12,3 @@ var allChampionats = []Championat{
 type Championat struct {
 	Title string
 }
-
-func newEntity(Title string) {
-	allChampionats = append(allChampionats, Championat{
-		Title: Title,
-	})
-}
-
-func deleteEntity(i uint64) {
-	allChampionats = append(allChampionats[:i], allChampionats[i+1:]...)
-}
-
-func editEntity(i uint64, title string) {
-	allChampionats[i] = Championat{
-		Title: title,
-	}
-}

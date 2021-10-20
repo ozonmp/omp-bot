@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+	"github.com/ozonmp/omp-bot/internal/service/education/championat"
 	"log"
 	"strings"
 )
@@ -18,7 +19,8 @@ func (c *ChampionatCommander) Edit(inputMessage *tgbotapi.Message) {
 		return
 	}
 
-	err = c.championatService.Update(editData.ID, editData.Title)
+	var newChampionat = championat.Championat{Title: editData.Title}
+	err = c.championatService.Update(editData.ID, newChampionat)
 	if err != nil {
 		log.Printf("fail to edit championat with id %v: %v", editData.ID, err)
 		return
