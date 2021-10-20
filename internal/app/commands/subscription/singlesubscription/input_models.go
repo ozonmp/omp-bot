@@ -19,7 +19,7 @@ func (iss InputSingleSubscription) ToSingleSubscription() (*subscription.SingleS
 		UserID:    iss.UserID,
 		ServiceID: iss.ServiceID,
 	}
-	expireAt, err := time.Parse("2006-01-02", iss.ExpireAt)
+	expireAt, err := time.Parse(time.RFC3339, iss.ExpireAt)
 	if err != nil {
 		return nil, err
 	}

@@ -17,12 +17,12 @@ var (
 			"limit - кол-во элементов в странице (строго больше 0)", CommandList)
 	UsageDelete = fmt.Sprintf("/%s <singleSubscriptionID>\n\nsingleSubscriptionID - id элемента (строго больше 0)", CommandDelete)
 	UsageNew    = fmt.Sprintf("/%s <singleSubscriptionJSON>\n\nExample:"+
-		"{\"user_id\": 1, \"service_id\": 1, \"expire_at\": \"2021-12-21\"}`", CommandNew)
+		"{\"user_id\": 1, \"service_id\": 1, \"expire_at\": \"2021-12-21T15:04:05-06:00\"}`", CommandNew)
 	UsageEdit = fmt.Sprintf(
 		"/%s <singleSubscriptionJSON>\n\n"+
 			"Edits by specified id\n"+
 			"Example: "+
-			"`{\"id\": 1, \"user_id\": 1, \"service_id\": 2, \"expire_at\": \"2022-06-12\"}`", CommandEdit)
+			"`{\"id\": 1, \"user_id\": 1, \"service_id\": 2, \"expire_at\": \"2022-06-12T15:04:05-06:00\"}`", CommandEdit)
 
 	ErrNotFound  = "Не найдено"
 	ErrOnCreate  = "Не удалось создать"
