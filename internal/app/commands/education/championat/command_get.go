@@ -12,7 +12,19 @@ func (c *ChampionatCommander) Get(inputMessage *tgbotapi.Message) {
 
 	idx, err := strconv.Atoi(args)
 	if err != nil {
-		log.Println("wrong args", args)
+		msg := tgbotapi.NewMessage(
+			inputMessage.Chat.ID,
+			"Wrong ID: it should be a positive integer number",
+		)
+		_, err = c.bot.Send(msg)
+		return
+	}
+	if idx < 0 {
+		msg := tgbotapi.NewMessage(
+			inputMessage.Chat.ID,
+			"Wrong ID: it should be a positive number",
+		)
+		_, err = c.bot.Send(msg)
 		return
 	}
 
