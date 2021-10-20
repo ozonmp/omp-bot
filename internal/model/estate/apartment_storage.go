@@ -14,33 +14,26 @@ type ApartmentStorage interface {
 	Remove(apartmentID uint64) (bool, error)
 }
 
-var startingItems = []Apartment{
-	{
-		Title: "awesome apartment",
-		Price: 45,
-	},
-	{
-		Title: "not so awesome apartment",
-		Price: 30,
-	},
-}
-
 type InMemoryApartmentStorage struct {
 	mem    map[uint64]Apartment
 	mu     sync.RWMutex
 	nextID uint64
 }
 
-func NewInMemoryApartmentStorage() *InMemoryApartmentStorage {
+func NewInMemoryApartmentStorage(items []Apartment) *InMemoryApartmentStorage {
 	mem := make(map[uint64]Apartment)
-	for i, item := range startingItems {
+	for i, item := range items {
 		item.ID = uint64(i)
 		mem[item.ID] = item
 	}
 	return &InMemoryApartmentStorage{
 		mem:    mem,
-		nextID: uint64(len(startingItems)),
+		nextID: uint64(len(items)),
 	}
+}
+
+func NewEmptyInMemoryApartmentStorage() *InMemoryApartmentStorage {
+	return NewInMemoryApartmentStorage(nil)
 }
 
 func (s *InMemoryApartmentStorage) Describe(apartmentID uint64) (apartment *Apartment, err error) {
