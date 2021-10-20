@@ -3,8 +3,10 @@ package serial
 import (
 	"fmt"
 	"log"
+	"regexp"
 	"strconv"
 	"strings"
+	"time"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/service/cinema/serial"
@@ -24,32 +26,28 @@ func (c *CinemaSerialCommander) New(inputMessage *tgbotapi.Message) {
 	args := inputMessage.CommandArguments()
 	argss := strings.Split(args, "\n")
 
-	// fmt.Println(args, inputMessage.Text, argss)
-
 	idx, err := strconv.Atoi(argss[0])
-	if err != nil || idx == 0 {
+	if err != nil || idx <= 0 {
 		msg = "incorrect id=" + argss[0]
 		log.Println(msg)
 		return
 	}
 
-	if len(argss[1]) == 0 || len(argss[1]) > 200 {
+	// TODO validate string in project way
+	if m, _ := regexp.MatchString(`^[a-zA-Zа-яА-Я0-9 _.,!?]{1,200}$`, argss[1]); !m {
 		msg = "incorrect title=" + argss[1]
 		log.Println(msg)
 		return
 	}
-	// TODO validate string
 	title := argss[1]
 
 	year, err := strconv.Atoi(argss[2])
-	if err != nil || year < 1800 || year > 2021 {
-		//int64(time.Now().Year) {
+	if err != nil || year < 1800 || year > int(time.Now().Year())+5 {
 		msg = "incorrect year=" + argss[2]
 		log.Println(msg)
 		return
 	}
 
-	// newserial := Serial{ID}
 	var new serial.Serial
 	new.ID = idx
 	new.Title = title

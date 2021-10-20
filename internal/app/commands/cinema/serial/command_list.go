@@ -14,7 +14,6 @@ func (c *CinemaSerialCommander) List(inputMessage *tgbotapi.Message) {
 	start := 0
 	max := 5
 	serials := c.subdomainService.List()
-	// log.Println(len(serials))
 	for i, v := range serials[start:] {
 		if i >= max {
 			break
