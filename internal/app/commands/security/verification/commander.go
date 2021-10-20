@@ -10,12 +10,18 @@ import (
 
 type SecurityVerificationCommander struct {
 	bot                 *tgbotapi.BotAPI
-	verificationService *verification.VerificationService
+	verificationService VerificationService
 }
 
-func NewSecurityVerificationCommander(
-	bot *tgbotapi.BotAPI,
-) *SecurityVerificationCommander {
+type VerificationService interface {
+	Describe(VerificationID uint64) (*verification.Verification, error)
+	List(cursor uint64, limit uint64) ([]verification.Verification, error)
+	Create(verification.Verification) (uint64, error)
+	Update(verificationID uint64, verification verification.Verification) error
+	Remove(verificationID uint64) (bool, error)
+}
+
+func NewSecurityVerificationCommander(bot *tgbotapi.BotAPI) *SecurityVerificationCommander {
 	verificationService := verification.NewVerificationService([]verification.Verification{
 		{Title: "one"},
 		{Title: "two"},

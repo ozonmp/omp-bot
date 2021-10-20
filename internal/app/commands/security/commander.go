@@ -8,14 +8,20 @@ import (
 	"github.com/ozonmp/omp-bot/internal/app/path"
 )
 
-type Commander interface {
+type VerificationCommander interface {
+	Help(inputMsg *tgbotapi.Message)
+	Get(inputMsg *tgbotapi.Message)
+	List(inputMsg *tgbotapi.Message)
+	Delete(inputMsg *tgbotapi.Message)
+	New(inputMsg *tgbotapi.Message)  // return error not implemented
+	Edit(inputMsg *tgbotapi.Message) // return error not implemented
 	HandleCallback(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath)
 	HandleCommand(message *tgbotapi.Message, commandPath path.CommandPath)
 }
 
 type SecurityCommander struct {
 	bot                   *tgbotapi.BotAPI
-	verificationCommander Commander
+	verificationCommander VerificationCommander
 }
 
 func NewSecurityCommander(
