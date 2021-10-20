@@ -51,18 +51,20 @@ func (s *Service) Edit(idx int, new Serial) error {
 	}
 
 	for i, v := range allEntities {
-		if v.ID == idx {
-			if new.ID != 0 {
-				allEntities[i].ID = new.ID
-			}
-			if new.Title != "" {
-				allEntities[i].Title = new.Title
-			}
-			if new.Year != 0 {
-				allEntities[i].Year = new.Year
-			}
-			return nil
+		if v.ID != idx {
+			continue
 		}
+		if new.ID != 0 {
+			allEntities[i].ID = new.ID
+		}
+		if new.Title != "" {
+			allEntities[i].Title = new.Title
+		}
+		if new.Year != 0 {
+			allEntities[i].Year = new.Year
+		}
+		return nil
+
 	}
 	return errors.New("item not found")
 }

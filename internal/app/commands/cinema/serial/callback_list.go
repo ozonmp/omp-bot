@@ -26,7 +26,6 @@ func (c *CinemaSerialCommander) CallbackList(callback *tgbotapi.CallbackQuery, c
 	start := parsedData.Offset
 	max := 5
 	serials := c.subdomainService.List()
-	// log.Println(len(serials))
 	for i, v := range serials[start:] {
 		if i >= max {
 			break
