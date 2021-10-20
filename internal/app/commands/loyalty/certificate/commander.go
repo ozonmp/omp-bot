@@ -9,7 +9,7 @@ import (
 
 type LoyaltyCertificateCommander struct {
 	bot                *tgbotapi.BotAPI
-	certificateService *certificate.DummyСertificateService
+	certificateService *certificate.DummyCertificateService
 }
 
 func NewLoyaltyCertificateCommander(
@@ -44,6 +44,8 @@ func (c *LoyaltyCertificateCommander) HandleCommand(msg *tgbotapi.Message, comma
 		c.Delete(msg)
 	case "new":
 		c.New(msg)
+	case "edit":
+		c.Edit(msg)
 	default:
 		c.Default(msg)
 	}

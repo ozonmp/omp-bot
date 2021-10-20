@@ -35,6 +35,6 @@ func (c *LoyaltyCertificateCommander) Delete(inputMessage *tgbotapi.Message) {
 
 	_, err = c.bot.Send(msg)
 	if err != nil {
-		log.Printf("LoyaltyCertificateCommander.Get: error sending reply message to chat - %v", err)
+		log.Printf("LoyaltyCertificateCommander.Delete: error sending reply message to chat - %v", err)
 	}
 }

@@ -8,7 +8,7 @@ import (
 	"strconv"
 )
 
-func (c *LoyaltyCertificateCommander) New(inputMessage *tgbotapi.Message) {
+func (c *LoyaltyCertificateCommander) Edit(inputMessage *tgbotapi.Message) {
 	args := inputMessage.CommandArguments()
 
 	outputMsg := ""
@@ -23,26 +23,25 @@ func (c *LoyaltyCertificateCommander) New(inputMessage *tgbotapi.Message) {
 
 		_, err = c.bot.Send(msg)
 		if err != nil {
-			log.Printf("LoyaltyCertificateCommander.New: error sending reply message to chat - %v", err)
+			log.Printf("LoyaltyCertificateCommander.Edit: error sending reply message to chat - %v", err)
 		}
 		return
 	}
-	lastIndex := c.certificateService.Certificates[len(c.certificateService.Certificates) - 1].Id
 
 	newCertificate := certificate.Certificate{
-		Id:          lastIndex + 1,
+		Id:          parsedData.Id,
 		SellerTitle: parsedData.SellerTitle,
 		Amount:      parsedData.Amount,
 		ExpireDate:  parsedData.ExpireDate,
 	}
 
-	newId, err := c.certificateService.Create(newCertificate)
-	outputMsg = "Certificate with ID " + strconv.Itoa(int(newId))
+	err = c.certificateService.Update(newCertificate.Id, newCertificate)
+	outputMsg = "Certificate with ID " + strconv.Itoa(int(newCertificate.Id))
 	if err != nil {
-		log.Printf("failed to create certificate with id %d: %v", newCertificate.Id, err)
-		outputMsg += " already exists"
+		log.Printf("failed to update certificate with id %d: %v", newCertificate.Id, err)
+		outputMsg += " was not found"
 	} else {
-		outputMsg += " was created"
+		outputMsg += " was updated"
 	}
 
 	msg := tgbotapi.NewMessage(
@@ -52,6 +51,6 @@ func (c *LoyaltyCertificateCommander) New(inputMessage *tgbotapi.Message) {
 
 	_, err = c.bot.Send(msg)
 	if err != nil {
-		log.Printf("LoyaltyCertificateCommander.New: error sending reply message to chat - %v", err)
+		log.Printf("LoyaltyCertificateCommander.Edit: error sending reply message to chat - %v", err)
 	}
 }

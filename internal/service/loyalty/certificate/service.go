@@ -13,15 +13,15 @@ type СertificateService interface {
 	Remove(certificateID uint64) (bool, error)
 }
 
-type DummyСertificateService struct {
+type DummyCertificateService struct {
 	Certificates []Certificate
 }
 
-func NewDummyСertificateService() *DummyСertificateService {
-	return &DummyСertificateService{ Certificates: allEntities }
+func NewDummyСertificateService() *DummyCertificateService {
+	return &DummyCertificateService{ Certificates: allEntities }
 }
 
-func (s *DummyСertificateService) Describe(certificateID uint64) (*Certificate, error) {
+func (s *DummyCertificateService) Describe(certificateID uint64) (*Certificate, error) {
 	for _, certificate := range s.Certificates {
 		if certificate.Id == certificateID {
 			return &certificate, nil
@@ -30,7 +30,7 @@ func (s *DummyСertificateService) Describe(certificateID uint64) (*Certificate,
 	return nil, errors.New("id not found")
 }
 
-func (s *DummyСertificateService) List(cursor uint64, limit uint64) ([]Certificate, error) {
+func (s *DummyCertificateService) List(cursor uint64, limit uint64) ([]Certificate, error) {
 	size := uint64(len(s.Certificates))
 	from := cursor
 	to := cursor + limit
@@ -45,7 +45,7 @@ func (s *DummyСertificateService) List(cursor uint64, limit uint64) ([]Certific
 	return s.Certificates[cursor:to], nil
 }
 
-func (s *DummyСertificateService) Remove(certificateID uint64) (bool, error) {
+func (s *DummyCertificateService) Remove(certificateID uint64) (bool, error) {
 	for i, certificate := range s.Certificates {
 		if certificate.Id == certificateID {
 			s.Certificates = append(s.Certificates[:i], s.Certificates[i+1:]...)
@@ -55,7 +55,7 @@ func (s *DummyСertificateService) Remove(certificateID uint64) (bool, error) {
 	return false, nil
 }
 
-func (s *DummyСertificateService) Create(newCertificate Certificate) (uint64, error) {
+func (s *DummyCertificateService) Create(newCertificate Certificate) (uint64, error) {
 
 	for _, certificate := range s.Certificates {
 		if certificate.Id == newCertificate.Id {
@@ -64,4 +64,19 @@ func (s *DummyСertificateService) Create(newCertificate Certificate) (uint64, e
 	}
 	s.Certificates = append(s.Certificates[:], newCertificate)
 	return newCertificate.Id, nil
+}
+
+func (s *DummyCertificateService) Update(certificateID uint64, newCertificate Certificate) error {
+	for i, certificate := range s.Certificates {
+		if certificate.Id == certificateID {
+			s.Certificates[i] = Certificate{
+				Id:          certificateID,
+				SellerTitle: newCertificate.SellerTitle,
+				Amount:      newCertificate.Amount,
+				ExpireDate:  newCertificate.ExpireDate,
+			}
+			return nil
+		}
+	}
+	return errors.New(fmt.Sprintf("certificate with ID %d not found", certificateID))
 }
