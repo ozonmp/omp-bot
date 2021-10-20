@@ -13,13 +13,13 @@ import (
 func (c *DummySingleSubscriptionCommander) List(inputMsg *tgbotapi.Message) {
 	args := inputMsg.CommandArguments()
 
-	cursor, limit, err := parseListCmdArgs(args)
+	arg, err := parseListCmdArgs(args)
 	if err != nil {
 		log.Println("DummySingleSubscriptionCommander.List invalid args", args)
 		c.bot.Send(tgbotapi.NewMessage(inputMsg.Chat.ID, UsageList))
 		return
 	}
-	pagination := NewPaginationList(c.service.List, cursor, limit)
+	pagination := NewPaginationList(c.service.List, arg.Cursor, arg.Limit)
 
 	page := pagination.Page()
 	buttons := pagination.Buttons()
@@ -45,25 +45,28 @@ func (c *DummySingleSubscriptionCommander) List(inputMsg *tgbotapi.Message) {
 	}
 }
 
-func parseListCmdArgs(args string) (cursor, limit uint64, err error) {
+func parseListCmdArgs(args string) (*CallbackListData, error) {
 	l := strings.Split(args, " ")
+	data := &CallbackListData{}
 	if len(l) != 2 {
-		return cursor, limit, errors.New(UsageList)
+		return data, errors.New(UsageList)
 	}
 	tmpCursor, err := strconv.Atoi(l[0])
-	if tmpCursor <= 0 {
-		return 0, 0, fmt.Errorf("invalid arg")
-	} else if err != nil {
-		return 0, 0, err
+	if err != nil {
+		return data, err
+	} else if tmpCursor <= 0 {
+		return data, fmt.Errorf("invalid arg")
 	}
 
 	tmpLimit, err := strconv.Atoi(l[1])
-	if tmpLimit <= 0 {
-		return 0, 0, fmt.Errorf("invalid arg")
-	} else if err != nil {
-		return 0, 0, err
+	if err != nil {
+		return data, err
+	} else if tmpLimit <= 0 {
+		return data, fmt.Errorf("invalid arg")
 	}
-	cursor = uint64(tmpCursor)
-	limit = uint64(tmpLimit)
-	return cursor, limit, nil
+
+	data.Cursor = uint64(tmpCursor)
+	data.Limit = uint64(tmpLimit)
+
+	return data, nil
 }

@@ -8,9 +8,9 @@ import (
 )
 
 type PaginationList struct {
-	GetList getter `json:"-"`
-	Cursor  uint64 `json:"cursor"`
-	Limit   uint64 `json:"limit"`
+	List   getter `json:"-"`
+	Cursor uint64 `json:"cursor"`
+	Limit  uint64 `json:"limit"`
 }
 
 type button struct {
@@ -25,14 +25,14 @@ func NewPaginationList(g getter, cursor, limit uint64) *PaginationList {
 		cursor = 1
 	}
 	return &PaginationList{
-		GetList: g,
-		Cursor:  cursor,
-		Limit:   limit,
+		List:   g,
+		Cursor: cursor,
+		Limit:  limit,
 	}
 }
 
 func (pl *PaginationList) Page() string {
-	list, err := pl.GetList(pl.Cursor, pl.Limit)
+	list, err := pl.List(pl.Cursor, pl.Limit)
 	if len(list) == 0 || err != nil {
 		return ErrEmptyList
 	}
@@ -44,28 +44,35 @@ func (pl *PaginationList) Page() string {
 	return txt
 }
 
-func (pl *PaginationList) Prev() string {
-	var prevCursor uint64 = 1
-	needRender := true
+func (pl *PaginationList) shouldRenderPrev() bool {
 	if pl.Cursor == 1 {
-		needRender = false
-	} else if pl.Limit > pl.Cursor && pl.Cursor != 1 {
-		prevCursor = 1
-	} else {
-		prevCursor = pl.Cursor - pl.Limit
-		if prevCursor == 0 {
-			prevCursor = 1
-		}
+		return false
 	}
-	if !needRender {
+	return true
+}
+
+func (pl *PaginationList) prevCursor() uint64 {
+	if pl.Cursor == 1 || (pl.Limit > pl.Cursor && pl.Cursor != 1) {
+		return 1
+	}
+	prev := pl.Cursor - pl.Limit
+	if prev == 0 {
+		return 1
+	}
+	return prev
+}
+
+func (pl *PaginationList) Prev() string {
+	if !pl.shouldRenderPrev() {
 		return ""
 	}
-	return pl.serialize(prevCursor, pl.Limit)
+	prev := pl.prevCursor()
+	return pl.serialize(prev, pl.Limit)
 }
 
 func (pl *PaginationList) Next() string {
 	nextCursor := pl.Cursor + pl.Limit
-	l, _ := pl.GetList(nextCursor, pl.Limit)
+	l, _ := pl.List(nextCursor, pl.Limit)
 	if len(l) == 0 {
 		return ""
 	}

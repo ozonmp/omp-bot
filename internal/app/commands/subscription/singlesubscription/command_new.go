@@ -25,7 +25,12 @@ func (c *DummySingleSubscriptionCommander) New(inputMsg *tgbotapi.Message) {
 		return
 	}
 
-	id, _ := c.service.Create(*tmp)
+	id, err := c.service.Create(*tmp)
+	if err != nil {
+		log.Println("DummySingleSubscriptionCommander.New error on create", args, err)
+		c.bot.Send(tgbotapi.NewMessage(inputMsg.Chat.ID, ErrOnCreate))
+		return
+	}
 
 	msg := tgbotapi.NewMessage(
 		inputMsg.Chat.ID,
