@@ -3,41 +3,41 @@ package certificate
 import "errors"
 
 type СertificateService interface {
-	Describe(certificateID uint64) (*Сertificate, error)
-	List(cursor uint64, limit uint64) ([]Сertificate, error)
-	Create(certificate Сertificate) (uint64, error)
-	Update(certificateID uint64, certificate Сertificate) error
+	Describe(certificateID uint64) (*Certificate, error)
+	List(cursor uint64, limit uint64) ([]Certificate, error)
+	Create(certificate Certificate) (uint64, error)
+	Update(certificateID uint64, certificate Certificate) error
 	Remove(certificateID uint64) (bool, error)
 }
 
 type DummyСertificateService struct {
-
+	Certificates []Certificate
 }
 
 func NewDummyСertificateService() *DummyСertificateService {
-	return &DummyСertificateService{}
+	return &DummyСertificateService{ Certificates: allEntities }
 }
 
-func (s *DummyСertificateService) Describe(certificateID uint64) (*Сertificate, error) {
-	return nil, nil
+func (s *DummyСertificateService) Describe(certificateID uint64) (*Certificate, error) {
+	for _, certificate := range s.Certificates {
+		if certificate.Id == certificateID {
+			return &certificate, nil
+		}
+	}
+	return nil, errors.New("id not found")
 }
 
-func (s *DummyСertificateService) List(cursor uint64, limit uint64) ([]Сertificate, error) {
+func (s *DummyСertificateService) List(cursor uint64, limit uint64) ([]Certificate, error) {
 	size := uint64(len(allEntities))
+	from := cursor
+	to := cursor + limit
 
-	if cursor >= size {
-		return nil, errors.New("cursor is greater then array size")
+	if from > size {
+		from = size
 	}
-	if cursor + limit >= size {
-		limit = size - cursor
+	if to > size {
+		to = size
 	}
 
-	return allEntities[cursor:cursor+limit], nil
-}
-
-func (s *DummyСertificateService) Get(idx int) (*Сertificate, error) {
-	if idx >= len(allEntities) {
-		return nil, errors.New("index is out of bounds")
-	}
-	return &allEntities[idx], nil
+	return allEntities[cursor:to], nil
 }
