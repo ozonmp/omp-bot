@@ -2,6 +2,7 @@ package championat
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
@@ -9,9 +10,8 @@ import (
 )
 
 func (c *ChampionatCommander) List(inputMessage *tgbotapi.Message) {
-	outputMsgText := "Here all the championat: \n\n"
-
-	const defaultLimit = 2
+	const defaultLimit = 3
+	outputMsgText := fmt.Sprintf("List of the championat (from %v to %v)\n\n", 0, defaultLimit-1)
 	products := c.championatService.List(0, defaultLimit)
 	for _, p := range products {
 		outputMsgText += p.Title
@@ -21,7 +21,7 @@ func (c *ChampionatCommander) List(inputMessage *tgbotapi.Message) {
 	msg := tgbotapi.NewMessage(inputMessage.Chat.ID, outputMsgText)
 
 	serializedData, _ := json.Marshal(CallbackListData{
-		Offset: defaultLimit + 1,
+		Offset: defaultLimit,
 	})
 
 	callbackPath := path.CallbackPath{

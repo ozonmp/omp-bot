@@ -11,6 +11,13 @@ func (s *DummyChampionatService) Describe(championatId uint64) (*Championat, err
 }
 
 func (s *DummyChampionatService) List(cursor uint64, limit uint64) []Championat {
+	var championatsLen = uint64(len(allChampionats))
+	if cursor >= championatsLen {
+		cursor = championatsLen
+	}
+	if (cursor + limit) >= championatsLen {
+		limit = championatsLen - cursor
+	}
 	return allChampionats[cursor : cursor+limit]
 }
 
