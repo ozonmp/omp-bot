@@ -1,30 +1,30 @@
 package championat
 
-type Service struct{}
+type DummyChampionatService struct{}
 
-func NewService() *Service {
-	return &Service{}
+func NewDummyChampionatService() *DummyChampionatService {
+	return &DummyChampionatService{}
 }
 
-func (s *Service) List() []Championat {
-	return allEntities
+func (s *DummyChampionatService) Describe(championatId uint64) (*Championat, error) {
+	return &allChampionats[championatId], nil
 }
 
-func (s *Service) Get(idx int) (*Championat, error) {
-	return &allEntities[idx], nil
+func (s *DummyChampionatService) List() []Championat {
+	return allChampionats
 }
 
-func (s *Service) New(title string) error {
+func (s *DummyChampionatService) Create(title string) error {
 	newEntity(title)
 	return nil
 }
 
-func (s *Service) Delete(id int) error {
-	deleteEntity(id)
+func (s *DummyChampionatService) Update(championatId uint64, title string) error {
+	editEntity(championatId, title)
 	return nil
 }
 
-func (s *Service) Edit(id int, title string) error {
-	editEntity(id, title)
+func (s *DummyChampionatService) Remove(championatId uint64) error {
+	deleteEntity(championatId)
 	return nil
 }

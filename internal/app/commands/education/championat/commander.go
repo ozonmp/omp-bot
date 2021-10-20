@@ -10,13 +10,13 @@ import (
 
 type ChampionatCommander struct {
 	bot               *tgbotapi.BotAPI
-	championatService *championat.Service
+	championatService *championat.DummyChampionatService
 }
 
 func NewChampionatCommander(
 	bot *tgbotapi.BotAPI,
 ) *ChampionatCommander {
-	championatService := championat.NewService()
+	championatService := championat.NewDummyChampionatService()
 
 	return &ChampionatCommander{
 		bot:               bot,

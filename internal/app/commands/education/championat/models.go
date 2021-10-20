@@ -1,7 +1,7 @@
 package championat
 
 type ChampionatEditData struct {
-	ID    int    `json:"id"`
+	ID    uint64 `json:"id"`
 	Title string `json:"title"`
 }
 

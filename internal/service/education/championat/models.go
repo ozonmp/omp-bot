@@ -1,6 +1,6 @@
 package championat
 
-var allEntities = []Championat{
+var allChampionats = []Championat{
 	{Title: "ZeroChampionat"},
 	{Title: "FirstChampionat"},
 	{Title: "SecondChampionat"},
@@ -14,17 +14,17 @@ type Championat struct {
 }
 
 func newEntity(Title string) {
-	allEntities = append(allEntities, Championat{
+	allChampionats = append(allChampionats, Championat{
 		Title: Title,
 	})
 }
 
-func deleteEntity(i int) {
-	allEntities = append(allEntities[:i], allEntities[i+1:]...)
+func deleteEntity(i uint64) {
+	allChampionats = append(allChampionats[:i], allChampionats[i+1:]...)
 }
 
-func editEntity(i int, title string) {
-	allEntities[i] = Championat{
+func editEntity(i uint64, title string) {
+	allChampionats[i] = Championat{
 		Title: title,
 	}
 }

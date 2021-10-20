@@ -18,7 +18,7 @@ func (c *ChampionatCommander) New(inputMessage *tgbotapi.Message) {
 		return
 	}
 
-	err = c.championatService.New(editData.Title)
+	err = c.championatService.Create(editData.Title)
 	if err != nil {
 		log.Printf("fail to create championat with title %v: %v", editData.Title, err)
 		return

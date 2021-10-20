@@ -18,7 +18,7 @@ func (c *ChampionatCommander) Edit(inputMessage *tgbotapi.Message) {
 		return
 	}
 
-	err = c.championatService.Edit(editData.ID, editData.Title)
+	err = c.championatService.Update(editData.ID, editData.Title)
 	if err != nil {
 		log.Printf("fail to edit championat with id %v: %v", editData.ID, err)
 		return

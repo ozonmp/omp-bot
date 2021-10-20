@@ -16,7 +16,7 @@ func (c *ChampionatCommander) Get(inputMessage *tgbotapi.Message) {
 		return
 	}
 
-	product, err := c.championatService.Get(idx)
+	product, err := c.championatService.Describe(uint64(idx))
 	if err != nil {
 		log.Printf("fail to get product with idx %d: %v", idx, err)
 		return
@@ -29,6 +29,6 @@ func (c *ChampionatCommander) Get(inputMessage *tgbotapi.Message) {
 
 	_, err = c.bot.Send(msg)
 	if err != nil {
-		log.Printf("ChampionatCommander.Get: error sending reply message to chat - %v", err)
+		log.Printf("ChampionatCommander.Describe: error sending reply message to chat - %v", err)
 	}
 }

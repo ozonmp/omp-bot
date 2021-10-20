@@ -15,7 +15,7 @@ func (c *ChampionatCommander) Delete(inputMessage *tgbotapi.Message) {
 		return
 	}
 
-	err = c.championatService.Delete(idx)
+	err = c.championatService.Remove(uint64(idx))
 	if err != nil {
 		log.Printf("fail to delete championat with id %v: %v", idx, err)
 		return
@@ -28,6 +28,6 @@ func (c *ChampionatCommander) Delete(inputMessage *tgbotapi.Message) {
 
 	_, err = c.bot.Send(msg)
 	if err != nil {
-		log.Printf("ChampionatCommander.Get: error sending reply message to chat - %v", err)
+		log.Printf("ChampionatCommander.Describe: error sending reply message to chat - %v", err)
 	}
 }
