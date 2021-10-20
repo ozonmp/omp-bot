@@ -41,6 +41,10 @@ func (c *PaymentProviderCommander) HandleCommand(msg *tgbotapi.Message, commandP
 		c.Get(msg)
 	case "delete":
 		c.Delete(msg)
+	case "new":
+		c.Create(msg)
+	case "edit":
+		break
 	default:
 		c.Default(msg)
 	}
