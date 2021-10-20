@@ -1,6 +1,7 @@
 package router
 
 import (
+	"github.com/ozonmp/omp-bot/internal/app/commands/activity"
 	"log"
 	"runtime/debug"
 
@@ -18,8 +19,8 @@ type Router struct {
 	// bot
 	bot *tgbotapi.BotAPI
 
-	// demoCommander
-	demoCommander Commander
+	activityCommander Commander
+	demoCommander     Commander
 	// user
 	// access
 	// buy
@@ -52,9 +53,9 @@ func NewRouter(
 ) *Router {
 	return &Router{
 		// bot
-		bot: bot,
-		// demoCommander
-		demoCommander: demo.NewDemoCommander(bot),
+		bot:               bot,
+		activityCommander: activity.NewActivityCommander(bot),
+		demoCommander:     demo.NewDemoCommander(bot),
 		// user
 		// access
 		// buy
@@ -106,6 +107,8 @@ func (c *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
 	}
 
 	switch callbackPath.Domain {
+	case "activity":
+		c.activityCommander.HandleCallback(callback, callbackPath)
 	case "demo":
 		c.demoCommander.HandleCallback(callback, callbackPath)
 	case "user":
@@ -177,6 +180,8 @@ func (c *Router) handleMessage(msg *tgbotapi.Message) {
 	}
 
 	switch commandPath.Domain {
+	case "activity":
+		c.activityCommander.HandleCommand(msg, commandPath)
 	case "demo":
 		c.demoCommander.HandleCommand(msg, commandPath)
 	case "user":
