@@ -10,8 +10,8 @@ func (s *DummyChampionatService) Describe(championatId uint64) (*Championat, err
 	return &allChampionats[championatId], nil
 }
 
-func (s *DummyChampionatService) List() []Championat {
-	return allChampionats
+func (s *DummyChampionatService) List(cursor uint64, limit uint64) []Championat {
+	return allChampionats[cursor : cursor+limit]
 }
 
 func (s *DummyChampionatService) Create(title string) error {

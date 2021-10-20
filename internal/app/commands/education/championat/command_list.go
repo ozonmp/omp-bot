@@ -11,7 +11,8 @@ import (
 func (c *ChampionatCommander) List(inputMessage *tgbotapi.Message) {
 	outputMsgText := "Here all the championat: \n\n"
 
-	products := c.championatService.List()
+	const defaultLimit = 2
+	products := c.championatService.List(0, defaultLimit)
 	for _, p := range products {
 		outputMsgText += p.Title
 		outputMsgText += "\n"
@@ -20,7 +21,7 @@ func (c *ChampionatCommander) List(inputMessage *tgbotapi.Message) {
 	msg := tgbotapi.NewMessage(inputMessage.Chat.ID, outputMsgText)
 
 	serializedData, _ := json.Marshal(CallbackListData{
-		Offset: 21,
+		Offset: defaultLimit + 1,
 	})
 
 	callbackPath := path.CallbackPath{
