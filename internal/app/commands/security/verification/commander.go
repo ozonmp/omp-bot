@@ -53,3 +53,12 @@ func (c *SecurityVerificationCommander) HandleCommand(msg *tgbotapi.Message, com
 		c.Edit(msg)
 	}
 }
+
+var internalError = "internal error"
+
+func (c *SecurityVerificationCommander) sendErrorMsg(commandName string, msg tgbotapi.MessageConfig) {
+	_, err := c.bot.Send(msg)
+	if err != nil {
+		log.Printf("SecurityVerificationCommander.%s: error sending error message to chat - %v", commandName, err)
+	}
+}

@@ -15,6 +15,8 @@ func (c *SecurityVerificationCommander) List(inputMessage *tgbotapi.Message) {
 	products, err := c.verificationService.List(0, MaxUint)
 	if err != nil {
 		log.Printf("fail to get list of products: %v", err)
+		c.sendErrorMsg("List", tgbotapi.NewMessage(inputMessage.Chat.ID, internalError))
+		return
 	}
 	for _, p := range products {
 		outputMsgText += p.String()
