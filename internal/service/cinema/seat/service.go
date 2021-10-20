@@ -18,5 +18,8 @@ type DummySeatService struct {
 }
 
 func NewDummySeatService() *DummySeatService {
-	return &DummySeatService{}
+	return &DummySeatService{
+		seats:  cinema.InitialSeats,
+		nextID: uint64(len(cinema.InitialSeats) + 1),
+	}
 }
