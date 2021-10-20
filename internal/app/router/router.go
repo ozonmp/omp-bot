@@ -6,6 +6,7 @@ import (
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/app/commands/demo"
+	"github.com/ozonmp/omp-bot/internal/app/commands/exchange"
 	"github.com/ozonmp/omp-bot/internal/app/path"
 )
 
@@ -38,6 +39,7 @@ type Router struct {
 	// work
 	// service
 	// exchange
+	exchangeCommander Commander
 	// estate
 	// rating
 	// security
@@ -73,6 +75,7 @@ func NewRouter(
 		// work
 		// service
 		// exchange
+		exchangeCommander: exchange.NewExchangeCommander(bot),
 		// estate
 		// rating
 		// security
@@ -143,6 +146,7 @@ func (c *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
 	case "service":
 		break
 	case "exchange":
+		c.exchangeCommander.HandleCallback(callback, callbackPath)
 		break
 	case "estate":
 		break
@@ -214,6 +218,7 @@ func (c *Router) handleMessage(msg *tgbotapi.Message) {
 	case "service":
 		break
 	case "exchange":
+		c.exchangeCommander.HandleCommand(msg, commandPath)
 		break
 	case "estate":
 		break
