@@ -41,8 +41,8 @@ func (c *DemoSubdomainCommander) HandleCommand(msg *tgbotapi.Message, commandPat
 		c.List(msg)
 	case "get":
 		c.Get(msg)
-	case "create":
-		c.Create(msg)
+	case "new":
+		c.New(msg)
 	case "delete":
 		c.Delete(msg)
 	default:

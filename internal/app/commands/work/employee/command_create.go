@@ -5,7 +5,7 @@ import (
 	"log"
 )
 
-func (c *DemoSubdomainCommander) Create(inputMessage *tgbotapi.Message) {
+func (c *DemoSubdomainCommander) New(inputMessage *tgbotapi.Message) {
 	args := inputMessage.CommandArguments()
 
 	msg := tgbotapi.NewMessage(inputMessage.Chat.ID, c.subdomainService.Create(args))
