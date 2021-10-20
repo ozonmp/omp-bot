@@ -11,6 +11,7 @@ type ProviderService interface {
 	Remove(providerID uint64) (bool, error)
 	Update(providerID uint64, provider Provider) error
 	List(cursor uint64, limit uint64) []Provider
+	EntitiesCount() int
 	ShortDescription(provider *Provider) string
 	LongDescription(provider *Provider) string
 }
@@ -20,7 +21,7 @@ type Service struct{}
 func NewService() *Service {
 	return &Service{}
 }
-
+func (s *Service) EntitiesCount() int { return len(allEntities) }
 func (s *Service) List(cursor uint64, limit uint64) []Provider {
 	if limit == 0 {
 		return allEntities
