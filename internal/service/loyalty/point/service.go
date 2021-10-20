@@ -78,5 +78,16 @@ func (s *DummyPointService) Get(pointId uint64) (*loyalty.Point, error) {
 		}
 	}
 
-	return nil, fmt.Errorf("entity with id %d not found", pointId)
+	return nil, fmt.Errorf("Can't find entity with id %d", pointId)
+}
+
+func (s *DummyPointService) Delete(PointId uint64) (bool, error) {
+	for key, entity := range s.allEntities {
+		if entity.Id == PointId {
+			s.allEntities = append(s.allEntities[:key], s.allEntities[key+1:]...)
+			return true, nil
+		}
+	}
+
+	return false, fmt.Errorf("Can't find entity with id %d", PointId)
 }
