@@ -82,27 +82,44 @@ func (s *DummyPointService) Get(pointId uint64) (*loyalty.Point, error) {
 	return nil, fmt.Errorf("Can't find entity with id %d", pointId)
 }
 
-func (s *DummyPointService) Delete(PointId uint64) (bool, error) {
+func (s *DummyPointService) Delete(pointId uint64) (bool, error) {
 	for key, entity := range s.allEntities {
-		if entity.Id == PointId {
+		if entity.Id == pointId {
 			s.allEntities = append(s.allEntities[:key], s.allEntities[key+1:]...)
 			return true, nil
 		}
 	}
 
-	return false, fmt.Errorf("Can't find entity with id %d", PointId)
+	return false, fmt.Errorf("Can't find entity with id %d", pointId)
 }
 
-func (s *DummyPointService) Create(o loyalty.Point) (uint64, error) {
-	if len(o.Name) == 0 {
+func (s *DummyPointService) Create(p loyalty.Point) (uint64, error) {
+	if len(p.Name) == 0 {
 		return 0, errors.New("field 'Name' is required")
 	}
 
-	if len(o.Description) == 0 {
+	if len(p.Description) == 0 {
 		return 0, errors.New("field 'Description' is required")
 	}
 
-	s.allEntities = append(s.allEntities, o)
+	s.allEntities = append(s.allEntities, p)
 
 	return uint64(len(s.allEntities) - 1), nil
+}
+
+func (s *DummyPointService) Edit(pointId uint64, point loyalty.Point) error {
+	if uint64(len(s.allEntities)-1) < pointId {
+		return fmt.Errorf("Can't find entity with id %d", pointId)
+	}
+
+	if len(point.Name) > 0 {
+		s.allEntities[pointId - 1].Name = point.Name
+		errors.New("field 'Name' is required")
+	}
+
+	if len(point.Description) > 0 {
+		s.allEntities[pointId -1].Description = point.Description
+	}
+
+	return nil
 }

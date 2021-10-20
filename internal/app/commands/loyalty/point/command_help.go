@@ -11,7 +11,8 @@ func (c *PointCommander) Help(inputMessage *tgbotapi.Message) {
 		"/list__loyalty__point - list products\n"+
 		"/get__loyalty__point - get product by id\n"+
 		"/delete__loyalty__point - remove entity by id\n" + 
-		"/create__loyalty__point {name | description} - create new entity by args",
+		"/create__loyalty__point {name | description} - create new entity by args\n" + 
+		"/edit__loyalty__point {id | name | description} - edit entity by args",
 	)
 
 	_, err := c.bot.Send(msg)
