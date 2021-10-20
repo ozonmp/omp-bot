@@ -13,9 +13,8 @@ func NewService() *Service {
 func (service *Service) List() string {
 	outputMsgText := "Success -> Here all the employees: \n\n"
 
-	employees := repository.all()
-	for _, p := range employees {
-		outputMsgText += p.Title
+	for _, p := range repository.all() {
+		outputMsgText += p.idAsString() + " | " + p.Title
 		outputMsgText += "\n"
 	}
 
