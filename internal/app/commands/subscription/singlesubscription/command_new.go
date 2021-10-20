@@ -6,21 +6,26 @@ import (
 	"log"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-	"github.com/ozonmp/omp-bot/internal/model/subscription"
 )
 
 func (c *DummySingleSubscriptionCommander) New(inputMsg *tgbotapi.Message) {
 	args := inputMsg.CommandArguments()
-	tmp := subscription.SingleSubscription{}
+	input := InputSingleSubscription{}
 
-	err := json.Unmarshal([]byte(args), &tmp)
+	err := json.Unmarshal([]byte(args), &input)
 	if err != nil {
 		log.Println("DummySingleSubscriptionCommander.New invalid body", args)
 		c.bot.Send(tgbotapi.NewMessage(inputMsg.Chat.ID, UsageNew))
 		return
 	}
+	tmp, err := input.ToSingleSubscription()
+	if err != nil {
+		log.Println("DummySingleSubscriptionCommander.New invalid time", args, err)
+		c.bot.Send(tgbotapi.NewMessage(inputMsg.Chat.ID, UsageNew))
+		return
+	}
 
-	id, _ := c.service.Create(tmp)
+	id, _ := c.service.Create(*tmp)
 
 	msg := tgbotapi.NewMessage(
 		inputMsg.Chat.ID,

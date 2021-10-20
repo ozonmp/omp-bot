@@ -5,21 +5,26 @@ import (
 	"log"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-	"github.com/ozonmp/omp-bot/internal/model/subscription"
 )
 
 func (c *DummySingleSubscriptionCommander) Edit(inputMsg *tgbotapi.Message) {
 	args := inputMsg.CommandArguments()
-	tmp := subscription.SingleSubscription{}
+	input := InputSingleSubscription{}
 
-	err := json.Unmarshal([]byte(args), &tmp)
+	err := json.Unmarshal([]byte(args), &input)
 	if err != nil {
 		log.Println("DummySingleSubscriptionCommander.Edit invalid body", args)
 		c.bot.Send(tgbotapi.NewMessage(inputMsg.Chat.ID, UsageEdit))
 		return
 	}
+	tmp, err := input.ToSingleSubscription()
+	if err != nil {
+		log.Println("DummySingleSubscriptionCommander.Edit invalid time", args, err)
+		c.bot.Send(tgbotapi.NewMessage(inputMsg.Chat.ID, UsageEdit))
+		return
+	}
 
-	err = c.service.Update(tmp.ID, tmp)
+	err = c.service.Update(tmp.ID, *tmp)
 	if err != nil {
 		log.Printf("DummySingleSubscriptionCommander.Edit failed to update %+v: %v\n", tmp, err)
 		c.bot.Send(tgbotapi.NewMessage(inputMsg.Chat.ID, ErrOnEdit))
