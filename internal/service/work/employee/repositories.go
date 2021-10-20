@@ -1,34 +1,34 @@
 package employee
 
-type EmployeeRepository struct {
+type Repository struct {
 	storage map[int]Employee
 }
 
-func NewEmployeeRepository() EmployeeRepository {
+func NewRepository() Repository {
 	storage := map[int]Employee{
 		1: {Id: 1, Title: "Artem"},
 		2: {Id: 2, Title: "Vasya"},
 		3: {Id: 3, Title: "Petya"},
 	}
 
-	return EmployeeRepository{storage}
+	return Repository{storage}
 }
 
-func (repo EmployeeRepository) all() map[int]Employee {
+func (repo Repository) all() map[int]Employee {
 	return repo.storage
 }
 
-func (repo EmployeeRepository) delete(id int) {
+func (repo Repository) delete(id int) {
 	delete(repo.storage, id)
 }
 
-func (repo EmployeeRepository) existsById(id int) bool {
+func (repo Repository) existsById(id int) bool {
 	_, state := repo.storage[id]
 
 	return state
 }
 
-func (repo EmployeeRepository) create(title string) Employee {
+func (repo Repository) create(title string) Employee {
 	id := len(repo.storage) + 1
 
 	var employee = Employee{
@@ -41,6 +41,6 @@ func (repo EmployeeRepository) create(title string) Employee {
 	return employee
 }
 
-func (repo EmployeeRepository) find(id int) Employee {
+func (repo Repository) find(id int) Employee {
 	return repo.storage[id]
 }

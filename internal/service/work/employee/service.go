@@ -4,7 +4,7 @@ import "strconv"
 
 type Service struct{}
 
-var repository = NewEmployeeRepository()
+var repository = NewRepository()
 
 func NewService() *Service {
 	return &Service{}
