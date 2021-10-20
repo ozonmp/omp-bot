@@ -28,15 +28,15 @@ func (c *ChampionatCommander) Get(inputMessage *tgbotapi.Message) {
 		return
 	}
 
-	product, err := c.championatService.Describe(uint64(idx))
+	championat, err := c.championatService.Describe(uint64(idx))
 	if err != nil {
-		log.Printf("fail to get product with idx %d: %v", idx, err)
+		log.Printf("fail to get championat with idx %d: %v", idx, err)
 		return
 	}
 
 	msg := tgbotapi.NewMessage(
 		inputMessage.Chat.ID,
-		product.Title,
+		championat.String(),
 	)
 
 	_, err = c.bot.Send(msg)
