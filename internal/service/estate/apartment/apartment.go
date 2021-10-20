@@ -10,29 +10,51 @@ type ApartmentService interface {
 	Remove(apartmentID uint64) (bool, error)
 }
 
+type ApartmentStorage interface {
+	Describe(apartmentID uint64) (*estate.Apartment, error)
+	List(cursor uint64, limit uint64) ([]estate.Apartment, error)
+	Create(estate.Apartment) (uint64, error)
+	Update(apartmentID uint64, apartment estate.Apartment) error
+	Remove(apartmentID uint64) (bool, error)
+}
+
 type DummyApartmentService struct {
+	storage ApartmentStorage
 }
 
 func NewDummyApartmentService() *DummyApartmentService {
-	return &DummyApartmentService{}
+	startingItems := []estate.Apartment{
+		{Title: "My awesome apartment", Price: 132},
+		{Title: "Not so awesome apartment", Price: 93},
+		{Title: "Not my apartment", Price: 208},
+		{Title: "Not my but awesome apartment", Price: 248},
+		{Title: "Ruined apartment", Price: 18},
+		{Title: "My friend's apartment", Price: 180},
+		{Title: "My friend's other apartment", Price: 182},
+		{Title: "No one's apartment", Price: 308},
+		{Title: "Apartment on sale", Price: 112},
+	}
+	return &DummyApartmentService{
+		storage: estate.NewInMemoryApartmentStorage(startingItems),
+	}
 }
 
 func (d *DummyApartmentService) Describe(apartmentID uint64) (*estate.Apartment, error) {
-	panic("not implemented") // TODO: Implement
+	return d.storage.Describe(apartmentID)
 }
 
 func (d *DummyApartmentService) List(cursor uint64, limit uint64) ([]estate.Apartment, error) {
-	panic("not implemented") // TODO: Implement
+	return d.storage.List(cursor, limit)
 }
 
 func (d *DummyApartmentService) Create(apartment estate.Apartment) (uint64, error) {
-	panic("not implemented") // TODO: Implement
+	return d.storage.Create(apartment)
 }
 
 func (d *DummyApartmentService) Update(apartmentID uint64, apartment estate.Apartment) error {
-	panic("not implemented") // TODO: Implement
+	return d.storage.Update(apartmentID, apartment)
 }
 
 func (d *DummyApartmentService) Remove(apartmentID uint64) (bool, error) {
-	panic("not implemented") // TODO: Implement
+	return d.storage.Remove(apartmentID)
 }

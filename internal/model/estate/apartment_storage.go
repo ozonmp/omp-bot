@@ -6,14 +6,6 @@ import (
 	"sync"
 )
 
-type ApartmentStorage interface {
-	Describe(apartmentID uint64) (*Apartment, error)
-	List(cursor uint64, limit uint64) ([]Apartment, error)
-	Create(Apartment) (uint64, error)
-	Update(apartmentID uint64, apartment Apartment) error
-	Remove(apartmentID uint64) (bool, error)
-}
-
 type InMemoryApartmentStorage struct {
 	mem    map[uint64]Apartment
 	mu     sync.RWMutex
