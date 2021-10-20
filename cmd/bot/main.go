@@ -1,18 +1,15 @@
 package main
 
 import (
-	"log"
-	"os"
-
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-	"github.com/joho/godotenv"
 	"github.com/ozonmp/omp-bot/internal/app/router"
+	"log"
 )
 
 func main() {
-	godotenv.Load()
+	//godotenv.Load()
 
-	token := os.Getenv("TOKEN")
+	token := "2068890040:AAEPqBcrrY0Z967xACYUPeAxhU4Xe0wVoK8"//os.Getenv("2068890040:AAEPqBcrrY0Z967xACYUPeAxhU4Xe0wVoK8")
 
 	bot, err := tgbotapi.NewBotAPI(token)
 	if err != nil {
