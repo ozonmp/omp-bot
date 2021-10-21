@@ -1,23 +1,30 @@
 package company
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
+	"strconv"
+	"strings"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/model/business"
 )
 
 func (c *CompanyCommander) New(inputMessage *tgbotapi.Message) {
-	json_company := inputMessage.CommandArguments()
+	arg_company := strings.Split(inputMessage.CommandArguments(), "|")
 
-	company := business.Company{}
-	err := json.Unmarshal([]byte(json_company), &company)
-	if err != nil {
-		log.Printf("CompanyCommander.New: unable to unmarashal '%v': %v", json_company, err)
+	if len(arg_company) != 3 {
+		log.Printf("CompanyCommander.New: fail to create company, invalid stucture zipcode|name|address")
 		return
 	}
+
+	company_zipcode, err := strconv.Atoi(arg_company[0])
+	if err != nil {
+		log.Printf("CompanyCommander.New: fail to create company, invalid stucture zipcode|name|address : %v", err)
+		return
+	}
+
+	company := business.Company{Name: arg_company[1], Address: arg_company[2], ZipCode: int64(company_zipcode)}
 
 	idx, err := c.companyService.Create(company)
 	if err != nil {
