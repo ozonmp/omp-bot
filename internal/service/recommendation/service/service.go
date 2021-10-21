@@ -21,9 +21,9 @@ func NewDummyServiceService(allEntities []Service) *DummyServiceService {
 	var lastId uint64 = 0
 	for _, entity := range allEntities {
 		lastId++
-		data[lastId] = NewService(lastId, entity.Title)
+		data[lastId] = NewService(lastId, entity.Title, entity.Description)
 	}
-	return &DummyServiceService{data: data, lastId: 0}
+	return &DummyServiceService{data: data, lastId: lastId}
 }
 
 func (s *DummyServiceService) Get(service_id uint64) (*Service, error) {
@@ -55,9 +55,9 @@ func (s *DummyServiceService) List(cursor uint64, limit uint64) ([]Service, erro
 
 func (s *DummyServiceService) Create(service Service) (uint64, error) {
 	s.lastId++
-	storedService := NewService(s.lastId, service.Title)
+	storedService := NewService(s.lastId, service.Title, service.Description)
 	s.data[storedService.Id] = storedService
-	return service.Id, nil
+	return storedService.Id, nil
 }
 
 func (s *DummyServiceService) Update(service_id uint64, service Service) error {

@@ -11,12 +11,14 @@ var AllEntities = []Service{
 }
 
 type Service struct {
-	Id    uint64
-	Title string
+	Id          uint64
+	Title       string
+	Description string
+	Rating      int
 }
 
-func NewService(id uint64, title string) *Service {
-	return &Service{Id: id, Title: title}
+func NewService(id uint64, title string, description string) *Service {
+	return &Service{Id: id, Title: title, Description: description}
 }
 
 func (d *Service) String() string {

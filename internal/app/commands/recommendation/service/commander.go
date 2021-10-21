@@ -43,6 +43,10 @@ func (c *RecommendationServiceCommander) HandleCommand(msg *tgbotapi.Message, co
 		c.Get(msg)
 	case "delete":
 		c.Delete(msg)
+	case "new":
+		c.New(msg)
+	case "edit":
+		c.Edit(msg)
 	default:
 		c.Default(msg)
 	}

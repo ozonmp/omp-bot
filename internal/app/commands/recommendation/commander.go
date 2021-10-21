@@ -30,7 +30,7 @@ func NewRecommendationCommander(
 
 func (c *RecommendationCommander) HandleCallback(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
 	switch callbackPath.Subdomain {
-	case "subdomain":
+	case "service":
 		c.serviceCommander.HandleCallback(callback, callbackPath)
 	default:
 		log.Printf("RecommendationCommander.HandleCallback: unknown subdomain - %s", callbackPath.Subdomain)
