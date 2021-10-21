@@ -12,13 +12,13 @@ func (c *CompanyCommander) Get(inputMessage *tgbotapi.Message) {
 
 	idx, err := strconv.Atoi(args)
 	if err != nil {
-		log.Println("wrong args", args)
+		log.Println("CompanyCommander.Get: wrong args", args)
 		return
 	}
 
 	company, err := c.companyService.Describe(uint64(idx))
 	if err != nil {
-		log.Printf("fail to get company with idx %d: %v", idx, err)
+		log.Printf("CompanyCommander.Get: fail to get company with idx %d: %v", idx, err)
 		return
 	}
 

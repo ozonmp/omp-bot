@@ -13,6 +13,6 @@ func (c *CompanyCommander) Default(inputMessage *tgbotapi.Message) {
 
 	_, err := c.bot.Send(msg)
 	if err != nil {
-		log.Printf("CompanyCommander.Help: error sending reply message to chat - %v", err)
+		log.Printf("CompanyCommander.Default: error sending reply message to chat - %v", err)
 	}
 }

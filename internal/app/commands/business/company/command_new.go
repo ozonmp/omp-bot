@@ -11,7 +11,7 @@ import (
 func (c *CompanyCommander) New(inputMessage *tgbotapi.Message) {
 	idx, err := c.companyService.Create(business.Company{})
 	if err != nil {
-		log.Printf("fail to create company: %v", err)
+		log.Printf("CompanyCommander.New: fail to create company: %v", err)
 		return
 	}
 
@@ -24,6 +24,6 @@ func (c *CompanyCommander) New(inputMessage *tgbotapi.Message) {
 
 	_, err = c.bot.Send(msg)
 	if err != nil {
-		log.Printf("CompanyCommander.Get: error sending reply message to chat - %v", err)
+		log.Printf("CompanyCommander.New: error sending reply message to chat - %v", err)
 	}
 }

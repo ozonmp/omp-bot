@@ -13,13 +13,13 @@ func (c *CompanyCommander) Delete(inputMessage *tgbotapi.Message) {
 
 	idx, err := strconv.Atoi(args)
 	if err != nil {
-		log.Println("wrong args", args)
+		log.Println("CompanyCommander.Delete: wrong args", args)
 		return
 	}
 
 	isDeleted, err := c.companyService.Remove(uint64(idx))
 	if err != nil {
-		log.Printf("Unable to delete %d element - %v", idx, err)
+		log.Printf("CompanyCommander.Delete: unable to delete %d element - %v", idx, err)
 	}
 
 	if isDeleted {

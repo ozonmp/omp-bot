@@ -12,6 +12,7 @@ func (c *CompanyCommander) Edit(inputMessage *tgbotapi.Message) {
 
 	err := c.companyService.Update(uint64(idx), business.Company{})
 	if err != nil {
-		log.Printf("fail to edit company with idx %d: %v", idx, err)
+		log.Printf("CompanyCommander.Edit: fail to edit company with idx %d: %v", idx, err)
 	}
+
 }

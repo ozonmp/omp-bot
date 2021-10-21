@@ -11,7 +11,7 @@ func (c *CompanyCommander) List(inputMessage *tgbotapi.Message) {
 
 	companies, err := c.companyService.List(0, 10)
 	if err != nil {
-		log.Printf("Error get compines - %v", err)
+		log.Printf("CompanyCommander.List: Error get compines - %v", err)
 	}
 
 	for _, c := range companies {
@@ -20,5 +20,8 @@ func (c *CompanyCommander) List(inputMessage *tgbotapi.Message) {
 
 	msg := tgbotapi.NewMessage(inputMessage.Chat.ID, outputMsgText)
 
-	c.bot.Send(msg)
+	_, err = c.bot.Send(msg)
+	if err != nil {
+		log.Printf("CompanyCommander.List: error sending reply message to chat - %v", err)
+	}
 }
