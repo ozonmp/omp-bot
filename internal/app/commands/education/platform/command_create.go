@@ -7,7 +7,7 @@ import (
 	"log"
 )
 
-func (c *PlatformBaseCommander) New(inputMsg *tgbotapi.Message) {
+func (c *PlatformBaseCommander) Create(inputMsg *tgbotapi.Message) {
 	args := inputMsg.CommandArguments()
 	inputData := PlatformInput{}
 

@@ -13,7 +13,7 @@ type PlatformCommander interface {
 	Get(inputMsg *tgbotapi.Message)
 	List(inputMsg *tgbotapi.Message)
 	Delete(inputMsg *tgbotapi.Message)
-	New(inputMsg *tgbotapi.Message)
+	Create(inputMsg *tgbotapi.Message)
 	Edit(inputMsg *tgbotapi.Message)
 }
 
@@ -57,7 +57,7 @@ func (c *EducationPlatformCommander) HandleCommand(msg *tgbotapi.Message, comman
 	case "delete":
 		c.platformCommander.Delete(msg)
 	case "new":
-		c.platformCommander.New(msg)
+		c.platformCommander.Create(msg)
 	case "edit":
 		c.platformCommander.Edit(msg)
 	default:
