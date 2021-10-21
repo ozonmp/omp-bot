@@ -3,6 +3,7 @@ package platform
 import (
 	"encoding/json"
 	"log"
+	"strings"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/app/path"
@@ -27,17 +28,17 @@ func (h *PlatformBaseCallbackHandler) CallbackList(callback *tgbotapi.CallbackQu
 		return
 	}
 
-	outputMsgText := ""
+	var outputMsgText strings.Builder
 
 	for _, p := range platforms {
-		outputMsgText += p.String()
-		outputMsgText += "\n"
+		outputMsgText.WriteString(p.String())
+		outputMsgText.WriteString("\n")
 	}
 
-	if outputMsgText == "" {
+	if outputMsgText.Len() == 0 {
 		msg = tgbotapi.NewMessage(callback.Message.Chat.ID, "No more items")
 	} else {
-		msg = tgbotapi.NewMessage(callback.Message.Chat.ID, outputMsgText)
+		msg = tgbotapi.NewMessage(callback.Message.Chat.ID, outputMsgText.String())
 	}
 
 	buttons := makeButtons(parsedData, uint64(len(platforms)))
