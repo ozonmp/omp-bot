@@ -17,25 +17,25 @@ func (c *BankOperationCommander) List(inputMsg *tgbotapi.Message) {
 		return
 	}
 
-	cursor, errArg := strconv.ParseUint(args[0], 10, 64)
-	if errArg != nil {
-		log.Printf("BankOperationCommander.List: error converting argument 0 - %v", errArg)
+	cursor, err := strconv.ParseUint(args[0], 10, 64)
+	if err != nil {
+		log.Printf("BankOperationCommander.List: error converting argument 0 - %v", err)
 		return
 	}
 
-	limit, errArg := strconv.ParseUint(args[1], 10, 64)
-	if errArg != nil {
-		log.Printf("BankOperationCommander.List: error converting argument 1 - %v", errArg)
+	limit, err := strconv.ParseUint(args[1], 10, 64)
+	if err != nil {
+		log.Printf("BankOperationCommander.List: error converting argument 1 - %v", err)
 		return
 	}
 
-	msg, errList := c.prepareList(*inputMsg, cursor, limit)
+	msg, err := c.prepareList(*inputMsg, cursor, limit)
 
-	if errList != nil {
-		log.Printf("BankOperationCommander.List: error preparing list - %v", errList)
+	if err != nil {
+		log.Printf("BankOperationCommander.List: error preparing list - %v", err)
 	}
 
-	_, err := c.bot.Send(msg)
+	_, err = c.bot.Send(msg)
 	if err != nil {
 		log.Printf("BankOperationCommander.List: error sending reply message to chat - %v", err)
 	}
@@ -43,17 +43,18 @@ func (c *BankOperationCommander) List(inputMsg *tgbotapi.Message) {
 
 func(c *BankOperationCommander)  prepareList(inputMsg tgbotapi.Message, cursor uint64, limit uint64) (msg tgbotapi.MessageConfig, err error) {
 	outputMsgText := "Here are the operations: \n\n"
-	operations, errList := c.operationService.List(cursor, limit)
+	operations, err := c.operationService.List(cursor, limit)
+
+	if err != nil {
+		log.Printf("BankOperationCommander.List: error getting list - %v", err)
+		return tgbotapi.MessageConfig{}, err
+	}
 
 	if len(operations) == 0 {
 		msg = tgbotapi.NewMessage(inputMsg.Chat.ID, "No more operations")
 		return msg, nil
 	}
 
-	if errList != nil {
-		log.Printf("BankOperationCommander.List: error getting list - %v", errList)
-		return tgbotapi.MessageConfig{}, errList
-	}
 	for _, op := range operations {
 		outputMsgText += op.String()
 		outputMsgText += "\n\n"

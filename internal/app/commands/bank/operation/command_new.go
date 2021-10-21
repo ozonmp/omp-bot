@@ -16,11 +16,11 @@ func (c BankOperationCommander) New(inputMsg *tgbotapi.Message){
 		return
 	}
 
-	operationType := args[0]
+	operationType := bank.OperationType(args[0])
 
-	transactionID, errArg := strconv.ParseUint(args[1], 10, 64)
-	if errArg != nil {
-		log.Printf("BankOperationCommander.New: error converting argument 2 - %v", errArg)
+	transactionID, err := strconv.ParseUint(args[1], 10, 64)
+	if err != nil {
+		log.Printf("BankOperationCommander.New: error converting argument 2 - %v", err)
 		return
 	}
 

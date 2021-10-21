@@ -15,23 +15,23 @@ type CallbackListData struct {
 
 func (c *BankOperationCommander) CallbackList(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
 	parsedData := CallbackListData{}
-	errJson := json.Unmarshal([]byte(callbackPath.CallbackData), &parsedData)
-	if errJson != nil {
+	err := json.Unmarshal([]byte(callbackPath.CallbackData), &parsedData)
+	if err != nil {
 		log.Printf("BankOperationCommander.CallbackList: "+
 			"error reading json data for type CallbackListData from "+
-			"input string %v - %v", callbackPath.CallbackData, errJson)
+			"input string %v - %v", callbackPath.CallbackData, err)
 		return
 	}
 
 	cursor, limit := parsedData.Cursor, parsedData.Limit
 
-	msg, errList := c.prepareList(*callback.Message, cursor, limit)
+	msg, err := c.prepareList(*callback.Message, cursor, limit)
 
-	if errList != nil {
-		log.Printf("BankOperationCommander.List: error preparing list - %v", errList)
+	if err != nil {
+		log.Printf("BankOperationCommander.List: error preparing list - %v", err)
 	}
 
-	_, err := c.bot.Send(msg)
+	_, err = c.bot.Send(msg)
 	if err != nil {
 		log.Printf("BankOperationCommander.List: error sending reply message to chat - %v", err)
 	}

@@ -49,10 +49,10 @@ func (s *DummyService) Describe(operationID uint64) (*bank.Operation, error) {
 
 func (s *DummyService) List(cursor uint64, limit uint64) ([]bank.Operation, error) {
 	if limit == 0 {
-		return nil, nil
+		return []bank.Operation{}, nil
 	}
 
-	var elementsFound uint64 = 0
+	var elementsFound uint64
 
 	result := make([]bank.Operation, 0, limit)
 	for i := cursor; i < uint64(len(s.ids)); i++ {
