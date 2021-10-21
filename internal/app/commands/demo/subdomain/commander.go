@@ -3,9 +3,9 @@ package subdomain
 import (
 	"log"
 
+	"github.com/fregat33/omp-bot/internal/app/path"
+	"github.com/fregat33/omp-bot/internal/service/demo/subdomain"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-	"github.com/ozonmp/omp-bot/internal/app/path"
-	"github.com/ozonmp/omp-bot/internal/service/demo/subdomain"
 )
 
 type DemoSubdomainCommander struct {
