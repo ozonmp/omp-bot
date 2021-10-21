@@ -15,7 +15,7 @@ func (c *CompanyCommander) List(inputMessage *tgbotapi.Message) {
 	}
 
 	for _, c := range companies {
-		outputMsgText += c.String()
+		outputMsgText += c.String() + "\n"
 	}
 
 	msg := tgbotapi.NewMessage(inputMessage.Chat.ID, outputMsgText)

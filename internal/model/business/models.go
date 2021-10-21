@@ -16,5 +16,5 @@ var AllEntities = []Company{
 }
 
 func (c *Company) String() string {
-	return fmt.Sprintf("Company %s [Address: %s, ZipCode: %d]\n", c.Name, c.Address, c.ZipCode)
+	return fmt.Sprintf("Company %s [Address: %s, ZipCode: %d]", c.Name, c.Address, c.ZipCode)
 }
