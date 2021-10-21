@@ -11,7 +11,7 @@ type CardCommander interface {
 	Help(inMsg *tgbotapi.Message)
 	Get(inMsg  *tgbotapi.Message)
 	List(inMsg *tgbotapi.Message)
-	//Delete(inMsg *tgbotapi.Message)
+	Delete(inMsg *tgbotapi.Message)
 
 	//New(inMsg  *tgbotapi.Message)
 	//Edit(inMsg *tgbotapi.Message)
@@ -48,6 +48,8 @@ func (c *DummyCardCommander) HandleCommand(msg *tgbotapi.Message, commandPath pa
 		c.Get(msg)
 	case "list":
 		c.List(msg)
+	case "delete":
+		c.Delete(msg)
 	default:
 		log.Printf("DummyCardCommander.HandleCommand: unknown subdomain - %s", commandPath.Subdomain)
 	}

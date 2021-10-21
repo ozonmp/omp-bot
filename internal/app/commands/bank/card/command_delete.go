@@ -1,12 +1,12 @@
 package card
 
 import (
-	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"strconv"
+	"fmt"
 )
 
-func (p *DummyCardCommander) Get(inMsg  *tgbotapi.Message){
+func (p *DummyCardCommander) Delete(inMsg *tgbotapi.Message){
 	args := inMsg.CommandArguments()
 
 	idx, err := strconv.Atoi(args)
@@ -15,15 +15,18 @@ func (p *DummyCardCommander) Get(inMsg  *tgbotapi.Message){
 		return
 	}
 
-	card, err := p.cardService.Get(uint64(idx))
-	if err != nil {
-		fmt.Printf("fail to get card with idx %d: %v", idx, err)
-		return
+	res, err := p.cardService.Remove(uint64(idx))
+	var resStr string
+	if false == res || err != nil {
+		fmt.Printf("Remove card by idx %d failed: %s", idx, err)
+		resStr = "Failure"
+	} else {
+		resStr = "Success"
 	}
 
 	msg := tgbotapi.NewMessage(
 		inMsg.Chat.ID,
-		card.String(),
+		resStr,
 	)
 
 	p.bot.Send(msg)
