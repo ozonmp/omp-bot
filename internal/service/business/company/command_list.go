@@ -7,8 +7,8 @@ import (
 )
 
 func (c *DummyCompanyService) List(cursor uint64, limit uint64) ([]business.Company, error) {
-	if cursor < 0 || int(cursor) > len(business.AllEntities) {
-		return nil, fmt.Errorf("Invalid index %d, max elements of companies - %d.", cursor, len(business.AllEntities))
+	if cursor < 0 || int(cursor) >= len(business.AllEntities) {
+		return nil, fmt.Errorf("Invalid index %d, max elements of companies - %d.", cursor, len(business.AllEntities)-1)
 	}
 
 	max := int(cursor + limit)
