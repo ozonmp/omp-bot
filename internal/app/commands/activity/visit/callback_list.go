@@ -2,6 +2,7 @@ package visit
 
 import (
 	"encoding/json"
+	"log"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/app/path"
@@ -118,6 +119,11 @@ func (c *VisitCommanderStruct) CallbackList(callback *tgbotapi.CallbackQuery, ca
 
 	if len(KeyboardMarkup.InlineKeyboard) > 0 {
 		msg.ReplyMarkup = KeyboardMarkup
+	}
+
+	_, err = c.bot.Send(msg)
+	if err != nil {
+		log.Printf("VisitCommanderStruct.Get: error sending reply message to chat - %v", err)
 	}
 }
 

@@ -3,6 +3,7 @@ package visit
 import (
 	"encoding/json"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+	"log"
 )
 
 var visitsPerPage uint64 = 5
@@ -15,8 +16,6 @@ func (c *VisitCommanderStruct) List(inputMessage *tgbotapi.Message) {
 		outputMsgText += p.Title
 		outputMsgText += "\n"
 	}
-
-	msg := c.Send(inputMessage.Chat.ID, outputMsgText)
 
 	if uint64(c.visitService.GetCount()) > visitsPerPage {
 		KeyboardMarkup := tgbotapi.NewInlineKeyboardMarkup()
@@ -55,6 +54,12 @@ func (c *VisitCommanderStruct) List(inputMessage *tgbotapi.Message) {
 			),
 		)
 
+		msg := tgbotapi.NewMessage(inputMessage.Chat.ID, outputMsgText)
 		msg.ReplyMarkup = KeyboardMarkup
+
+		_, err := c.bot.Send(msg)
+		if err != nil {
+			log.Printf("VisitCommanderStruct.Get: error sending reply message to chat - %v", err)
+		}
 	}
 }
