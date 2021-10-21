@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"sort"
+	"sync/atomic"
 
 	"github.com/ozonmp/omp-bot/internal/model/recommendation"
 )
@@ -37,7 +38,7 @@ func (d *RecommendationProductionService) List(offset int, limit int) ([]recomme
 }
 
 func (d *RecommendationProductionService) Create(production recommendation.Production) error {
-	d.sequence++
+	atomic.AddUint64(&d.sequence, 1)
 
 	production.Id = d.sequence
 
@@ -61,8 +62,9 @@ func (d *RecommendationProductionService) Update(production recommendation.Produ
 		return err
 	}
 
+	d.productions[index].Title = production.Title
 	d.productions[index].Description = production.Description
-	d.productions[index].Type = production.Type
+	d.productions[index].Rating = production.Rating
 
 	return nil
 }

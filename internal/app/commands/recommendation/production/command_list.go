@@ -13,7 +13,7 @@ import (
 const (
 	listLimit          = 3
 	listPaginationText = "More"
-	listHeader         = "Id Description Type"
+	listHeader         = "Id Title Description Rating"
 )
 
 const (
