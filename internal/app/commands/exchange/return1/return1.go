@@ -7,7 +7,7 @@ import (
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/app/path"
-	service "github.com/ozonmp/omp-bot/internal/service/exchange/return1"
+	"github.com/ozonmp/omp-bot/internal/model/exchange"
 )
 
 type Commander interface {
@@ -15,7 +15,7 @@ type Commander interface {
 	HandleCommand(message *tgbotapi.Message, commandPath path.CommandPath)
 }
 
-type Return1Commander interface {
+type Return1Commander interface { //did not get why do we need it, but it is said to add this
 	Commander
 
 	Help(inputMsg *tgbotapi.Message)
@@ -27,13 +27,20 @@ type Return1Commander interface {
 	Edit(inputMsg *tgbotapi.Message)
 }
 
-type Return1CommanderImpl struct {
-	bot     *tgbotapi.BotAPI
-	service service.DummyReturn1Service
+type Return1Service interface {
+	Describe(return1ID uint64) (*exchange.Return1, error)
+	List(cursor uint64, limit uint64) ([]exchange.Return1, error)
+	Create(exchange.Return1) (uint64, error)
+	Update(return1ID uint64, return1 exchange.Return1) error
+	Remove(return1ID uint64) (bool, error)
 }
 
-func NewReturn1Commander(bot *tgbotapi.BotAPI, service service.DummyReturn1Service) Return1Commander {
+type Return1CommanderImpl struct {
+	bot     *tgbotapi.BotAPI
+	service Return1Service
+}
 
+func NewReturn1Commander(bot *tgbotapi.BotAPI, service Return1Service) Return1Commander {
 	return &Return1CommanderImpl{
 		bot:     bot,
 		service: service,

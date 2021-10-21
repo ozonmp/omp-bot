@@ -24,7 +24,7 @@ func NewExchangeCommander(
 ) *ExchangeCommander {
 	return &ExchangeCommander{
 		bot:              bot,
-		return1Commander: return1.NewReturn1Commander(bot, *return1Service.NewDummyReturn1Service()),
+		return1Commander: return1.NewReturn1Commander(bot, return1Service.NewDummyReturn1Service()),
 	}
 }
 

@@ -6,14 +6,6 @@ import (
 	"github.com/ozonmp/omp-bot/internal/model/exchange"
 )
 
-type Return1Service interface {
-	Describe(return1ID uint64) (*exchange.Return1, error)
-	List(cursor uint64, limit uint64) ([]exchange.Return1, error)
-	Create(exchange.Return1) (uint64, error)
-	Update(return1ID uint64, return1 exchange.Return1) error
-	Remove(return1ID uint64) (bool, error)
-}
-
 type DummyReturn1Service struct {
 	savedReturns []exchange.Return1
 }
