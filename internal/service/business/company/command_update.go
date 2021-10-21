@@ -11,5 +11,7 @@ func (c *DummyCompanyService) Update(companyID uint64, company business.Company)
 		return fmt.Errorf("Invalid index %d, max elements of companies - %d.", companyID, len(business.AllEntities))
 	}
 
-	return fmt.Errorf("not implemented")
+	business.AllEntities[companyID] = company
+
+	return nil
 }
