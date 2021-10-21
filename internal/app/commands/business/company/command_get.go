@@ -24,7 +24,7 @@ func (c *CompanyCommander) Get(inputMessage *tgbotapi.Message) {
 
 	msg := tgbotapi.NewMessage(
 		inputMessage.Chat.ID,
-		company.Name+"[zipcode "+strconv.Itoa(int(company.ZipCode))+"]",
+		company.String(),
 	)
 
 	_, err = c.bot.Send(msg)
