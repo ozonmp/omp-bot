@@ -1,6 +1,7 @@
 package company
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"strconv"
@@ -11,20 +12,23 @@ import (
 )
 
 func (c *CompanyCommander) New(inputMessage *tgbotapi.Message) {
-	arg_company := strings.Split(inputMessage.CommandArguments(), "|")
+	args := inputMessage.CommandArguments()
 
-	if len(arg_company) != 3 {
-		log.Printf("CompanyCommander.New: fail to create company, invalid stucture zipcode|name|address")
-		return
+	company := business.Company{}
+
+	if args[:1] == "{" {
+		err := json.Unmarshal([]byte(args), &company)
+		if err != nil {
+			log.Printf("CompanyCommander.New: fail to create company, invalid json stucture")
+			return
+		}
+	} else {
+		err := readPlain(args, &company)
+		if err != nil {
+			log.Printf("CompanyCommander.New: fail to create company, %v", err)
+			return
+		}
 	}
-
-	company_zipcode, err := strconv.Atoi(arg_company[0])
-	if err != nil {
-		log.Printf("CompanyCommander.New: fail to create company, invalid stucture zipcode|name|address : %v", err)
-		return
-	}
-
-	company := business.Company{Name: arg_company[1], Address: arg_company[2], ZipCode: int64(company_zipcode)}
 
 	idx, err := c.companyService.Create(company)
 	if err != nil {
@@ -43,4 +47,23 @@ func (c *CompanyCommander) New(inputMessage *tgbotapi.Message) {
 	if err != nil {
 		log.Printf("CompanyCommander.New: error sending reply message to chat - %v", err)
 	}
+}
+
+func readPlain(args string, company *business.Company) error {
+	arg_company := strings.Split(args, "|")
+
+	if len(arg_company) != 3 {
+		return fmt.Errorf("invalid stucture zipcode|name|address")
+	}
+
+	company_zipcode, err := strconv.Atoi(arg_company[0])
+	if err != nil {
+		return fmt.Errorf("CompanyCommander.New: fail to create company, invalid stucture zipcode|name|address : %v", err)
+	}
+
+	company.ZipCode = int64(company_zipcode)
+	company.Name = arg_company[1]
+	company.Address = arg_company[2]
+
+	return nil
 }
