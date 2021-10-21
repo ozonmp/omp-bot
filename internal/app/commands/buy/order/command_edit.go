@@ -10,9 +10,11 @@ import (
 )
 
 type EditOrderData struct {
-	Id       uint64 `json:"id"`
-	Title    string `json:"title"`
-	Quantity uint64 `json:"quantity"`
+	Id        uint64 `json:"id"`
+	UserId    uint64 `json:"user_id"`
+	AddressId uint64 `json:"address_id"`
+	StateId   uint32 `json:"state_id"`
+	Paid      bool   `json:"paid"`
 }
 
 func (c *OrderCommander) Edit(inputMessage *tgbotapi.Message) {
@@ -28,15 +30,17 @@ func (c *OrderCommander) Edit(inputMessage *tgbotapi.Message) {
 		c.Reply(
 			inputMessage.Chat.ID,
 			"Failed to parse json! Correct syntax for 'edit' command is:\n"+
-				`/edit__buy__order {"id": <number>, "title": <string>, "quantity": <number>}`)
+				`/edit__buy__order {"id": <number>, "user_id": <number>, "address_id": <number>, "state_id":<number>, "paid": <true|false>}`)
 		return
 	}
 
 	err = c.orderService.Update(
 		parsedData.Id,
 		buy.Order{
-			Title:    parsedData.Title,
-			Quantity: parsedData.Quantity,
+			UserId:    parsedData.UserId,
+			AddressId: parsedData.AddressId,
+			StateId:   parsedData.StateId,
+			Paid:      parsedData.Paid,
 		})
 
 	if err != nil {

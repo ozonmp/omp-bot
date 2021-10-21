@@ -3,6 +3,7 @@ package order
 import (
 	"fmt"
 	"sort"
+	"time"
 
 	"github.com/ozonmp/omp-bot/internal/model/buy"
 )
@@ -23,7 +24,7 @@ func NewDummyOrderService() *DummyOrderService {
 func (s *DummyOrderService) Describe(orderID uint64) (*buy.Order, error) {
 	order, ok := s.orders[orderID]
 	if !ok {
-		return &buy.Order{}, fmt.Errorf("No order with id %v found", orderID)
+		return &buy.Order{}, fmt.Errorf("no order with id %v found", orderID)
 	}
 
 	return &order, nil
@@ -31,7 +32,7 @@ func (s *DummyOrderService) Describe(orderID uint64) (*buy.Order, error) {
 
 func (s *DummyOrderService) List(cursor uint64, limit uint64) ([]buy.Order, error) {
 	if cursor > uint64(len(s.orders)) {
-		return nil, fmt.Errorf("Index %v is out of range", cursor)
+		return nil, fmt.Errorf("index %v is out of range", cursor)
 	}
 
 	cache := s.GetCache()
@@ -43,9 +44,12 @@ func (s *DummyOrderService) Create(order buy.Order) (uint64, error) {
 	id := s.curId
 	s.curId++
 	s.orders[id] = buy.Order{
-		Id:       id,
-		Title:    order.Title,
-		Quantity: order.Quantity,
+		Id:        id,
+		UserId:    order.UserId,
+		Date:      time.Now(),
+		AddressId: order.AddressId,
+		StateId:   order.StateId,
+		Paid:      order.Paid,
 	}
 
 	s.listCached = false
@@ -55,13 +59,16 @@ func (s *DummyOrderService) Create(order buy.Order) (uint64, error) {
 func (s *DummyOrderService) Update(orderID uint64, order buy.Order) error {
 	_, ok := s.orders[orderID]
 	if !ok {
-		return fmt.Errorf("No order with id %v found", orderID)
+		return fmt.Errorf("no order with id %v found", orderID)
 	}
 
 	s.orders[orderID] = buy.Order{
-		Id:       orderID,
-		Title:    order.Title,
-		Quantity: order.Quantity,
+		Id:        orderID,
+		UserId:    order.UserId,
+		Date:      time.Now(),
+		AddressId: order.AddressId,
+		StateId:   order.StateId,
+		Paid:      order.Paid,
 	}
 
 	s.listCached = false
@@ -71,7 +78,7 @@ func (s *DummyOrderService) Update(orderID uint64, order buy.Order) error {
 func (s *DummyOrderService) Remove(orderID uint64) (bool, error) {
 	_, ok := s.orders[orderID]
 	if !ok {
-		return false, fmt.Errorf("No order with id %v found", orderID)
+		return false, fmt.Errorf("no order with id %v found", orderID)
 	}
 
 	delete(s.orders, orderID)

@@ -10,8 +10,10 @@ import (
 )
 
 type NewOrderData struct {
-	Title    string `json:"title"`
-	Quantity uint64 `json:"quantity"`
+	UserId    uint64 `json:"user_id"`
+	AddressId uint64 `json:"address_id"`
+	StateId   uint32 `json:"state_id"`
+	Paid      bool   `json:"paid"`
 }
 
 func (c *OrderCommander) New(inputMessage *tgbotapi.Message) {
@@ -27,14 +29,16 @@ func (c *OrderCommander) New(inputMessage *tgbotapi.Message) {
 		c.Reply(
 			inputMessage.Chat.ID,
 			"Failed to parse json! Correct syntax for 'new' command is:\n"+
-				`/new__buy__order {"title": <string>, "quantity": <number>}`)
+				`/new__buy__order {"user_id": <number>, "address_id": <number>, "state_id":<number>, "paid": <true|false>}`)
 		return
 	}
 
 	newId, err := c.orderService.Create(
 		buy.Order{
-			Title:    parsedData.Title,
-			Quantity: parsedData.Quantity,
+			UserId:    parsedData.UserId,
+			AddressId: parsedData.AddressId,
+			StateId:   parsedData.StateId,
+			Paid:      parsedData.Paid,
 		})
 
 	if err != nil {

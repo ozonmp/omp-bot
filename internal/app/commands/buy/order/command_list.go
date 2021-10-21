@@ -9,11 +9,11 @@ import (
 )
 
 func (c *OrderCommander) List(inputMessage *tgbotapi.Message) {
-	c.SendPage(inputMessage.Chat.ID, "Here all the orders: \n\n", 0, 10)
+	c.SendPage(inputMessage.Chat.ID, "Here all the orders: \n\n", 0, 5)
 }
 
 func (c *OrderCommander) SendPage(chatID int64, header string, cursor uint64, limit uint64) {
-	products, err := c.orderService.List(cursor, limit+1)
+	orders, err := c.orderService.List(cursor, limit+1)
 	if err != nil {
 		log.Printf("OrderCommander.SendPage: error getting order list - %v", err)
 		return
@@ -21,13 +21,13 @@ func (c *OrderCommander) SendPage(chatID int64, header string, cursor uint64, li
 
 	msg := tgbotapi.NewMessage(chatID, "")
 
-	if len(products) == int(limit+1) {
+	if len(orders) == int(limit+1) {
 		addNextButton(&msg, cursor, limit)
-		products = products[:len(products)-1]
+		orders = orders[:len(orders)-1]
 	}
 
 	outputMsgText := header
-	for _, p := range products {
+	for _, p := range orders {
 		outputMsgText += p.String()
 		outputMsgText += "\n"
 	}
