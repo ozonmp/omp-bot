@@ -1,6 +1,7 @@
 package company
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 
@@ -9,7 +10,16 @@ import (
 )
 
 func (c *CompanyCommander) New(inputMessage *tgbotapi.Message) {
-	idx, err := c.companyService.Create(business.Company{})
+	json_company := inputMessage.CommandArguments()
+
+	company := business.Company{}
+	err := json.Unmarshal([]byte(json_company), &company)
+	if err != nil {
+		log.Printf("CompanyCommander.New: unable to unmarashal '%v': %v", json_company, err)
+		return
+	}
+
+	idx, err := c.companyService.Create(company)
 	if err != nil {
 		log.Printf("CompanyCommander.New: fail to create company: %v", err)
 		return
