@@ -34,7 +34,7 @@ func (p Paginator) NewKeyBoard() *tgbotapi.InlineKeyboardMarkup {
 		tgbotapi.NewInlineKeyboardRow(
 			p.makeRow("next")),
 		tgbotapi.NewInlineKeyboardRow(
-			p.makeRow("next")),
+			p.makeRow("prev")),
 	)
 	return &keyBoard
 }

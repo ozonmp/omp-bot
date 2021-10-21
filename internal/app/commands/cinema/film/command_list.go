@@ -42,6 +42,7 @@ func (c *CinemaFilmCommander) List(inputMessage *tgbotapi.Message, p *paginator.
 	msg := tgbotapi.NewMessage(inputMessage.Chat.ID, outputMsgText)
 	msg.ReplyMarkup = p.NewKeyBoard()
 	_ = c.sendMessage(msg)
+	p = nil
 }
 
 func (c *CinemaFilmCommander) fromFilmsToStrings(films []cinema.Film) []string {
