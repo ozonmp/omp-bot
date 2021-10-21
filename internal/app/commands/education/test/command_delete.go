@@ -13,6 +13,7 @@ func (c *EducationTestCommander) Delete(inputMessage *tgbotapi.Message) {
 
 	idx, err := strconv.Atoi(args)
 	if err != nil {
+		sendMsg(inputMessage, "wrong idx, pls write number first", c)
 		log.Println("wrong args", args)
 		return
 	}
@@ -21,16 +22,9 @@ func (c *EducationTestCommander) Delete(inputMessage *tgbotapi.Message) {
 	ok, err := c.testService.Delete(idx)
 	if err != nil || !ok {
 		msgtext = fmt.Sprintf("fail to delete test with idx %d: %v", idx, err)
+		sendMsg(inputMessage, msgtext, c)
 		log.Printf(msgtext)
 	}
 
-	msg := tgbotapi.NewMessage(
-		inputMessage.Chat.ID,
-		msgtext,
-	)
-
-	_, err = c.bot.Send(msg)
-	if err != nil {
-		log.Printf("EducationTestCommander.Get: error sending reply message to chat - %v", err)
-	}
+	sendMsg(inputMessage, "succesfully deleted", c)
 }

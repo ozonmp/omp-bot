@@ -13,7 +13,7 @@ func (c *EducationTestCommander) List(inputMessage *tgbotapi.Message) {
 
 	tests := c.testService.List()
 	for _, t := range tests {
-		outputMsgText += t.Title
+		outputMsgText += t.String()
 		outputMsgText += "\n"
 	}
 

@@ -51,3 +51,15 @@ func (c *EducationTestCommander) HandleCommand(msg *tgbotapi.Message, commandPat
 		c.Default(msg)
 	}
 }
+
+func sendMsg(inputMessage *tgbotapi.Message, msgtext string, c *EducationTestCommander) {
+	msg := tgbotapi.NewMessage(
+		inputMessage.Chat.ID,
+		msgtext,
+	)
+
+	_, err := c.bot.Send(msg)
+	if err != nil {
+		log.Printf("EducationTestCommander: error sending reply message to chat - %v", err)
+	}
+}

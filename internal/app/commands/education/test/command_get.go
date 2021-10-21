@@ -24,7 +24,7 @@ func (c *EducationTestCommander) Get(inputMessage *tgbotapi.Message) {
 
 	msg := tgbotapi.NewMessage(
 		inputMessage.Chat.ID,
-		test.Title,
+		test.String(),
 	)
 
 	_, err = c.bot.Send(msg)
