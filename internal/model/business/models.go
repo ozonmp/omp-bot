@@ -3,9 +3,9 @@ package business
 import "fmt"
 
 type Company struct {
-	Name    string
-	Address string
-	ZipCode int64
+	Name    string `json:"name"`
+	Address string `json:"address"`
+	ZipCode int64  `json:"zipcode"`
 }
 
 var AllEntities = []Company{
