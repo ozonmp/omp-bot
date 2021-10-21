@@ -43,6 +43,10 @@ func (c *ActivityTransitionCommander) HandleCommand(msg *tgbotapi.Message, comma
 		c.Get(msg)
 	case "delete":
 		c.Delete(msg)
+	case "create":
+		c.Create(msg)
+	case "update":
+		c.Update(msg)
 	default:
 		c.Default(msg)
 	}
