@@ -9,7 +9,7 @@ import (
 
 type TransitionService interface {
 	Describe(transitionID uint64) (*activity.Transition, error)
-	List(cursor uint64, limit uint64) ([]activity.Transition, error)
+	List(offset uint64, limit uint64) ([]activity.Transition, error)
 	Create(activity.Transition) (uint64, error)
 	Update(transitionID uint64, transition activity.Transition) error
 	Remove(transitionID uint64) (bool, error)
@@ -41,14 +41,31 @@ func (s *DummyTransitionService) Describe(transitionID uint64) (*activity.Transi
 	return &transition, nil
 }
 
-func (s *DummyTransitionService) List(cursor uint64, limit uint64) ([]activity.Transition, error) {
+func (s *DummyTransitionService) List(offset uint64, limit uint64) ([]activity.Transition, error) {
 	transitions := make([]activity.Transition, 0, limit)
-	for i := cursor; i <= s.lastIndex; i++ {
-		if len(transitions) >= int(limit) {
+	var index uint64 = 0
+	var counter uint64 = 0
+
+	// skip elements before offset
+	for index = 0; index <= s.lastIndex; index++ {
+		if counter == offset {
+			break
+		}
+		_, ok := allEntities[index]
+		if !ok {
+			continue
+		} else {
+			counter++
+		}
+	}
+
+	// get elements from offset to offset + limit
+	for ; index <= s.lastIndex; index++ {
+		if len(transitions) == int(limit) {
 			break
 		}
 
-		transition, ok := allEntities[i]
+		transition, ok := allEntities[index]
 		if !ok {
 			continue
 		}

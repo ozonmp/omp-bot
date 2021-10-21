@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	Offset uint64 = 1
+	Offset uint64 = 0
 	Limit  uint64 = 2
 )
 
@@ -27,7 +27,7 @@ func internalList(c *ActivityTransitionCommander, chatId int64, offset uint64, l
 
 	msg := tgbotapi.NewMessage(chatId, outputMsgText)
 
-	if offset+limit <= c.transitionService.Size() {
+	if offset+limit < c.transitionService.Size() {
 		serializedData, _ := json.Marshal(CallbackListData{
 			Offset: offset + limit,
 			Limit:  limit,
