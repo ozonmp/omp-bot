@@ -8,45 +8,39 @@ import (
 	"strings"
 )
 
-func (c *CinemaFilmCommander) List(inputMessage *tgbotapi.Message, next, init bool) {
-	tempPaginator, ok := c.paginators[inputMessage.Chat.ID]
-	if !ok {
-		c.paginators[inputMessage.Chat.ID] = paginator.NewCinemaPaginator()
-		tempPaginator = c.paginators[inputMessage.Chat.ID]
-	}
+const defaultPageLength = 10
 
-	answerText := "You dont have films. Add at least one"
-	msg := tgbotapi.NewMessage(inputMessage.Chat.ID, answerText)
-	msg.ReplyMarkup = tempPaginator.Keyboard
+func (c *CinemaFilmCommander) List(inputMessage *tgbotapi.Message, p *paginator.Paginator) {
 	if len(c.filmService.Films) == 0 {
-		_ = c.sendMessage(msg)
+		_ = c.sendMessage(tgbotapi.NewMessage(inputMessage.Chat.ID, "You dont have films. Add at least one"))
 		return
 	}
 
 	outputMsgText := "Films: \n\n"
 
-	if init {
-		tempPaginator.CurrentPage = 0
-	} else if next {
-		tempPaginator.CurrentPage += 1
+	if p == nil {
+		p = paginator.NewPaginator("")
+	} else if p.Direction == "next" {
+		p.Page += 1
 	} else {
-		tempPaginator.CurrentPage -= 1
+		p.Page -= 1
 	}
-	maxPage := (len(c.filmService.Films)-1)/tempPaginator.PageLength + 1
-	if tempPaginator.CurrentPage == maxPage && next {
-		tempPaginator.CurrentPage = 0
-	} else if tempPaginator.CurrentPage == -1 && !next {
-		tempPaginator.CurrentPage = maxPage - 1
+	maxPage := (c.filmService.NumberOfFilms())/defaultPageLength + 1
+	if p.Page >= maxPage && p.Direction == "next" {
+		p.Page = 0
+	} else if p.Page == -1 && p.Direction == "prev" {
+		p.Page = maxPage - 1
 	}
 
-	startIndex := tempPaginator.CurrentPage * tempPaginator.PageLength
+	startIndex := p.Page * defaultPageLength
 
-	filmsToOutput, _ := c.filmService.List(uint64(startIndex), uint64(tempPaginator.PageLength))
+	filmsToOutput, _ := c.filmService.List(uint64(startIndex), uint64(defaultPageLength))
 	filmsOnPage := c.fromFilmsToStrings(filmsToOutput)
 	outputMsgText = strings.Join(filmsOnPage, "\n")
-	outputMsgText += fmt.Sprintf("\npage %d/%d", tempPaginator.CurrentPage+1, maxPage)
+	outputMsgText += fmt.Sprintf("\npage %d/%d", p.Page+1, maxPage)
 
-	msg.Text = outputMsgText
+	msg := tgbotapi.NewMessage(inputMessage.Chat.ID, outputMsgText)
+	msg.ReplyMarkup = p.NewKeyBoard()
 	_ = c.sendMessage(msg)
 }
 

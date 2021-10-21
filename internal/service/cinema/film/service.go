@@ -48,7 +48,7 @@ func (s *DummyFilmService) List(cursor, limit uint64) ([]cinema.Film, error) {
 		startIndex = 0
 	}
 
-	if startIndex+endIndex > uint64(len(s.Films)) {
+	if endIndex > uint64(len(s.Films)) {
 		endIndex = uint64(len(s.Films))
 	}
 
@@ -92,6 +92,10 @@ func (s *DummyFilmService) Remove(filmID uint64) (bool, error) {
 		}
 	}
 	return false, fmt.Errorf("Cant find film with ID %d", filmID)
+}
+
+func (s *DummyFilmService) NumberOfFilms() int {
+	return len(s.Films)
 }
 
 func (s *DummyFilmService) checkFilm(film cinema.Film) error {

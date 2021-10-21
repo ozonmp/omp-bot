@@ -1,41 +1,40 @@
 package paginator
 
 import (
+	"encoding/json"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-	"github.com/ozonmp/omp-bot/internal/app/path"
 )
 
-const defaultPageLength = 10
-
-var callbackPathNext = path.CallbackPath{
-	Domain:       "cinema",
-	Subdomain:    "film",
-	CallbackName: "list",
-	CallbackData: "next",
+type Paginator struct {
+	Direction string `json:"direction"`
+	Page      int    `json:"page"`
 }
 
-var callbackPathPrev = path.CallbackPath{
-	Domain:       "cinema",
-	Subdomain:    "film",
-	CallbackName: "list",
-	CallbackData: "prev",
+func NewPaginator(s string) *Paginator {
+	callBackData := new(Paginator)
+	_ = json.Unmarshal([]byte(s), callBackData)
+	return callBackData
 }
 
-var keyBoard = tgbotapi.NewInlineKeyboardMarkup(
-	tgbotapi.NewInlineKeyboardRow(
-		tgbotapi.NewInlineKeyboardButtonData("Next", callbackPathNext.String()),
-	),
-	tgbotapi.NewInlineKeyboardRow(
-		tgbotapi.NewInlineKeyboardButtonData("Prev", callbackPathPrev.String()),
-	),
-)
-
-type CinemaPaginator struct {
-	CurrentPage int
-	PageLength  int
-	Keyboard    tgbotapi.InlineKeyboardMarkup
+func (p Paginator) String() string {
+	if str, err := json.Marshal(p); err == nil {
+		return string(str)
+	} else {
+		return ""
+	}
 }
 
-func NewCinemaPaginator() *CinemaPaginator {
-	return &CinemaPaginator{CurrentPage: 0, PageLength: defaultPageLength, Keyboard: keyBoard}
+func (p Paginator) makeRow(name string) tgbotapi.InlineKeyboardButton {
+	p.Direction = name
+	return tgbotapi.NewInlineKeyboardButtonData(name, "cinema__film__list__"+p.String())
+}
+
+func (p Paginator) NewKeyBoard() *tgbotapi.InlineKeyboardMarkup {
+	keyBoard := tgbotapi.NewInlineKeyboardMarkup(
+		tgbotapi.NewInlineKeyboardRow(
+			p.makeRow("next")),
+		tgbotapi.NewInlineKeyboardRow(
+			p.makeRow("next")),
+	)
+	return &keyBoard
 }
