@@ -1,6 +1,7 @@
 package router
 
 import (
+	"github.com/ozonmp/omp-bot/internal/app/commands/travel"
 	"log"
 	"runtime/debug"
 
@@ -25,7 +26,7 @@ type Router struct {
 	// buy
 	// delivery
 	// recommendation
-	// travel
+	travelCommander Commander
 	// loyalty
 	// bank
 	// subscription
@@ -60,7 +61,7 @@ func NewRouter(
 		// buy
 		// delivery
 		// recommendation
-		// travel
+		travelCommander: travel.NewTravelCommander(bot),
 		// loyalty
 		// bank
 		// subscription
@@ -119,7 +120,7 @@ func (c *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
 	case "recommendation":
 		break
 	case "travel":
-		break
+		c.travelCommander.HandleCallback(callback, callbackPath)
 	case "loyalty":
 		break
 	case "bank":
@@ -190,7 +191,7 @@ func (c *Router) handleMessage(msg *tgbotapi.Message) {
 	case "recommendation":
 		break
 	case "travel":
-		break
+		c.travelCommander.HandleCommand(msg, commandPath)
 	case "loyalty":
 		break
 	case "bank":
