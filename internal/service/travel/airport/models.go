@@ -18,5 +18,5 @@ var allAirports = []Airport{
 }
 
 func (a Airport) String() string {
-	return fmt.Sprintf("%s airport [at %s]", a.name, a.location)
+	return fmt.Sprintf("Airport %s [%s]", a.name, a.location)
 }
