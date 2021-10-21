@@ -1,5 +1,7 @@
 package return1
 
+//maybe rename file?
+
 import (
 	"log"
 
@@ -39,7 +41,13 @@ func NewReturn1Commander(bot *tgbotapi.BotAPI, service service.DummyReturn1Servi
 }
 
 func (c *Return1CommanderImpl) HandleCallback(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
-	//tobedone
+	switch callbackPath.CallbackName {
+	case "list":
+		c.ListCallback(callback, callbackPath)
+	default:
+		log.Printf("Return1CommanderImpl: HandleCallback: unknown callback [%s]", callbackPath.CallbackName)
+	}
+
 }
 
 func (c *Return1CommanderImpl) HandleCommand(message *tgbotapi.Message, commandPath path.CommandPath) {

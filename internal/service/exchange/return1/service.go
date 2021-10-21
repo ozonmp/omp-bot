@@ -23,6 +23,10 @@ func NewDummyReturn1Service() *DummyReturn1Service {
 	s.Create(exchange.Return1{Name: "zero"})
 	s.Create(exchange.Return1{Name: "one"})
 	s.Create(exchange.Return1{Name: "two"})
+	s.Create(exchange.Return1{Name: "three"})
+	s.Create(exchange.Return1{Name: "four"})
+	s.Create(exchange.Return1{Name: "five"})
+	s.Create(exchange.Return1{Name: "six"})
 
 	return &s
 }
@@ -37,8 +41,26 @@ func (r *DummyReturn1Service) Describe(return1ID uint64) (*exchange.Return1, err
 	return &r.savedReturns[return1ID], nil
 }
 
+var LastPageExceededErr = errors.New("last page exceeded")
+
 func (r *DummyReturn1Service) List(cursor uint64, limit uint64) ([]exchange.Return1, error) {
-	return r.savedReturns, nil
+	if len(r.savedReturns) == 0 {
+		return nil, nil
+	}
+
+	var low, high uint64
+	low = cursor
+	high = cursor + limit
+
+	if high > uint64(len(r.savedReturns)) {
+		high = uint64(len(r.savedReturns))
+	}
+
+	if low >= uint64(len(r.savedReturns)) {
+		return nil, LastPageExceededErr
+	}
+
+	return r.savedReturns[low:high], nil
 }
 
 func (r *DummyReturn1Service) Create(ret exchange.Return1) (uint64, error) {
