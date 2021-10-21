@@ -29,6 +29,16 @@ func (c *TravelAirportCommander) HandleCallback(callback *tgbotapi.CallbackQuery
 
 func (c *TravelAirportCommander) HandleCommand(msg *tgbotapi.Message, commandPath path.CommandPath) {
 	switch commandPath.CommandName {
+	case "list":
+		c.List(msg)
+	case "get":
+		c.Get(msg)
+	case "new":
+		c.New(msg)
+	case "delete":
+		c.Delete(msg)
+	case "edit":
+		c.Edit(msg)
 	default:
 		c.Default(msg)
 	}

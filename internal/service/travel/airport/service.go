@@ -20,7 +20,7 @@ func (s *Service) Delete(idx int) (*Airport, error) {
 	// TODO delete
 	return &allAirports[idx], nil
 }
-func (s *Service) Create(name string, location string) (Airport, error) {
+func (s *Service) New(name string, location string) (Airport, error) {
 	airport := Airport{name, location}
 	// TODO addition
 	return airport, nil
