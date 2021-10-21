@@ -2,10 +2,11 @@ package exchange
 
 import (
 	"fmt"
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"log"
 	"strconv"
 	"strings"
+
+	"github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
 func (c *SubdomainCommander) Edit(inputMsg *tgbotapi.Message) {
@@ -24,11 +25,11 @@ func (c *SubdomainCommander) Edit(inputMsg *tgbotapi.Message) {
 		if err != nil {
 			log.Printf("SubdomainCommander.Edit: error sending reply message to chat - %v", err)
 		}
-		log.Println("wrong args", args)
+		log.Println("SubdomainCommander.Edit: wrong args", args)
 		return
 	}
 
-	editExchangeRequestId, err := strconv.Atoi(arguments[0])
+	editExchangeRequestId, err := strconv.ParseUint(arguments[0], 10, 64)
 	if err != nil {
 		errorResponse := tgbotapi.NewMessage(
 			inputMsg.Chat.ID,
@@ -40,11 +41,11 @@ func (c *SubdomainCommander) Edit(inputMsg *tgbotapi.Message) {
 			log.Printf("SubdomainCommander.Edit: error sending reply message to chat - %v", err)
 			return
 		}
-		log.Println("wrong args", arguments[0])
+		log.Println("SubdomainCommander.Edit: wrong args", arguments[0])
 		return
 	}
 
-	exchangeRequest, err := c.exchangeService.Describe(uint64(editExchangeRequestId))
+	exchangeRequest, err := c.exchangeService.Describe(editExchangeRequestId)
 	if err != nil {
 		errorResponse := tgbotapi.NewMessage(
 			inputMsg.Chat.ID,
@@ -53,7 +54,7 @@ func (c *SubdomainCommander) Edit(inputMsg *tgbotapi.Message) {
 		)
 		_, err2 := c.bot.Send(errorResponse)
 		if err2 != nil {
-			log.Printf("SubdomainCommander.Get: error sending reply message to chat - %v", err2)
+			log.Printf("SubdomainCommander.Edit: error sending reply message to chat - %v", err2)
 			return
 		}
 		log.Printf("fail to get exchangeRequest with idx %d: %v", editExchangeRequestId, err)
@@ -61,7 +62,7 @@ func (c *SubdomainCommander) Edit(inputMsg *tgbotapi.Message) {
 	}
 
 	exchangeRequest.Status = strings.TrimSpace(arguments[1])
-	_ = c.exchangeService.Update(uint64(editExchangeRequestId), *exchangeRequest)
+	_ = c.exchangeService.Update(editExchangeRequestId, *exchangeRequest)
 
 	exchangeRequestText := fmt.Sprintf("Your exchange request with id %v successully updated",
 		editExchangeRequestId)

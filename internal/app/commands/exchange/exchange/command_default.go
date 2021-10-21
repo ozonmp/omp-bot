@@ -1,8 +1,9 @@
 package exchange
 
 import (
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"log"
+
+	"github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
 func (c *SubdomainCommander) Default(inputMessage *tgbotapi.Message) {
@@ -10,12 +11,11 @@ func (c *SubdomainCommander) Default(inputMessage *tgbotapi.Message) {
 
 	msg := tgbotapi.NewMessage(
 		inputMessage.Chat.ID,
-		"To see list of commands type /help__exchange__exchange",
-		)
+		"To see the list of commands type /help__exchange__exchange",
+	)
 
 	_, err := c.bot.Send(msg)
 	if err != nil {
-		log.Printf("DemoSubdomainCommander.Help: error sending reply message to chat - %v", err)
+		log.Printf("SubdomainCommander.Help: error sending reply message to chat - %v", err)
 	}
 }
-

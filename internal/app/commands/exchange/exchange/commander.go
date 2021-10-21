@@ -1,10 +1,12 @@
 package exchange
 
 import (
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+	"log"
+
+	"github.com/go-telegram-bot-api/telegram-bot-api"
+
 	"github.com/ozonmp/omp-bot/internal/app/path"
 	"github.com/ozonmp/omp-bot/internal/service/exchange/exchange"
-	"log"
 )
 
 type ExchangeCommander interface {
@@ -23,9 +25,9 @@ type SubdomainCommander struct {
 }
 
 func NewExchangeCommander(bot *tgbotapi.BotAPI, service *exchange.DummyExchangeService) *SubdomainCommander {
-	return &SubdomainCommander {
-		bot:              bot,
-		exchangeService:  service,
+	return &SubdomainCommander{
+		bot:             bot,
+		exchangeService: service,
 	}
 }
 
@@ -53,6 +55,6 @@ func (c *SubdomainCommander) HandleCallback(callback *tgbotapi.CallbackQuery, ca
 	case "list":
 		c.CallbackList(callback, callbackPath)
 	default:
-		log.Printf("DemoSubdomainCommander.HandleCallback: unknown callback name: %s", callbackPath.CallbackName)
+		log.Printf("SubdomainCommander.HandleCallback: unknown callback name: %s", callbackPath.CallbackName)
 	}
 }

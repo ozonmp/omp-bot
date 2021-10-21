@@ -1,11 +1,13 @@
 package exchange
 
 import (
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+	"log"
+
+	"github.com/go-telegram-bot-api/telegram-bot-api"
+
 	"github.com/ozonmp/omp-bot/internal/app/commands/exchange/exchange"
 	"github.com/ozonmp/omp-bot/internal/app/path"
 	exchange2 "github.com/ozonmp/omp-bot/internal/service/exchange/exchange"
-	"log"
 )
 
 type Commander interface {
@@ -20,7 +22,7 @@ type ExchangeDomainCommander struct {
 
 func NewExchangeDomainCommander(bot *tgbotapi.BotAPI) *ExchangeDomainCommander {
 
-	return &ExchangeDomainCommander {
+	return &ExchangeDomainCommander{
 		bot:               bot,
 		exchangeCommander: exchange.NewExchangeCommander(bot, exchange2.NewDummyExchangeService()),
 	}

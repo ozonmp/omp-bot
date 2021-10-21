@@ -3,6 +3,7 @@ package exchange
 import (
 	"errors"
 	"fmt"
+
 	"github.com/ozonmp/omp-bot/internal/model/exchange"
 )
 
@@ -38,7 +39,7 @@ func (dummy *DummyExchangeService) List(cursor uint64, limit uint64) ([]exchange
 	exchangesLength := uint64(len(exchanges))
 	if cursor >= exchangesLength {
 		return nil, errors.New(fmt.Sprintf("Cursor has overran the last index of the list.\n"+
-			"Last index = %d\nCursor position = %d\n", exchangesLength - 1, cursor))
+			"Last index = %d\nCursor position = %d\n", exchangesLength-1, cursor))
 	}
 	var last uint64
 	if (cursor + limit) >= exchangesLength {

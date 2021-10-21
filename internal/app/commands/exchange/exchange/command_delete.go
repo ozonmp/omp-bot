@@ -2,15 +2,16 @@ package exchange
 
 import (
 	"fmt"
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"log"
 	"strconv"
+
+	"github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
 func (c *SubdomainCommander) Delete(inputMsg *tgbotapi.Message) {
 	args := inputMsg.CommandArguments()
 
-	idx, err := strconv.Atoi(args)
+	idx, err := strconv.ParseUint(args, 10, 64)
 	if err != nil {
 		errorResponse := tgbotapi.NewMessage(
 			inputMsg.Chat.ID,
@@ -22,7 +23,7 @@ func (c *SubdomainCommander) Delete(inputMsg *tgbotapi.Message) {
 			log.Printf("SubdomainCommander.Delete: error sending reply message to chat - %v", err2)
 			return
 		}
-		log.Println("wrong args", args)
+		log.Println("SubdomainCommander.Delete: wrong args", args)
 		return
 	}
 

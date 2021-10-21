@@ -45,8 +45,9 @@ func (ma *ModelAccessor) Replace(id uint64, entity Exchange) bool {
 	for key, item := range entities {
 		if item.Id == id {
 			entities[key] = entity
+			return true
 		}
-		return true
+		continue
 	}
 	return false
 }

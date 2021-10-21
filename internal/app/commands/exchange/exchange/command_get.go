@@ -2,15 +2,16 @@ package exchange
 
 import (
 	"fmt"
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"log"
 	"strconv"
+
+	"github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
 func (c *SubdomainCommander) Get(inputMsg *tgbotapi.Message) {
 	args := inputMsg.CommandArguments()
 
-	idx, err := strconv.Atoi(args)
+	idx, err := strconv.ParseUint(args, 10, 64)
 	if err != nil {
 		errorResponse := tgbotapi.NewMessage(
 			inputMsg.Chat.ID,
@@ -22,7 +23,7 @@ func (c *SubdomainCommander) Get(inputMsg *tgbotapi.Message) {
 			log.Printf("SubdomainCommander.Get: error sending reply message to chat - %v", err)
 			return
 		}
-		log.Println("wrong args", args)
+		log.Println("SubdomainCommander.Get: wrong args", args)
 		return
 	}
 
@@ -61,6 +62,6 @@ func (c *SubdomainCommander) Get(inputMsg *tgbotapi.Message) {
 
 	_, err = c.bot.Send(response)
 	if err != nil {
-		log.Printf("DemoSubdomainCommander.Get: error sending reply message to chat - %v", err)
+		log.Printf("SubdomainCommander.Get: error sending reply message to chat - %v", err)
 	}
 }

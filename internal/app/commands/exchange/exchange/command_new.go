@@ -2,10 +2,12 @@ package exchange
 
 import (
 	"fmt"
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-	"github.com/ozonmp/omp-bot/internal/model/exchange"
 	"log"
 	"strings"
+
+	"github.com/go-telegram-bot-api/telegram-bot-api"
+
+	"github.com/ozonmp/omp-bot/internal/model/exchange"
 )
 
 func (c *SubdomainCommander) New(inputMsg *tgbotapi.Message) {

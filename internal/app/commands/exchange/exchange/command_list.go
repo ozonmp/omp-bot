@@ -1,11 +1,13 @@
 package exchange
 
 import (
-	"encoding/json"
 	"fmt"
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-	"github.com/ozonmp/omp-bot/internal/app/path"
 	"log"
+
+	"encoding/json"
+
+	"github.com/go-telegram-bot-api/telegram-bot-api"
+	"github.com/ozonmp/omp-bot/internal/app/path"
 )
 
 const (
@@ -90,6 +92,6 @@ func (c *SubdomainCommander) showPage(inputMsg *tgbotapi.Message, cursor uint64)
 
 	_, err = c.bot.Send(msg)
 	if err != nil {
-		log.Printf("DemoSubdomainCommander.List: error sending reply message to chat - %v", err)
+		log.Printf("SubdomainCommander.List: error sending reply message to chat - %v", err)
 	}
 }
