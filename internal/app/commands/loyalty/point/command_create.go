@@ -28,7 +28,7 @@ func (c *PointCommander) Create(inputMessage *tgbotapi.Message) {
 			log.Printf("fail to create entity %v", err)
 			msg.Text = err.Error()
 		} else {
-			msg.Text = fmt.Sprintf("Entity was added, id:%d", id)
+			msg.Text = fmt.Sprintf("Entity was added, entity id: %d", id)
 		}
 	}else{
 		log.Printf("PointCommander.CallbackList: wrong number = %v of arguments in string: %v", len(s), args)

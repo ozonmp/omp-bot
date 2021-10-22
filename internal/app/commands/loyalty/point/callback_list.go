@@ -2,7 +2,6 @@ package point
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
@@ -22,12 +21,10 @@ func (c *PointCommander) CallbackList(callback *tgbotapi.CallbackQuery, callback
 			"input string %v - %v", callbackPath.CallbackData, err)
 		return
 	}
-	msg := tgbotapi.NewMessage(
-		callback.Message.Chat.ID,
-		fmt.Sprintf("Parsed: %+v\n", parsedData),
-	)
-	_, err = c.bot.Send(msg)
-	if err != nil {
-		log.Printf("LoyaltyPointCommander.CallbackList: error sending reply message to chat - %v", err)
-	}
+
+	CurrentPage = int(parsedData.Offset)
+
+
+	c.ListAnswer(callback.Message.Chat.ID)
+
 }

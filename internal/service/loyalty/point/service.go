@@ -25,6 +25,7 @@ func NewDummyPointService() *DummyPointService {
 			Name:        "One",
 			Description: "Point one",
 		},
+		/*
 		{
 			Id:          2,
 			Name:        "Two",
@@ -65,7 +66,12 @@ func NewDummyPointService() *DummyPointService {
 			Name:        "Nine",
 			Description: "Point 9",
 		},
+		*/
 	}}
+}
+
+func (s *DummyPointService) Size() int {
+	return len(s.allEntities)
 }
 
 func (s *DummyPointService) List() ([]loyalty.Point, error) {

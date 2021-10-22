@@ -13,3 +13,4 @@ func (s *Service) List() []Subdomain {
 func (s *Service) Get(idx int) (*Subdomain, error) {
 	return &allEntities[idx], nil
 }
+

@@ -26,7 +26,9 @@ func NewPointCommander(
 
 func (c *PointCommander) HandleCallback(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
 	switch callbackPath.CallbackName {
-	case "list":
+	case "prev":
+		c.CallbackList(callback, callbackPath)
+	case "next":
 		c.CallbackList(callback, callbackPath)
 	default:
 		log.Printf("PointCommander.HandleCallback: unknown callback name: %s", callbackPath.CallbackName)

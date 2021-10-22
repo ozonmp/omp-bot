@@ -1,6 +1,7 @@
 package point
 
 import (
+	"fmt"
 	"encoding/json"
 	"log"
 
@@ -8,8 +9,17 @@ import (
 	"github.com/ozonmp/omp-bot/internal/app/path"
 )
 
+const entitysInPage int = 3
+
+var CurrentPage = 1
+
 func (c *PointCommander) List(inputMessage *tgbotapi.Message) {
-	outputMsgText := "Entity list page 1: \n\n"
+	c.ListAnswer(inputMessage.Chat.ID)
+}
+
+func (c *PointCommander) ListAnswer(chatId int64) {
+
+	outputMsgText := fmt.Sprintf("Entity list page %d: \n\n", CurrentPage)
 
 	entities, err := c.pointService.List()
 
@@ -18,24 +28,50 @@ func (c *PointCommander) List(inputMessage *tgbotapi.Message) {
 		outputMsgText += "\n"
 	}
 
-	msg := tgbotapi.NewMessage(inputMessage.Chat.ID, outputMsgText)
+	msg := tgbotapi.NewMessage(chatId, outputMsgText)
 
-	serializedData, _ := json.Marshal(CallbackListData{
-		Offset: 21,
+	serializedDataPrev, _ := json.Marshal(CallbackListData{
+		Offset: CurrentPage - 1,
 	})
-
-	callbackPath := path.CallbackPath{
-		Domain:       "demo",
-		Subdomain:    "subdomain",
-		CallbackName: "list",
-		CallbackData: string(serializedData),
+	serializedDataNext, _ := json.Marshal(CallbackListData{
+		Offset: CurrentPage + 1,
+	})
+	callbackPathPrev := path.CallbackPath{
+		Domain:       "loyalty",
+		Subdomain:    "point",
+		CallbackName: "prev",
+		CallbackData: string(serializedDataPrev),
 	}
 
-	msg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(
-		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonData("Next page", callbackPath.String()),
-		),
-	)
+
+	callbackPathNext := path.CallbackPath{
+		Domain:       "loyalty",
+		Subdomain:    "point",
+		CallbackName: "next",
+		CallbackData: string(serializedDataNext),
+	}
+
+	switch  {
+		case CurrentPage <= 1:
+			msg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(
+				tgbotapi.NewInlineKeyboardRow(
+					tgbotapi.NewInlineKeyboardButtonData("Next page ➡", callbackPathNext.String()),
+				),
+			)
+		case CurrentPage >= c.pointService.Size():
+			msg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(
+				tgbotapi.NewInlineKeyboardRow(
+					tgbotapi.NewInlineKeyboardButtonData("⬅ Prev page", callbackPathPrev.String()),
+				),
+			)			
+		default:
+			msg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(
+				tgbotapi.NewInlineKeyboardRow(
+					tgbotapi.NewInlineKeyboardButtonData("⬅ Prev page", callbackPathPrev.String()),
+					tgbotapi.NewInlineKeyboardButtonData("Next page ➡", callbackPathNext.String()),
+				),
+			)
+	}
 
 	_, err = c.bot.Send(msg)
 
@@ -43,5 +79,5 @@ func (c *PointCommander) List(inputMessage *tgbotapi.Message) {
 		log.Printf("PointCommander.List: error sending reply message to chat - %v", err)
 	}
 
-
 }
+
