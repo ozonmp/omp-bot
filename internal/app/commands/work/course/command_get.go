@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"strconv"
+	"strings"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
@@ -11,11 +12,11 @@ import (
 func (c *WorkCourseCommander) Get(inputMessage *tgbotapi.Message) {
 
 	args := inputMessage.CommandArguments()
-
+	args=strings.TrimSpace(args)
 	index, err := strconv.Atoi(args)
 
 	if err != nil {
-		msg := tgbotapi.NewMessage(inputMessage.Chat.ID, fmt.Sprintf("Error:\n%s", err))
+		msg := tgbotapi.NewMessage(inputMessage.Chat.ID, fmt.Sprintf("Error: wrong ID\n"))
 		_, err := c.bot.Send(msg)
 		if err != nil {
 			log.Printf("WorkCourseCommander.Get: error sending error - %v", err)

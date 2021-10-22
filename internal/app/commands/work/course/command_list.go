@@ -1,14 +1,15 @@
 package course
 
 import (
+	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/model/work"
 
 	"log"
 )
 
-func (c *WorkCourseCommander) List(inputMessage *tgbotapi.Message) {
-	courses, err := c.courseService.List(c.cursor, c.limit)
+func (c *WorkCourseCommander) List(inputMessage *tgbotapi.Message, cursor uint64, limit uint64) {
+	courses, err := c.courseService.List(cursor, limit)
 	if err != nil {
 		log.Printf("WorkCourseCommander.List: error - %v", err)
 	}
@@ -23,12 +24,12 @@ func (c *WorkCourseCommander) List(inputMessage *tgbotapi.Message) {
 
 	buttons := make([]tgbotapi.InlineKeyboardButton, 0)
 
-	if c.cursor > 0 {
-		buttons = append(buttons, tgbotapi.NewInlineKeyboardButtonData("Prev", "work__course__list__prev"),
+	if cursor > 0 {
+		buttons = append(buttons, tgbotapi.NewInlineKeyboardButtonData("Prev", fmt.Sprintf("work__course__list__prev %d %d", cursor, limit)),
 		)
 	}
-	if int(c.cursor+c.limit) < len(work.AllCourses) {
-		buttons = append(buttons, tgbotapi.NewInlineKeyboardButtonData("Next", "work__course__list__next"),
+	if int(cursor+limit) < len(work.AllCourses) {
+		buttons = append(buttons, tgbotapi.NewInlineKeyboardButtonData("Next", fmt.Sprintf("work__course__list__next %d %d", cursor, limit)),
 		)
 	}
 	if len(buttons) > 0 {

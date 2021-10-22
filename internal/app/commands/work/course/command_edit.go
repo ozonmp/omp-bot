@@ -12,8 +12,18 @@ import (
 
 func (c *WorkCourseCommander) Edit(inputMessage *tgbotapi.Message) {
 	args := inputMessage.CommandArguments()
+	args=strings.TrimSpace(args)
+	splittedArgs  := strings.Split(args, " ")
 
-	splittedArgs := strings.Split(args, " ")
+	if len(splittedArgs) != 5 {
+		msg := tgbotapi.NewMessage(inputMessage.Chat.ID, fmt.Sprintf("WorkCourseCommander.Edit: wrong number of arguments"))
+		_, err := c.bot.Send(msg)
+		if err != nil {
+			log.Printf("WorkCourseCommander.Edit: error in sending reply %v", err)
+		}
+		return
+	}
+
 	id, err := strconv.Atoi(splittedArgs[0])
 	if err != nil {
 		msg := tgbotapi.NewMessage(inputMessage.Chat.ID, fmt.Sprintf("WorkCourseCommander.Edit: wrong id - %v", err))

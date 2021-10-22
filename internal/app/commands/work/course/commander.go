@@ -21,8 +21,6 @@ func NewWorkCourseCommander(bot *tgbotapi.BotAPI) *WorkCourseCommander {
 	return &WorkCourseCommander{
 		bot:           bot,
 		courseService: courseService,
-		cursor:        0,
-		limit:         3,
 	}
 }
 
@@ -40,7 +38,7 @@ func (c *WorkCourseCommander) HandleCommand(msg *tgbotapi.Message, commandPath p
 	case "help":
 		c.Help(msg)
 	case "list":
-		c.List(msg)
+		c.List(msg,0,3)
 	case "get":
 		c.Get(msg)
 	case "new":
