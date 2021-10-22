@@ -34,7 +34,7 @@ func (c *PointCommander) Edit(inputMessage *tgbotapi.Message) {
 		} else {
 			parsedData := loyalty.Point{ Name: s[1], Description: s[2]}
 
-			err = c.pointService.Edit(uint64(id), parsedData)
+			err = c.pointService.Edit(uint64(id -1), parsedData)
 
 			if err != nil {
 				log.Printf("fail to edit entity %v", err)

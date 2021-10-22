@@ -11,9 +11,10 @@ import (
 
 const entitysInPage int = 3
 
-var CurrentPage = 1
+var CurrentPage int = 1
 
 func (c *PointCommander) List(inputMessage *tgbotapi.Message) {
+	CurrentPage = 1
 	c.ListAnswer(inputMessage.Chat.ID)
 }
 
@@ -21,7 +22,7 @@ func (c *PointCommander) ListAnswer(chatId int64) {
 
 	outputMsgText := fmt.Sprintf("Entity list page %d: \n\n", CurrentPage)
 
-	entities, err := c.pointService.List()
+	entities, err := c.pointService.List((CurrentPage-1)*entitysInPage, entitysInPage)
 
 	for _, e := range entities {
 		outputMsgText += e.String()
@@ -51,6 +52,14 @@ func (c *PointCommander) ListAnswer(chatId int64) {
 		CallbackData: string(serializedDataNext),
 	}
 
+	lastPage  := 0
+
+	if c.pointService.Size() % entitysInPage == 0 {
+		lastPage = c.pointService.Size()/entitysInPage;
+	} else {
+		lastPage = c.pointService.Size()/entitysInPage + 1
+	}
+
 	switch  {
 		case CurrentPage <= 1:
 			msg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(
@@ -58,7 +67,7 @@ func (c *PointCommander) ListAnswer(chatId int64) {
 					tgbotapi.NewInlineKeyboardButtonData("Next page ➡", callbackPathNext.String()),
 				),
 			)
-		case CurrentPage >= c.pointService.Size():
+		case CurrentPage >= lastPage:
 			msg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(
 				tgbotapi.NewInlineKeyboardRow(
 					tgbotapi.NewInlineKeyboardButtonData("⬅ Prev page", callbackPathPrev.String()),

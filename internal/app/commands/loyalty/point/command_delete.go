@@ -21,7 +21,7 @@ func (c *PointCommander) Delete(inputMessage *tgbotapi.Message) {
 		inputMessage.Chat.ID,
 		"",
 	)
-	_, err = c.pointService.Delete(uint64(idx))
+	_, err = c.pointService.Delete(uint64(idx - 1))
 
 	if err != nil {
 		log.Printf("fail to get entity with id %d: %v", idx, err)

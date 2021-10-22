@@ -20,7 +20,7 @@ func (c *PointCommander) Get(inputMessage *tgbotapi.Message) {
 		inputMessage.Chat.ID,
 		"",
 	)
-	entity, err := c.pointService.Get(uint64(idx))
+	entity, err := c.pointService.Get(uint64(idx - 1))
 
 	if err != nil {
 		log.Printf("fail to get entity with id %d: %v", idx, err)
