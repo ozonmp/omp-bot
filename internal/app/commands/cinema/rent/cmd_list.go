@@ -14,9 +14,11 @@ func (c *CinemaRentCommander) List(inputMessage *tgbotapi.Message) {
 }
 
 func (c *CinemaRentCommander) sendList(ChatID int64, cursor, limit uint64) {
+	log.Printf("CinemaRentCommander.sendList: cursor = %v, count = %v", cursor, limit)
 	outputMsgText := "Films and serials prices:\n\n"
 
-	items, err := c.service.List(cursor, limit)
+	// Запроосим количество элементов сверх лимита (чтоб понять есть ли элементы дальше)
+	items, err := c.service.List(cursor, limit+1)
 	if err != nil {
 		log.Printf("CinemaRentCommander.List: %v", err)
 		msg := tgbotapi.NewMessage(ChatID, fmt.Sprintf("%v", err))
@@ -26,7 +28,10 @@ func (c *CinemaRentCommander) sendList(ChatID int64, cursor, limit uint64) {
 		return
 	}
 
-	for _, item := range items {
+	for j, item := range items {
+		if uint64(j) == limit {
+			break
+		}
 		outputMsgText += fmt.Sprintf("%d => %s\n", item.RecordIndex, item.String())
 	}
 
@@ -35,16 +40,20 @@ func (c *CinemaRentCommander) sendList(ChatID int64, cursor, limit uint64) {
 	buttons := []tgbotapi.InlineKeyboardButton{}
 
 	if cursor != 0 {
-		buttons = append(buttons, c.listBackButton(cursor, limit))
+		nextCursor := cursor - limit
+		if nextCursor == 1 {
+			nextCursor = 0
+		}
+		buttons = append(buttons, c.listBackButton(nextCursor, limit))
 	}
 
-	// Если количество отобранных элементов равно лимиту, проверим
-	// есть ли элемнты за лимитом, и если есть, отобразим кнопку следующей страницы
-	if uint64(len(items)) == limit {
-		nextItems, _ := c.service.List(cursor+limit+1, limit)
-		if len(nextItems) > 0 {
-			buttons = append(buttons, c.listNextButton(cursor, limit))
+	// Если количество отобранных элементов больше лимита, отобразим кнопку следующей страницы
+	if uint64(len(items)) > limit {
+		nextCursor := cursor + limit
+		if cursor == 0 {
+			nextCursor += 1
 		}
+		buttons = append(buttons, c.listNextButton(nextCursor, limit))
 	}
 
 	if len(buttons) > 0 {
@@ -62,12 +71,6 @@ func (c *CinemaRentCommander) sendList(ChatID int64, cursor, limit uint64) {
 }
 
 func (c *CinemaRentCommander) listBackButton(cursor, limit uint64) tgbotapi.InlineKeyboardButton {
-	cursor = cursor - limit - 1
-	if cursor < 0 {
-		// защита от "дурака"
-		cursor = 0
-	}
-
 	serializedData, _ := json.Marshal(ListLimitDTO{
 		Cursor: int64(cursor),
 		Limit:  int64(limit),
@@ -85,7 +88,7 @@ func (c *CinemaRentCommander) listBackButton(cursor, limit uint64) tgbotapi.Inli
 
 func (c CinemaRentCommander) listNextButton(cursor, limit uint64) tgbotapi.InlineKeyboardButton {
 	serializedData, _ := json.Marshal(ListLimitDTO{
-		Cursor: int64(cursor + limit + 1),
+		Cursor: int64(cursor),
 		Limit:  int64(limit),
 	})
 
