@@ -1,6 +1,8 @@
 package router
 
 import (
+	"github.com/ozonmp/omp-bot/internal/app/commands/lists"
+	service "github.com/ozonmp/omp-bot/internal/service/lists/product"
 	"log"
 	"runtime/debug"
 
@@ -19,7 +21,8 @@ type Router struct {
 	bot *tgbotapi.BotAPI
 
 	// demoCommander
-	demoCommander Commander
+	demoCommander  Commander
+	listsCommander Commander
 	// user
 	// access
 	// buy
@@ -55,6 +58,8 @@ func NewRouter(
 		bot: bot,
 		// demoCommander
 		demoCommander: demo.NewDemoCommander(bot),
+		// listsCommander
+		listsCommander: lists.NewListsCommander(bot, service.NewDummyProductService()),
 		// user
 		// access
 		// buy
@@ -108,6 +113,8 @@ func (c *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
 	switch callbackPath.Domain {
 	case "demo":
 		c.demoCommander.HandleCallback(callback, callbackPath)
+	case "lists":
+		c.listsCommander.HandleCallback(callback, callbackPath)
 	case "user":
 		break
 	case "access":
@@ -159,7 +166,7 @@ func (c *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
 	case "education":
 		break
 	default:
-		log.Printf("Router.handleCallback: unknown domain - %s", callbackPath.Domain)
+		log.Printf("Router.handleCallback: unknown domain - `%s`", callbackPath.Domain)
 	}
 }
 
@@ -179,6 +186,8 @@ func (c *Router) handleMessage(msg *tgbotapi.Message) {
 	switch commandPath.Domain {
 	case "demo":
 		c.demoCommander.HandleCommand(msg, commandPath)
+	case "lists":
+		c.listsCommander.HandleCommand(msg, commandPath)
 	case "user":
 		break
 	case "access":
