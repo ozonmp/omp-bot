@@ -1,6 +1,6 @@
 package storage
 
-import "github.com/fregat33/omp-bot/internal/model/estate"
+import "github.com/ozonmp/omp-bot/internal/model/estate"
 
 type RentEntity struct {
 	ID uint64

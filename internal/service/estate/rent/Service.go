@@ -1,8 +1,8 @@
 package rent
 
 import (
-	"github.com/fregat33/omp-bot/internal/model/estate"
-	"github.com/fregat33/omp-bot/internal/service/estate/rent/storage"
+	"github.com/ozonmp/omp-bot/internal/model/estate"
+	"github.com/ozonmp/omp-bot/internal/service/estate/rent/storage"
 )
 
 type Service struct {

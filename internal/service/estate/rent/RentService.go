@@ -1,7 +1,7 @@
 package rent
 
 import (
-	"github.com/fregat33/omp-bot/internal/model/estate"
+	"github.com/ozonmp/omp-bot/internal/model/estate"
 )
 
 type RentService interface {

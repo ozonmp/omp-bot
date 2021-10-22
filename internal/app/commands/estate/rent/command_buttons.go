@@ -2,15 +2,15 @@ package rent
 
 import (
 	"fmt"
-	"github.com/fregat33/omp-bot/internal/model/estate"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+	"github.com/ozonmp/omp-bot/internal/model/estate"
 )
 
 func templateFactory(
 	command string,
 	rent *estate.Rent,
 ) *string {
-	const template = "edit:\n%s\n%s"
+	const template = "fill:\n%s\n%s"
 	res := fmt.Sprintf(
 		template,
 		command,

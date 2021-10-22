@@ -2,15 +2,15 @@ package rent
 
 import (
 	"fmt"
-	"github.com/fregat33/omp-bot/internal/app/path"
-	service "github.com/fregat33/omp-bot/internal/service/estate/rent"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+	"github.com/ozonmp/omp-bot/internal/app/path"
+	service "github.com/ozonmp/omp-bot/internal/service/estate/rent"
 	"log"
 	"strings"
 )
 
 func NewRentCommander(bot *tgbotapi.BotAPI, service service.RentService) *Commander {
-	commander := &Commander{bot: bot, productService: service, offset: 2} //TODO 5
+	commander := &Commander{bot: bot, productService: service, offset: 5}
 	return commander
 }
 

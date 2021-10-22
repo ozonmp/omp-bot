@@ -1,11 +1,11 @@
 package router
 
 import (
-	"github.com/fregat33/omp-bot/internal/app/commands/estate"
+	"github.com/ozonmp/omp-bot/internal/app/commands/estate"
 	"log"
 
-	"github.com/fregat33/omp-bot/internal/app/commands/demo"
-	"github.com/fregat33/omp-bot/internal/app/path"
+	"github.com/ozonmp/omp-bot/internal/app/commands/demo"
+	"github.com/ozonmp/omp-bot/internal/app/path"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 

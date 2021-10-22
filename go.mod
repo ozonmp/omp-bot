@@ -1,4 +1,4 @@
-module github.com/fregat33/omp-bot
+module github.com/ozonmp/omp-bot
 
 go 1.17
 

@@ -2,7 +2,7 @@ package rent
 
 import (
 	"fmt"
-	"github.com/fregat33/omp-bot/internal/model/estate"
+	"github.com/ozonmp/omp-bot/internal/model/estate"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 

@@ -1,10 +1,10 @@
 package estate
 
 import (
-	estate "github.com/fregat33/omp-bot/internal/app/commands/estate/rent"
-	"github.com/fregat33/omp-bot/internal/app/path"
-	"github.com/fregat33/omp-bot/internal/service/estate/rent"
-	"github.com/fregat33/omp-bot/internal/service/estate/rent/storage"
+	estate "github.com/ozonmp/omp-bot/internal/app/commands/estate/rent"
+	"github.com/ozonmp/omp-bot/internal/app/path"
+	"github.com/ozonmp/omp-bot/internal/service/estate/rent"
+	"github.com/ozonmp/omp-bot/internal/service/estate/rent/storage"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"log"
 )
