@@ -12,7 +12,16 @@ func (c *LoyaltyCertificateCommander) Get(inputMessage *tgbotapi.Message) {
 
 	id, err := strconv.Atoi(args)
 	if err != nil {
-		log.Println("wrong args", args)
+		outputMsg := "Pass Id as parameter"
+		msg := tgbotapi.NewMessage(
+			inputMessage.Chat.ID,
+			outputMsg,
+		)
+
+		_, err = c.bot.Send(msg)
+		if err != nil {
+			log.Printf("LoyaltyCertificateCommander.Get: error sending reply message to chat - %v", err)
+		}
 		return
 	}
 	if id < 0 {
