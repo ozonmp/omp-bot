@@ -7,6 +7,15 @@ import (
 	"log"
 )
 
+type CertificateCommander interface {
+	Help(inputMsg *tgbotapi.Message)
+	Get(inputMsg *tgbotapi.Message)
+	List(inputMsg *tgbotapi.Message)
+	Delete(inputMsg *tgbotapi.Message)
+	New(inputMsg *tgbotapi.Message)
+	Edit(inputMsg *tgbotapi.Message)
+}
+
 type LoyaltyCertificateCommander struct {
 	bot                *tgbotapi.BotAPI
 	certificateService *certificate.DummyCertificateService

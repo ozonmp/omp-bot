@@ -40,7 +40,7 @@ func (c *LoyaltyCertificateCommander) CallbackList(callback *tgbotapi.CallbackQu
 		})
 		callbackPath := path.CallbackPath{
 			Domain:       "loyalty",
-			Subdomain:    "certificates",
+			Subdomain:    "certificate",
 			CallbackName: "list",
 			CallbackData: string(callbackData),
 		}
@@ -53,7 +53,7 @@ func (c *LoyaltyCertificateCommander) CallbackList(callback *tgbotapi.CallbackQu
 		})
 		callbackPath := path.CallbackPath{
 			Domain:       "loyalty",
-			Subdomain:    "certificates",
+			Subdomain:    "certificate",
 			CallbackName: "list",
 			CallbackData: string(callbackData),
 		}

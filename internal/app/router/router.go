@@ -1,7 +1,7 @@
 package router
 
 import (
-	"github.com/ozonmp/omp-bot/internal/app/commands/loyalty/certificate"
+	"github.com/ozonmp/omp-bot/internal/app/commands/loyalty"
 	"log"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
@@ -63,7 +63,7 @@ func NewRouter(
 		// recommendation
 		// travel
 		// loyalty
-		loyaltyCommander: certificate.NewLoyaltyCertificateCommander(bot),
+		loyaltyCommander: loyalty.NewLoyaltyCommander(bot),
 		// bank
 		// subscription
 		// license
