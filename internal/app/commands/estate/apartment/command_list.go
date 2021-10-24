@@ -5,6 +5,7 @@ import (
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/app/path"
+	"github.com/ozonmp/omp-bot/internal/model/estate"
 )
 
 const pageSize = 5
@@ -21,11 +22,7 @@ func (c *DummyApartmentCommander) prepareListResponse(chatID int64, offset uint6
 		resp = tgbotapi.NewMessage(chatID, "Oops! You reached end of the list")
 		return
 	}
-	var outputMsgText string
-	for _, a := range apartments {
-		outputMsgText += a.String()
-		outputMsgText += "\n"
-	}
+	outputMsgText := estate.StringFromApartments(apartments)
 
 	if len(apartments) < pageSize {
 		// we reached end of the list so pagination is not needed
