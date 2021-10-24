@@ -1,29 +1,27 @@
 package return1
 
 import (
-	"log"
-
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
 func (c *Return1CommanderImpl) Help(inputMsg *tgbotapi.Message) {
-	reply := func(text string, other ...interface{}) {
-		for _, v := range other {
-			log.Println("Return1CommanderImpl.Help:", v)
-		}
+	//reply := func(text string, other ...interface{}) {
+	//for _, v := range other {
+	//log.Println("Return1CommanderImpl.Help:", v)
+	//}
 
-		msg := tgbotapi.NewMessage(
-			inputMsg.Chat.ID,
-			text,
-		)
+	//msg := tgbotapi.NewMessage(
+	//inputMsg.Chat.ID,
+	//text,
+	//)
 
-		_, err := c.bot.Send(msg)
-		if err != nil {
-			log.Printf("Return1CommanderImpl.Help: error sending reply message to chat [%v]", err)
-		}
-	}
+	//_, err := c.bot.Send(msg)
+	//if err != nil {
+	//log.Printf("Return1CommanderImpl.Help: error sending reply message to chat [%v]", err)
+	//}
+	//}
 
-	reply(
+	replyToUser(
 		`
 		\help 					- list all commands
 		\list 					- list all elements
@@ -32,5 +30,7 @@ func (c *Return1CommanderImpl) Help(inputMsg *tgbotapi.Message) {
 		\new *name* 			- create new element with name
 		\edit *id* *name* 		- edit element by id
 		`,
+		inputMsg,
+		c.bot,
 	)
 }

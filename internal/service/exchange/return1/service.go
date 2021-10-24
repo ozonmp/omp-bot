@@ -78,11 +78,6 @@ func (r *DummyReturn1Service) Remove(return1ID uint64) (bool, error) {
 		return false, wrongIDErr
 	}
 
-	if len(r.savedReturns) == int(return1ID-1) {
-		r.savedReturns = r.savedReturns[:len(r.savedReturns)-1]
-		return true, nil
-	}
-
 	r.savedReturns = append(r.savedReturns[:return1ID], r.savedReturns[return1ID+1:]...)
 
 	for i := 0; i < len(r.savedReturns); i++ {

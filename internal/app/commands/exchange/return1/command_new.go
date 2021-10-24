@@ -1,41 +1,46 @@
 package return1
 
 import (
+	"encoding/json"
 	"fmt"
-	"log"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/model/exchange"
 )
 
 func (c *Return1CommanderImpl) New(inputMsg *tgbotapi.Message) {
-	reply := func(text string, other ...interface{}) {
-		for _, v := range other {
-			log.Println("Return1CommanderImpl.New:", v)
-		}
-
-		msg := tgbotapi.NewMessage(
-			inputMsg.Chat.ID,
-			text,
-		)
-
-		_, err := c.bot.Send(msg)
-		if err != nil {
-			log.Printf("Return1CommanderImpl.New: error sending reply message to chat [%v]", err)
-		}
-	}
-
 	args := inputMsg.CommandArguments()
 	if len(args) == 0 {
-		reply("some error. you hould provide name for element")
-	}
-
-	id, err := c.service.Create(exchange.Return1{Name: args})
-	if err != nil {
-		reply("error creating new element", err)
+		replyToUser("some error. you should provide name for element", inputMsg, c.bot)
 
 		return
 	}
 
-	reply(fmt.Sprintf("New element created with id[%d]", id))
+	parsedReturn1 := exchange.Return1{}
+
+	err := json.Unmarshal([]byte(args), &parsedReturn1)
+	if err != nil {
+		replyToUser(
+			"error creating new element. wrong format "+
+				exchange.ShowReturn1InputFormat(),
+			inputMsg,
+			c.bot,
+			err,
+		)
+	}
+
+	if len(parsedReturn1.Name) == 0 {
+		replyToUser("some error. you should provide name for element", inputMsg, c.bot)
+
+		return
+	}
+
+	id, err := c.service.Create(parsedReturn1)
+	if err != nil {
+		replyToUser("error creating new element", inputMsg, c.bot, err)
+
+		return
+	}
+
+	replyToUser(fmt.Sprintf("New element created with id[%d]", id), inputMsg, c.bot)
 }

@@ -10,3 +10,7 @@ type Return1 struct {
 func (r *Return1) String() string {
 	return fmt.Sprintf("{ name[%s]. ID[%d] }", r.Name, r.ID)
 }
+
+func ShowReturn1InputFormat() string {
+	return `[format should be { "Name" : "testName" } ]`
+}

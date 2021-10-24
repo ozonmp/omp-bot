@@ -57,19 +57,28 @@ func (c *Return1CommanderImpl) HandleCallback(callback *tgbotapi.CallbackQuery, 
 
 }
 
+const (
+	helpCommand   = "help"
+	getCommand    = "get"
+	listCommand   = "list"
+	deleteCommand = "delete"
+	newCommand    = "new"
+	editCommand   = "edit"
+)
+
 func (c *Return1CommanderImpl) HandleCommand(message *tgbotapi.Message, commandPath path.CommandPath) {
 	switch commandPath.CommandName {
-	case "help":
+	case helpCommand:
 		c.Help(message)
-	case "get":
+	case getCommand:
 		c.Get(message)
-	case "list":
+	case listCommand:
 		c.List(message)
-	case "delete":
+	case deleteCommand:
 		c.Delete(message)
-	case "new":
+	case newCommand:
 		c.New(message)
-	case "edit":
+	case editCommand:
 		c.Edit(message)
 	default:
 		log.Printf("Return1CommanderImpl: HandleCommand: unknown command [%s]", commandPath.CommandName)
