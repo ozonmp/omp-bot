@@ -12,16 +12,6 @@ var (
 	ErrUnknownCallback = fmt.Errorf("unknown callback")
 )
 
-type ApartmentCommander interface {
-	Help(inputMsg *tgbotapi.Message) (resp tgbotapi.MessageConfig)
-	Get(inputMsg *tgbotapi.Message) (resp tgbotapi.MessageConfig, err error)
-	List(inputMsg *tgbotapi.Message) (resp tgbotapi.MessageConfig, err error)
-	Delete(inputMsg *tgbotapi.Message) (resp tgbotapi.MessageConfig, err error)
-
-	New(inputMsg *tgbotapi.Message) (resp tgbotapi.MessageConfig, err error)
-	Edit(inputMsg *tgbotapi.Message) (resp tgbotapi.MessageConfig, err error)
-}
-
 type ApartmentService interface {
 	Describe(apartmentID uint64) (*estate.Apartment, error)
 	List(cursor uint64, limit uint64) ([]estate.Apartment, error)
