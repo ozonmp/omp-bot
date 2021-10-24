@@ -1,14 +1,14 @@
-package return1
+package purchase
 
 import (
 	"encoding/json"
 	"fmt"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-	"github.com/ozonmp/omp-bot/internal/model/exchange"
+	"github.com/ozonmp/omp-bot/internal/model/cinema"
 )
 
-func (c *Return1CommanderImpl) New(inputMsg *tgbotapi.Message) {
+func (c *PurchaseCommanderImpl) New(inputMsg *tgbotapi.Message) {
 	args := inputMsg.CommandArguments()
 	if len(args) == 0 {
 		replyToUser("some error. you should provide name for element", inputMsg, c.bot)
@@ -16,26 +16,26 @@ func (c *Return1CommanderImpl) New(inputMsg *tgbotapi.Message) {
 		return
 	}
 
-	parsedReturn1 := exchange.Return1{}
+	parsedPurchase := cinema.Purchase{}
 
-	err := json.Unmarshal([]byte(args), &parsedReturn1)
+	err := json.Unmarshal([]byte(args), &parsedPurchase)
 	if err != nil {
 		replyToUser(
 			"error creating new element. wrong format "+
-				exchange.ShowReturn1InputFormat(),
+				cinema.ShowPurchaseInputFormat(),
 			inputMsg,
 			c.bot,
 			err,
 		)
 	}
 
-	if len(parsedReturn1.Name) == 0 {
+	if len(parsedPurchase.Name) == 0 {
 		replyToUser("some error. you should provide name for element", inputMsg, c.bot)
 
 		return
 	}
 
-	id, err := c.service.Create(parsedReturn1)
+	id, err := c.service.Create(parsedPurchase)
 	if err != nil {
 		replyToUser("error creating new element", inputMsg, c.bot, err)
 

@@ -1,4 +1,4 @@
-package return1
+package purchase
 
 import (
 	"encoding/json"
@@ -8,12 +8,12 @@ import (
 	"github.com/ozonmp/omp-bot/internal/app/path"
 )
 
-func (c *Return1CommanderImpl) ListCallback(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
+func (c *PurchaseCommanderImpl) ListCallback(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
 	parsedData := PaginationMarkup{}
 
 	err := json.Unmarshal([]byte(callbackPath.CallbackData), &parsedData)
 	if err != nil {
-		log.Printf("Return1CommanderImpl.ListCallback: "+
+		log.Printf("PurchaseCommanderImpl.ListCallback: "+
 			"error reading json data for type PaginationMarkup from "+
 			"input string %v - %v", callbackPath.CallbackData, err)
 		return

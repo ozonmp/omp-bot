@@ -1,4 +1,4 @@
-package return1
+package purchase
 
 import (
 	"encoding/json"
@@ -6,7 +6,7 @@ import (
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/app/path"
-	"github.com/ozonmp/omp-bot/internal/service/exchange/return1"
+	"github.com/ozonmp/omp-bot/internal/service/cinema/purchase"
 )
 
 const PageSize = 2
@@ -16,14 +16,14 @@ type PaginationMarkup struct {
 	Limit  uint64
 }
 
-func (c *Return1CommanderImpl) List(inputMsg *tgbotapi.Message) {
+func (c *PurchaseCommanderImpl) List(inputMsg *tgbotapi.Message) {
 	c.ListPaginated(inputMsg, 0, PageSize)
 }
 
-func (c *Return1CommanderImpl) ListPaginated(inputMsg *tgbotapi.Message, cursor uint64, limit uint64) {
+func (c *PurchaseCommanderImpl) ListPaginated(inputMsg *tgbotapi.Message, cursor uint64, limit uint64) {
 	reply := func(text string, markup *tgbotapi.InlineKeyboardMarkup, other ...interface{}) {
 		for _, v := range other {
-			log.Println("Return1CommanderImpl.ListPaginated:", v)
+			log.Println("PurchaseCommanderImpl.ListPaginated:", v)
 		}
 
 		msg := tgbotapi.NewMessage(
@@ -37,19 +37,19 @@ func (c *Return1CommanderImpl) ListPaginated(inputMsg *tgbotapi.Message, cursor 
 
 		_, err := c.bot.Send(msg)
 		if err != nil {
-			log.Printf("Return1CommanderImpl.ListPaginated: error sending reply message to chat [%v]", err)
+			log.Printf("PurchaseCommanderImpl.ListPaginated: error sending reply message to chat [%v]", err)
 		}
 	}
 
-	return1Elements, err := c.service.List(cursor, limit)
-	if err != nil && err != return1.LastPageExceededErr {
+	purchaseElements, err := c.service.List(cursor, limit)
+	if err != nil && err != purchase.LastPageExceededErr {
 		reply("error during getting list from service", nil, err)
 
 		return
 	}
 
 	textResponse := "Here the elements:\n\n"
-	for _, r := range return1Elements {
+	for _, r := range purchaseElements {
 		textResponse += r.String() + "\n"
 	}
 
@@ -57,7 +57,7 @@ func (c *Return1CommanderImpl) ListPaginated(inputMsg *tgbotapi.Message, cursor 
 
 	var prevButton *tgbotapi.InlineKeyboardButton
 
-	if err != return1.LastPageExceededErr {
+	if err != purchase.LastPageExceededErr {
 		nextButton := generateNextButton(cursor)
 		if nextButton != nil {
 			buttons = append(buttons, *nextButton)
@@ -82,8 +82,8 @@ func generateNextButton(cursor uint64) *tgbotapi.InlineKeyboardButton {
 	})
 
 	cbPaginationNext := path.CallbackPath{
-		Domain:       "exchange",
-		Subdomain:    "return1",
+		Domain:       "cinema",
+		Subdomain:    "purchase",
 		CallbackName: "list",
 		CallbackData: string(paginationMarkupNext),
 	}
@@ -105,8 +105,8 @@ func generatePrevButton(cursor uint64) *tgbotapi.InlineKeyboardButton {
 		})
 
 		cbPaginationPrev := path.CallbackPath{
-			Domain:       "exchange",
-			Subdomain:    "return1",
+			Domain:       "cinema",
+			Subdomain:    "purchase",
 			CallbackName: "list",
 			CallbackData: string(paginationMarkupPrev),
 		}

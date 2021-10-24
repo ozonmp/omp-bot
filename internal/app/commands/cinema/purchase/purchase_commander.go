@@ -1,4 +1,4 @@
-package return1
+package purchase
 
 //maybe rename file?
 
@@ -7,7 +7,7 @@ import (
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/app/path"
-	"github.com/ozonmp/omp-bot/internal/model/exchange"
+	"github.com/ozonmp/omp-bot/internal/model/cinema"
 )
 
 type Commander interface {
@@ -15,7 +15,7 @@ type Commander interface {
 	HandleCommand(message *tgbotapi.Message, commandPath path.CommandPath)
 }
 
-type Return1Commander interface { //did not get why do we need it, but it is said to add this
+type PurchaseCommander interface { //did not get why do we need it, but it is said to add this
 	Commander
 
 	Help(inputMsg *tgbotapi.Message)
@@ -27,32 +27,32 @@ type Return1Commander interface { //did not get why do we need it, but it is sai
 	Edit(inputMsg *tgbotapi.Message)
 }
 
-type Return1Service interface {
-	Describe(return1ID uint64) (*exchange.Return1, error)
-	List(cursor uint64, limit uint64) ([]exchange.Return1, error)
-	Create(exchange.Return1) (uint64, error)
-	Update(return1ID uint64, return1 exchange.Return1) error
-	Remove(return1ID uint64) (bool, error)
+type PurchaseService interface {
+	Describe(purchaseID uint64) (*cinema.Purchase, error)
+	List(cursor uint64, limit uint64) ([]cinema.Purchase, error)
+	Create(cinema.Purchase) (uint64, error)
+	Update(purchaseID uint64, purchase cinema.Purchase) error
+	Remove(purchaseID uint64) (bool, error)
 }
 
-type Return1CommanderImpl struct {
+type PurchaseCommanderImpl struct {
 	bot     *tgbotapi.BotAPI
-	service Return1Service
+	service PurchaseService
 }
 
-func NewReturn1Commander(bot *tgbotapi.BotAPI, service Return1Service) Return1Commander {
-	return &Return1CommanderImpl{
+func NewPurchaseCommander(bot *tgbotapi.BotAPI, service PurchaseService) PurchaseCommander {
+	return &PurchaseCommanderImpl{
 		bot:     bot,
 		service: service,
 	}
 }
 
-func (c *Return1CommanderImpl) HandleCallback(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
+func (c *PurchaseCommanderImpl) HandleCallback(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
 	switch callbackPath.CallbackName {
 	case "list":
 		c.ListCallback(callback, callbackPath)
 	default:
-		log.Printf("Return1CommanderImpl: HandleCallback: unknown callback [%s]", callbackPath.CallbackName)
+		log.Printf("PurchaseCommanderImpl: HandleCallback: unknown callback [%s]", callbackPath.CallbackName)
 	}
 
 }
@@ -66,7 +66,7 @@ const (
 	editCommand   = "edit"
 )
 
-func (c *Return1CommanderImpl) HandleCommand(message *tgbotapi.Message, commandPath path.CommandPath) {
+func (c *PurchaseCommanderImpl) HandleCommand(message *tgbotapi.Message, commandPath path.CommandPath) {
 	switch commandPath.CommandName {
 	case helpCommand:
 		c.Help(message)
@@ -81,6 +81,6 @@ func (c *Return1CommanderImpl) HandleCommand(message *tgbotapi.Message, commandP
 	case editCommand:
 		c.Edit(message)
 	default:
-		log.Printf("Return1CommanderImpl: HandleCommand: unknown command [%s]", commandPath.CommandName)
+		log.Printf("PurchaseCommanderImpl: HandleCommand: unknown command [%s]", commandPath.CommandName)
 	}
 }

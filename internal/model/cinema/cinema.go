@@ -1,16 +1,16 @@
-package exchange
+package cinema
 
 import "fmt"
 
-type Return1 struct {
+type Purchase struct {
 	Name string
 	ID   uint64
 }
 
-func (r *Return1) String() string {
+func (r *Purchase) String() string {
 	return fmt.Sprintf("{ name[%s]. ID[%d] }", r.Name, r.ID)
 }
 
-func ShowReturn1InputFormat() string {
+func ShowPurchaseInputFormat() string {
 	return `[format should be { "Name" : "testName" } ]`
 }

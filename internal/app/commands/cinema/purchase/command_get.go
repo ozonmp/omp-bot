@@ -1,4 +1,4 @@
-package return1
+package purchase
 
 import (
 	"fmt"
@@ -7,23 +7,7 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
-func (c *Return1CommanderImpl) Get(inputMsg *tgbotapi.Message) {
-	//reply := func(text string, other ...interface{}) {
-	//for _, v := range other {
-	//log.Println("Return1CommanderImpl.Get:", v)
-	//}
-
-	//msg := tgbotapi.NewMessage(
-	//inputMsg.Chat.ID,
-	//text,
-	//)
-
-	//_, err := c.bot.Send(msg)
-	//if err != nil {
-	//log.Printf("Return1CommanderImpl.Get: error sending reply message to chat [%v]", err)
-	//}
-	//}
-
+func (c *PurchaseCommanderImpl) Get(inputMsg *tgbotapi.Message) {
 	args := inputMsg.CommandArguments()
 
 	idx, err := strconv.Atoi(args)

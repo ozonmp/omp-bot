@@ -1,14 +1,14 @@
-package return1
+package purchase
 
 import (
 	"encoding/json"
 	"fmt"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-	"github.com/ozonmp/omp-bot/internal/model/exchange"
+	"github.com/ozonmp/omp-bot/internal/model/cinema"
 )
 
-func (c *Return1CommanderImpl) Edit(inputMsg *tgbotapi.Message) {
+func (c *PurchaseCommanderImpl) Edit(inputMsg *tgbotapi.Message) {
 	args := inputMsg.CommandArguments()
 
 	argsParsed := editCommandArgs{}
@@ -25,8 +25,8 @@ func (c *Return1CommanderImpl) Edit(inputMsg *tgbotapi.Message) {
 		return
 	}
 
-	if argsParsed.Return1 == nil {
-		replyToUser("error wrong input format. you forgot return1 "+
+	if argsParsed.Purchase == nil {
+		replyToUser("error wrong input format. you forgot purchase "+
 			showEditCommandInputFormat(),
 			inputMsg,
 			c.bot,
@@ -47,7 +47,7 @@ func (c *Return1CommanderImpl) Edit(inputMsg *tgbotapi.Message) {
 		return
 	}
 
-	err = c.service.Update(*argsParsed.ID, *argsParsed.Return1)
+	err = c.service.Update(*argsParsed.ID, *argsParsed.Purchase)
 	if err != nil {
 		replyToUser(fmt.Sprintf("failed edit element with idx[%d]", *argsParsed.ID), inputMsg, c.bot, err)
 
@@ -58,10 +58,10 @@ func (c *Return1CommanderImpl) Edit(inputMsg *tgbotapi.Message) {
 }
 
 type editCommandArgs struct {
-	Return1 *exchange.Return1
-	ID      *uint64
+	Purchase *cinema.Purchase
+	ID       *uint64
 }
 
 func showEditCommandInputFormat() string {
-	return `[format should be { "Return1" : {  "Name" : "testName" }, "ID" : 0 } ]`
+	return `[format should be { "Purchase" : {  "Name" : "testName" }, "ID" : *integer* } ]`
 }
