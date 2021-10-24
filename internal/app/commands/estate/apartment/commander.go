@@ -34,8 +34,8 @@ func (c *DummyApartmentCommander) HandleCallback(
 	callback *tgbotapi.CallbackQuery,
 	callbackPath path.CallbackPath,
 ) (resp tgbotapi.MessageConfig, err error) {
-	switch callbackPath.CallbackName {
-	case "list":
+	switch CallbackName(callbackPath.CallbackName) {
+	case CbNList:
 		resp, err = c.CallbackList(callback, callbackPath)
 	default:
 		err = ErrUnknownCallback
@@ -47,18 +47,18 @@ func (c *DummyApartmentCommander) HandleCommand(
 	command *tgbotapi.Message,
 	commandPath path.CommandPath,
 ) (resp tgbotapi.MessageConfig, err error) {
-	switch commandPath.CommandName {
-	case "help":
+	switch CommandName(commandPath.CommandName) {
+	case CNHelp:
 		resp, err = c.Help(command)
-	case "list":
+	case CNList:
 		resp, err = c.List(command)
-	case "get":
+	case CNGet:
 		resp, err = c.Get(command)
-	case "delete":
+	case CNDelete:
 		resp, err = c.Delete(command)
-	case "new":
+	case CNNew:
 		resp, err = c.New(command)
-	case "edit":
+	case CNEdit:
 		resp, err = c.Edit(command)
 	default:
 		resp, err = c.Default(command)
