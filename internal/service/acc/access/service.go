@@ -66,8 +66,8 @@ func (s *Service) Create(acc Access) (uint64, error) {
 
 func (s *Service) String(acc Access) string {
 	var outstr = "ID: " + strconv.FormatUint(acc.ID, 10) +
-		" User: " + acc.User +
-		" Path: " + acc.Path
+		" Role_ID: " + strconv.FormatUint(acc.Role_ID, 10) +
+		" Resource_ID: " + strconv.FormatUint(acc.Resource_ID, 10)
 
 	return outstr
 }
