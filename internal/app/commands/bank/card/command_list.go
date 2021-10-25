@@ -1,9 +1,9 @@
 package card
 
 import (
+	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"strconv"
-	"fmt"
 	"strings"
 )
 
@@ -15,20 +15,23 @@ func (p *DummyCardCommander) List(inMsg *tgbotapi.Message){
 	if prmsQty > 2 {
 		return
 	}
-	beg := 0
-	lim := p.cardService.CardsQty()
+	fmt.Printf("Input parameters qty %d\n", prmsQty)
+	var beg int = 0
+	var lim int = p.cardService.CardsQty()
 	if prmsQty != 0 {
-		beg, err := strconv.Atoi(params[0])
-		if beg < 0  || err != nil {
-			fmt.Printf("Invalid beg pos value")
+		begp, err := strconv.Atoi(params[0])
+		if begp < 0 || err != nil {
+			fmt.Printf("Invalid beg pos value\n")
 			return
 		}
+		beg = begp
 		if prmsQty == 2 {
-			 lim, err := strconv.Atoi(params[1])
-			 if lim <= beg || err != nil {
-				 fmt.Printf("Invalid limit value")
+			 limp, err := strconv.Atoi(params[1])
+			 if limp <= 0 || err != nil {
+				 fmt.Printf("Invalid limit value\n")
 				 return
 			 }
+			 lim = limp
 		}
 	}
 

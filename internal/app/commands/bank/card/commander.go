@@ -14,7 +14,7 @@ type CardCommander interface {
 	Delete(inMsg *tgbotapi.Message)
 
 	//New(inMsg  *tgbotapi.Message)
-	//Edit(inMsg *tgbotapi.Message)
+	Edit(inMsg *tgbotapi.Message)
 }
 
 type DummyCardCommander struct {
@@ -50,6 +50,8 @@ func (c *DummyCardCommander) HandleCommand(msg *tgbotapi.Message, commandPath pa
 		c.List(msg)
 	case "delete":
 		c.Delete(msg)
+	case "edit":
+		c.Edit(msg)
 	default:
 		log.Printf("DummyCardCommander.HandleCommand: unknown subdomain - %s", commandPath.Subdomain)
 	}

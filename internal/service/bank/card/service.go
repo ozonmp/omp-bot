@@ -11,7 +11,7 @@ type CardService interface {
 	List(cursor uint64, limit uint64) ([]Card, error)
 	CardsQty() int
 	//Create(bank.Card) (uint64, error)
-	//Update(card_id uint64, card bank.Card) error
+	Update(card_id uint64, expDate string, cardType EnumCardType) (bool, error)
 	Remove(card_id uint64) (bool, error)
 }
 
@@ -56,3 +56,17 @@ func (p *DummyCardService) Remove(idx uint64) (bool, error) {
 	return true, nil
 }
 
+func (p *DummyCardService) Update(idx uint64, expDate string, cardType EnumCardType) (bool, error) {
+	if int(idx) >= len(allCards) {
+		return false, errors.New("out of range")
+	}
+	card := &allCards[idx]
+	if len(expDate) > 0 {
+		card.expirationDate = expDate
+	}
+	if cardType != UNDEF {
+		card.cardType = cardType
+	}
+
+	return true, nil
+}

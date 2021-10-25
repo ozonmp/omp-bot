@@ -1,28 +1,47 @@
 package card
 
-type cardType uint8
+type EnumCardType uint8
 
 const (
-	DEBIT  cardType = iota
+	DEBIT  EnumCardType = iota
 	CREDIT
+	UNDEF
 )
 
+func FromStrToEnum(in string) EnumCardType {
+	switch in {
+	case "DEBIT": return DEBIT
+	case "CREDIT": return CREDIT
+	default:
+		return UNDEF
+	}
+}
+
+func FromEnumToStr(in EnumCardType) string {
+	switch in {
+	case DEBIT: return "DEBIT"
+	case CREDIT: return "CREDIT"
+	default:
+		return  "UNDEF"
+	}
+}
+
 type Card struct {
-	OwnerId        uint64
-	Number         string
-	Cvv            string
-	ExpirationDate string
-	CardType       cardType
+	ownerId        uint64
+	number         string
+	cvv            string
+	expirationDate string
+	cardType       EnumCardType
 }
 
 func (p *Card) String() string {
-	return "Card " + p.Number + " expires " + p.ExpirationDate
+	return "Card " + p.number + " expires " + p.expirationDate + " type " + FromEnumToStr(p.cardType)
 }
 
 var allCards = []Card{
-	{OwnerId: 1, Number: "1234567843218765", Cvv: "123", ExpirationDate: "1.01.2023", CardType: DEBIT},
-	{OwnerId: 1, Number: "1234567843219876", Cvv: "124", ExpirationDate: "1.02.2023", CardType: CREDIT},
-	{OwnerId: 2, Number: "2345543267899876", Cvv: "23A", ExpirationDate: "1.03.2022", CardType: DEBIT},
-	{OwnerId: 3, Number: "1122334455667788", Cvv: "ABC", ExpirationDate: "1.04.2023", CardType: DEBIT},
-	{OwnerId: 4, Number: "9988776655443322", Cvv: "789", ExpirationDate: "5.04.2023", CardType: CREDIT},
+	{ownerId: 1, number: "1234567843218765", cvv: "123", expirationDate: "1.01.2023", cardType: DEBIT},
+	{ownerId: 1, number: "1234567843219876", cvv: "124", expirationDate: "1.02.2023", cardType: CREDIT},
+	{ownerId: 2, number: "2345543267899876", cvv: "23A", expirationDate: "1.03.2022", cardType: DEBIT},
+	{ownerId: 3, number: "1122334455667788", cvv: "ABC", expirationDate: "1.04.2023", cardType: DEBIT},
+	{ownerId: 4, number: "9988776655443322", cvv: "789", expirationDate: "5.04.2023", cardType: CREDIT},
 }
