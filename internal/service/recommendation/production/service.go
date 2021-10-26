@@ -38,9 +38,7 @@ func (d *RecommendationProductionService) List(offset int, limit int) ([]recomme
 }
 
 func (d *RecommendationProductionService) Create(production recommendation.Production) error {
-	atomic.AddUint64(&d.sequence, 1)
-
-	production.Id = d.sequence
+	production.Id = atomic.AddUint64(&d.sequence, 1)
 
 	d.productions = append(d.productions, production)
 
