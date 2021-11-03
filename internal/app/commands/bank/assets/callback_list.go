@@ -45,7 +45,7 @@ func (c *AssetsCommander) CallbackList(callback *tgbotapi.CallbackQuery, callbac
 			Page: parsedData.Page - 1,
 		})
 		callbackPath := path.CallbackPath{
-			Domain:       "bnk",
+			Domain:       "bank",
 			Subdomain:    "assets",
 			CallbackName: "list",
 			CallbackData: string(serializedData),
@@ -57,7 +57,7 @@ func (c *AssetsCommander) CallbackList(callback *tgbotapi.CallbackQuery, callbac
 			Page: parsedData.Page + 1,
 		})
 		callbackPath := path.CallbackPath{
-			Domain:       "bnk",
+			Domain:       "bank",
 			Subdomain:    "assets",
 			CallbackName: "list",
 			CallbackData: string(serializedData),

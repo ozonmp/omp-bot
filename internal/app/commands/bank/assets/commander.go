@@ -1,7 +1,7 @@
 package assets
 
 import (
-	"github.com/ozonmp/omp-bot/internal/service/bnk/assets"
+	"github.com/ozonmp/omp-bot/internal/service/bank/assets"
 	"log"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"

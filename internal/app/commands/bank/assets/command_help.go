@@ -7,13 +7,13 @@ import (
 
 func (c *AssetsCommander) Help(inputMessage *tgbotapi.Message) {
 	msg := tgbotapi.NewMessage(inputMessage.Chat.ID,
-		"/help__bnk__assets - this help\n" +
-			"/list__bnk__assets - list assets\n" +
-			"/get__bnk__assets - get an asset\n" +
-			"/delete__bnk__assets - remove existing asset\n\n" +
+		"/help__bank__assets - this help\n" +
+			"/list__bank__assets - list assets\n" +
+			"/get__bank__assets - get an asset\n" +
+			"/delete__bank__assets - remove existing asset\n\n" +
 
-			"/new__bnk__assets <userId> <price> - create new asset\n" +
-			"/edit__bnk__assets <id> <userId> <price> - edit existing asset\n",
+			"/new__bank__assets <userId> <price> - create new asset\n" +
+			"/edit__bank__assets <id> <userId> <price> - edit existing asset\n",
 	)
 
 	_, err := c.Bot.Send(msg)

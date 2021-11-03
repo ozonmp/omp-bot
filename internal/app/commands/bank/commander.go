@@ -1,7 +1,7 @@
-package bnk
+package bank
 
 import (
-	"github.com/ozonmp/omp-bot/internal/app/commands/bnk/assets"
+	"github.com/ozonmp/omp-bot/internal/app/commands/bank/assets"
 	"log"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"

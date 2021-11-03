@@ -32,7 +32,7 @@ func (c *AssetsCommander) List(inputMessage *tgbotapi.Message) {
 		})
 
 		callbackPath := path.CallbackPath{
-			Domain:       "bnk",
+			Domain:       "bank",
 			Subdomain:    "assets",
 			CallbackName: "list",
 			CallbackData: string(nextSerializedData),

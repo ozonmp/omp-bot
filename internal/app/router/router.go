@@ -1,7 +1,7 @@
 package router
 
 import (
-	"github.com/ozonmp/omp-bot/internal/app/commands/bnk/assets"
+	"github.com/ozonmp/omp-bot/internal/app/commands/bank/assets"
 	"log"
 	"runtime/debug"
 
@@ -28,8 +28,8 @@ type Router struct {
 	// recommendation
 	// travel
 	// loyalty
-	// bnk
-	bnkCommander Commander
+	// bank
+	bankCommander Commander
 	// subscription
 	// license
 	// insurance
@@ -64,8 +64,8 @@ func NewRouter(
 		// recommendation
 		// travel
 		// loyalty
-		// bnk
-		bnkCommander: assets.NewAssetsCommander(bot),
+		// bank
+		bankCommander: assets.NewAssetsCommander(bot),
 		// subscription
 		// license
 		// insurance
@@ -132,8 +132,8 @@ func (r *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
 		break
 	case "loyalty":
 		break
-	case "bnk":
-		r.bnkCommander.HandleCallback(callback, callbackPath)
+	case "bank":
+		r.bankCommander.HandleCallback(callback, callbackPath)
 	case "subscription":
 		break
 	case "license":
@@ -203,8 +203,8 @@ func (r *Router) handleMessage(msg *tgbotapi.Message) {
 		break
 	case "loyalty":
 		break
-	case "bnk":
-		r.bnkCommander.HandleCommand(msg, commandPath)
+	case "bank":
+		r.bankCommander.HandleCommand(msg, commandPath)
 	case "subscription":
 		break
 	case "license":
