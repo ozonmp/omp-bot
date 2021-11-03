@@ -10,15 +10,15 @@ import (
 func (c *AssetsCommander) Get(inputMessage *tgbotapi.Message) {
 	args := inputMessage.CommandArguments()
 
-	idx, err := strconv.ParseUint(args, 10, 64)
+	ID, err := strconv.ParseUint(args, 10, 64)
 	if err != nil {
 		c.Send(inputMessage.Chat.ID, fmt.Sprintf("Неверный аргумент %s: %v", args, err))
 		return
 	}
 
-	asset, err := c.assetsService.Get(idx)
+	asset, err := c.assetsService.Describe(ID)
 	if err != nil {
-		c.Send(inputMessage.Chat.ID, fmt.Sprintf("Не найден элемент с ID=%d: %v", idx, err))
+		c.Send(inputMessage.Chat.ID, fmt.Sprintf("Не найден элемент с ID=%d: %v", ID, err))
 		return
 	}
 

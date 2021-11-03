@@ -2,6 +2,7 @@ package assets
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
@@ -9,36 +10,50 @@ import (
 )
 
 func (c *AssetsCommander) List(inputMessage *tgbotapi.Message) {
+	assets := c.assetsService.List(1)
 
-	c.assetsService.CurrentPage = 0
-	outputMsgText := "Список всех активов: \n\n"
+	outputMsgText := "Всего активов " + fmt.Sprintf("%d",c.assetsService.Count())
 
-	assets := c.assetsService.List()
-	for _, p := range assets {
-		outputMsgText += p.String() + "\n"
+	msg := tgbotapi.MessageConfig{}
+
+	if c.assetsService.Count() > 10 {
+		outputMsgText += ", страница 1 из " +
+			fmt.Sprintf("%d", c.assetsService.PageCount()) +
+			": \n\n"
+
+		for _, p := range assets {
+			outputMsgText += p.String() + "\n"
+		}
+
+		msg = tgbotapi.NewMessage(inputMessage.Chat.ID, outputMsgText)
+
+		nextSerializedData, _ := json.Marshal(CallbackListData{
+			Page: 2,
+		})
+
+		callbackPath := path.CallbackPath{
+			Domain:       "bnk",
+			Subdomain:    "assets",
+			CallbackName: "list",
+			CallbackData: string(nextSerializedData),
+		}
+
+		msg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(
+			tgbotapi.NewInlineKeyboardRow(
+				tgbotapi.NewInlineKeyboardButtonData("Next page", callbackPath.String()),
+			),
+		)
+	} else {
+		outputMsgText += ": \n\n"
+
+		for _, p := range assets {
+			outputMsgText += p.String() + "\n"
+		}
+
+		msg = tgbotapi.NewMessage(inputMessage.Chat.ID, outputMsgText)
 	}
 
-	msg := tgbotapi.NewMessage(inputMessage.Chat.ID, outputMsgText)
-
-	serializedData, _ := json.Marshal(CallbackListData{
-		Offset: 21,
-	})
-
-	callbackPath := path.CallbackPath{
-		Domain:       "bnk",
-		Subdomain:    "assets",
-		CallbackName: "list",
-		CallbackData: string(serializedData),
-	}
-
-	msg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(
-		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonData("Previous page", callbackPath.String()),
-			tgbotapi.NewInlineKeyboardButtonData("Next page", callbackPath.String()),
-		),
-	)
-
-	_, err := c.bot.Send(msg)
+	_, err := c.Bot.Send(msg)
 	if err != nil {
 		log.Printf("AssetsCommander.List: error sending reply message to chat - %v", err)
 	}

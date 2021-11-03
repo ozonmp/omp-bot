@@ -1,4 +1,4 @@
-package demo
+package bnk
 
 import (
 	"github.com/ozonmp/omp-bot/internal/app/commands/bnk/assets"

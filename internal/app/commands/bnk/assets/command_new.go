@@ -2,15 +2,14 @@ package assets
 
 import (
 	"fmt"
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"strconv"
 	"strings"
-
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
 func (c *AssetsCommander) New(inputMessage *tgbotapi.Message) {
 	args := inputMessage.CommandArguments()
-	commands := strings.Split(args, "|")
+	commands := strings.Split(args, " ")
 
 	for _, command := range commands {
 		if command == "" {
@@ -19,18 +18,18 @@ func (c *AssetsCommander) New(inputMessage *tgbotapi.Message) {
 		}
 	}
 
-	username := commands[0]
-	money, err := strconv.ParseFloat(commands[1], 64)
-	if err != nil || money < 0 {
-		c.Send(inputMessage.Chat.ID, "Проблемы со считывание баланса, будет установлен счёт = 0")
-		return
-	}
-
-	newID, err := c.assetsService.New(username, money)
+	userId, err := strconv.ParseUint(commands[0], 10, 64)
 	if err != nil {
-		c.Send(inputMessage.Chat.ID, fmt.Sprintf("Ошибки создания актива: %v", err))
+		c.Send(inputMessage.Chat.ID, "Проблемы со считыванием userId")
 		return
 	}
+	price, err := strconv.ParseFloat(commands[1], 64)
+	if err != nil || price < 0 {
+		c.Send(inputMessage.Chat.ID, "Проблемы со считыванием цены, будет установлена цена = 0")
+		price = 0
+	}
 
-	c.Send(inputMessage.Chat.ID, fmt.Sprintf("Актив %s успешно добавлен %d", username, newID))
+	newID := c.assetsService.Create(userId, price)
+
+	c.Send(inputMessage.Chat.ID, fmt.Sprintf("Актив %d успешно добавлен, ID=%d, price=%.2f", userId, newID, price))
 }

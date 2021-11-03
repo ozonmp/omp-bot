@@ -10,7 +10,7 @@ import (
 
 func (c *AssetsCommander) Edit(inputMessage *tgbotapi.Message) {
 	args := inputMessage.CommandArguments()
-	commands := strings.Split(args, "|")
+	commands := strings.Split(args, " ")
 
 	for _, command := range commands {
 		if command == "" {
@@ -19,23 +19,22 @@ func (c *AssetsCommander) Edit(inputMessage *tgbotapi.Message) {
 		}
 	}
 
-	ID, err := strconv.ParseUint(args, 10, 64)
+	ID, err := strconv.ParseUint(commands[0], 10, 64)
 	if err != nil {
-		c.Send(inputMessage.Chat.ID, fmt.Sprintf("Неверный аргумент %s: %v", commands[0], err))
+		c.Send(inputMessage.Chat.ID, fmt.Sprintf("Неверный аргумент %s: %v", ID, err))
 		return
 	}
-	username := commands[1]
-	money, err := strconv.ParseFloat(commands[2], 64)
-	if err != nil || money < 0 {
-		c.Send(inputMessage.Chat.ID, "Проблемы со считывание баланса, будет установлен счёт = 0")
-		return
+	price, err := strconv.ParseFloat(commands[1], 64)
+	if err != nil || price < 0 {
+		c.Send(inputMessage.Chat.ID, "Проблемы со считыванием цены, будет установлена цена = 0")
+		price = 0
 	}
 
-	err = c.assetsService.Edit(ID, username, money)
+	err = c.assetsService.Update(ID, price)
 	if err != nil {
 		c.Send(inputMessage.Chat.ID, fmt.Sprintf("Ошибки обновления актива: %v", err))
 		return
 	}
 
-	c.Send(inputMessage.Chat.ID, fmt.Sprintf("Актив %s успешно изменен %d", username, ID))
+	c.Send(inputMessage.Chat.ID, fmt.Sprintf("Актив %d успешно изменен на %.2f", ID, price))
 }

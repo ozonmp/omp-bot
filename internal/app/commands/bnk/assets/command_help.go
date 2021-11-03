@@ -12,11 +12,11 @@ func (c *AssetsCommander) Help(inputMessage *tgbotapi.Message) {
 			"/get__bnk__assets - get an asset\n" +
 			"/delete__bnk__assets - remove existing asset\n\n" +
 
-			"/new__bnk__assets <name>|<money> - create new asset\n" +
-			"/edit__bnk__assets <id>|<name>|<money> - edit existing asset\n",
+			"/new__bnk__assets <userId> <price> - create new asset\n" +
+			"/edit__bnk__assets <id> <userId> <price> - edit existing asset\n",
 	)
 
-	_, err := c.bot.Send(msg)
+	_, err := c.Bot.Send(msg)
 	if err != nil {
 		log.Printf("AssetsCommander.Help: error sending reply message to chat - %v", err)
 	}

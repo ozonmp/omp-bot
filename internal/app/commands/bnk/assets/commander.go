@@ -9,17 +9,17 @@ import (
 )
 
 type AssetsCommander struct {
-	bot           *tgbotapi.BotAPI
-	assetsService *assets.Service
+	Bot           *tgbotapi.BotAPI
+	assetsService *assets.DummyAssetsService
 }
 
 func NewAssetsCommander(
 	bot *tgbotapi.BotAPI,
 ) *AssetsCommander {
-	assetsService := assets.NewService()
+	assetsService := assets.NewDummyAssetsService()
 
 	return &AssetsCommander{
-		bot:           bot,
+		Bot:           bot,
 		assetsService: assetsService,
 	}
 }
@@ -46,7 +46,7 @@ func (c *AssetsCommander) HandleCommand(msg *tgbotapi.Message, commandPath path.
 	case "new":
 		c.New(msg)
 	case "edit":
-		c.New(msg)
+		c.Edit(msg)
 	default:
 		c.Default(msg)
 	}
@@ -58,7 +58,7 @@ func (c *AssetsCommander) Send(chatID int64, text string) {
 		text,
 	)
 
-	_, err := c.bot.Send(msg)
+	_, err := c.Bot.Send(msg)
 	if err != nil {
 		log.Printf("AssetsCommander.Get: error sending reply message to chat - %v", err)
 	}

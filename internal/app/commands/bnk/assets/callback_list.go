@@ -10,7 +10,7 @@ import (
 )
 
 type CallbackListData struct {
-	Offset int `json:"offset"`
+	Page int64 `json:"page"`
 }
 
 func (c *AssetsCommander) CallbackList(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
@@ -23,12 +23,58 @@ func (c *AssetsCommander) CallbackList(callback *tgbotapi.CallbackQuery, callbac
 		return
 	}
 
-	msg := tgbotapi.NewMessage(
-		callback.Message.Chat.ID,
-		fmt.Sprintf("Parsed: %+v\n", parsedData),
-	)
-	_, err = c.bot.Send(msg)
+	assets := c.assetsService.List(parsedData.Page)
+
+	outputMsgText := "Всего активов " + fmt.Sprintf("%d",c.assetsService.Count())
+
+	msg := tgbotapi.MessageConfig{}
+
+	outputMsgText += ", страница " + fmt.Sprintf("%d", parsedData.Page) + " из " +
+		fmt.Sprintf("%d", c.assetsService.PageCount()) +
+		": \n\n"
+
+	for _, p := range assets {
+		outputMsgText += p.String() + "\n"
+	}
+
+	msg = tgbotapi.NewMessage(callback.Message.Chat.ID, outputMsgText)
+
+	var row []tgbotapi.InlineKeyboardButton
+	if parsedData.Page != 1 {
+		serializedData, _ := json.Marshal(CallbackListData{
+			Page: parsedData.Page - 1,
+		})
+		callbackPath := path.CallbackPath{
+			Domain:       "bnk",
+			Subdomain:    "assets",
+			CallbackName: "list",
+			CallbackData: string(serializedData),
+		}
+		row = append(row, tgbotapi.NewInlineKeyboardButtonData("Prev page", callbackPath.String()))
+	}
+	if parsedData.Page != c.assetsService.PageCount() {
+		serializedData, _ := json.Marshal(CallbackListData{
+			Page: parsedData.Page + 1,
+		})
+		callbackPath := path.CallbackPath{
+			Domain:       "bnk",
+			Subdomain:    "assets",
+			CallbackName: "list",
+			CallbackData: string(serializedData),
+		}
+		row = append(row, tgbotapi.NewInlineKeyboardButtonData("Next page", callbackPath.String()))
+	}
+
+	if len(row) > 0 {
+		msg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(
+			tgbotapi.NewInlineKeyboardRow(
+				row...
+			),
+		)
+	}
+
+	_, err = c.Bot.Send(msg)
 	if err != nil {
-		log.Printf("AssetsCommander.CallbackList: error sending reply message to chat - %v", err)
+		log.Printf("AssetsCommander.List: error sending reply message to chat - %v", err)
 	}
 }

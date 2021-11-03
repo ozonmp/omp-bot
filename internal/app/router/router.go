@@ -86,7 +86,7 @@ func NewRouter(
 	}
 }
 
-func (c *Router) HandleUpdate(update tgbotapi.Update) {
+func (r *Router) HandleUpdate(update tgbotapi.Update) {
 	defer func() {
 		if panicValue := recover(); panicValue != nil {
 			log.Printf("recovered from panic: %v\n%v", panicValue, string(debug.Stack()))
@@ -95,20 +95,20 @@ func (c *Router) HandleUpdate(update tgbotapi.Update) {
 
 	switch {
 	case update.CallbackQuery != nil:
-		c.handleCallback(update.CallbackQuery)
+		r.handleCallback(update.CallbackQuery)
 	case update.Message != nil:
-		c.handleMessage(update.Message)
+		r.handleMessage(update.Message)
 	default:
 		msg := tgbotapi.NewMessage(
 			update.Message.Chat.ID,
 			"Unknown message type",
 		)
 
-		c.bot.Send(msg)
+		r.bot.Send(msg)
 	}
 }
 
-func (c *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
+func (r *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
 	callbackPath, err := path.ParseCallback(callback.Data)
 	if err != nil {
 		log.Printf("Router.handleCallback: error parsing callback data `%s` - %v", callback.Data, err)
@@ -117,7 +117,7 @@ func (c *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
 
 	switch callbackPath.Domain {
 	case "demo":
-		c.demoCommander.HandleCallback(callback, callbackPath)
+		r.demoCommander.HandleCallback(callback, callbackPath)
 	case "user":
 		break
 	case "access":
@@ -133,7 +133,7 @@ func (c *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
 	case "loyalty":
 		break
 	case "bnk":
-		c.bnkCommander.HandleCallback(callback, callbackPath)
+		r.bnkCommander.HandleCallback(callback, callbackPath)
 	case "subscription":
 		break
 	case "license":
@@ -173,9 +173,9 @@ func (c *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
 	}
 }
 
-func (c *Router) handleMessage(msg *tgbotapi.Message) {
+func (r *Router) handleMessage(msg *tgbotapi.Message) {
 	if !msg.IsCommand() {
-		c.showCommandFormat(msg)
+		r.showCommandFormat(msg)
 
 		return
 	}
@@ -188,7 +188,7 @@ func (c *Router) handleMessage(msg *tgbotapi.Message) {
 
 	switch commandPath.Domain {
 	case "demo":
-		c.demoCommander.HandleCommand(msg, commandPath)
+		r.demoCommander.HandleCommand(msg, commandPath)
 	case "user":
 		break
 	case "access":
@@ -204,7 +204,7 @@ func (c *Router) handleMessage(msg *tgbotapi.Message) {
 	case "loyalty":
 		break
 	case "bnk":
-		c.bnkCommander.HandleCommand(msg, commandPath)
+		r.bnkCommander.HandleCommand(msg, commandPath)
 	case "subscription":
 		break
 	case "license":
@@ -244,10 +244,10 @@ func (c *Router) handleMessage(msg *tgbotapi.Message) {
 	}
 }
 
-func (c *Router) showCommandFormat(inputMessage *tgbotapi.Message) {
+func (r *Router) showCommandFormat(inputMessage *tgbotapi.Message) {
 	outputMsg := tgbotapi.NewMessage(inputMessage.Chat.ID, "Command format: /{command}__{domain}__{subdomain}")
 
-	_, err := c.bot.Send(outputMsg)
+	_, err := r.bot.Send(outputMsg)
 	if err != nil {
 		log.Printf("Router.showCommandFormat: error sending reply message to chat - %v", err)
 	}
