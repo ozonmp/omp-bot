@@ -27,9 +27,13 @@ func (c *AssetsCommander) List(inputMessage *tgbotapi.Message) {
 
 		msg = tgbotapi.NewMessage(inputMessage.Chat.ID, outputMsgText)
 
-		nextSerializedData, _ := json.Marshal(CallbackListData{
+		nextSerializedData, err := json.Marshal(CallbackListData{
 			Page: 2,
 		})
+
+		if err != nil {
+			log.Printf("CallbackListData serialization error - %v", err)
+		}
 
 		callbackPath := path.CallbackPath{
 			Domain:       "bank",

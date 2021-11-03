@@ -41,9 +41,13 @@ func (c *AssetsCommander) CallbackList(callback *tgbotapi.CallbackQuery, callbac
 
 	var row []tgbotapi.InlineKeyboardButton
 	if parsedData.Page != 1 {
-		serializedData, _ := json.Marshal(CallbackListData{
+		serializedData, err := json.Marshal(CallbackListData{
 			Page: parsedData.Page - 1,
 		})
+		if err != nil {
+			log.Printf("CallbackListData serialization error - %v", err)
+		}
+
 		callbackPath := path.CallbackPath{
 			Domain:       "bank",
 			Subdomain:    "assets",
@@ -53,9 +57,13 @@ func (c *AssetsCommander) CallbackList(callback *tgbotapi.CallbackQuery, callbac
 		row = append(row, tgbotapi.NewInlineKeyboardButtonData("Prev page", callbackPath.String()))
 	}
 	if parsedData.Page != c.assetsService.PageCount() {
-		serializedData, _ := json.Marshal(CallbackListData{
+		serializedData, err := json.Marshal(CallbackListData{
 			Page: parsedData.Page + 1,
 		})
+		if err != nil {
+			log.Printf("CallbackListData serialization error - %v", err)
+		}
+
 		callbackPath := path.CallbackPath{
 			Domain:       "bank",
 			Subdomain:    "assets",

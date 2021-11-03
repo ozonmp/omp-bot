@@ -12,11 +12,9 @@ func (c *AssetsCommander) Edit(inputMessage *tgbotapi.Message) {
 	args := inputMessage.CommandArguments()
 	commands := strings.Split(args, " ")
 
-	for _, command := range commands {
-		if command == "" {
-			c.Send(inputMessage.Chat.ID, "Один из элементов пуст")
-			return
-		}
+	if len(commands) != 2 {
+		c.Send(inputMessage.Chat.ID, "Неверное количество аргументов")
+		return
 	}
 
 	ID, err := strconv.ParseUint(commands[0], 10, 64)
