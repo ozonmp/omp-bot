@@ -2,6 +2,7 @@ package subdomain
 
 import (
 	"encoding/json"
+	"log"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/app/path"
@@ -34,6 +35,8 @@ func (c *DemoSubdomainCommander) List(inputMessage *tgbotapi.Message) {
 			tgbotapi.NewInlineKeyboardButtonData("Next page", callbackPath.String()),
 		),
 	)
-
-	c.bot.Send(msg)
+	_, err := c.bot.Send(msg)
+	if err != nil {
+		log.Printf("DemoSubdomainCommander.List: error sending reply message to chat - %v", err)
+	}
 }
