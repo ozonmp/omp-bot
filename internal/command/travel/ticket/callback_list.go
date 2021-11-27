@@ -3,9 +3,10 @@ package ticket
 import (
 	"encoding/json"
 	"fmt"
+	"log"
+
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/app/path"
-	"log"
 )
 
 func (c *TicketCommander) CallbackList(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
@@ -29,7 +30,7 @@ func (c *TicketCommander) CallbackList(callback *tgbotapi.CallbackQuery, callbac
 
 	msg := tgbotapi.NewMessage(callback.Message.Chat.ID, outputMessage)
 
-	buttons := createButtonsIfNecessary(parsedData, c.ticketService.Count())
+	buttons := createButtonsIfNecessary(parsedData, len(tickets))
 	if len(buttons) > 0 {
 		msg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(
 			tgbotapi.NewInlineKeyboardRow(buttons...),
@@ -39,7 +40,7 @@ func (c *TicketCommander) CallbackList(callback *tgbotapi.CallbackQuery, callbac
 	c.bot.Send(msg)
 }
 
-func createButtonsIfNecessary(parsedData CallbackListData, ticketsCount uint64) []tgbotapi.InlineKeyboardButton {
+func createButtonsIfNecessary(parsedData CallbackListData, ticketsCount int) []tgbotapi.InlineKeyboardButton {
 	buttons := make([]tgbotapi.InlineKeyboardButton, 0, 2)
 	if parsedData.Cursor > 0 {
 		previousPageStart := parsedData.Cursor - ListLimit
@@ -58,7 +59,7 @@ func createButtonsIfNecessary(parsedData CallbackListData, ticketsCount uint64) 
 	}
 
 	nextPageCursor := parsedData.Cursor + parsedData.Limit
-	if ticketsCount > nextPageCursor {
+	if ticketsCount == ListLimit {
 		serializedData, _ := json.Marshal(
 			CallbackListData{
 				Cursor: nextPageCursor,

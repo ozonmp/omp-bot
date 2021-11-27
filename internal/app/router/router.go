@@ -1,8 +1,11 @@
 package router
 
 import (
-	"github.com/ozonmp/omp-bot/internal/app/commands/travel"
+	"context"
 	"log"
+
+	"github.com/ozonmp/omp-bot/internal/app/commands/travel"
+	trv_ticket_api "github.com/ozonmp/trv-ticket-api/pkg/trv-ticket-api"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/app/commands/demo"
@@ -49,6 +52,8 @@ type Router struct {
 }
 
 func NewRouter(
+	ctx context.Context,
+	client trv_ticket_api.TravelTicketApiServiceClient,
 	bot *tgbotapi.BotAPI,
 ) *Router {
 	return &Router{
@@ -62,7 +67,7 @@ func NewRouter(
 		// delivery
 		// recommendation
 		// travel
-		travelCommander: travel.NewTravelCommander(bot),
+		travelCommander: travel.NewTravelCommander(ctx, client, bot),
 		// loyalty
 		// bank
 		// subscription

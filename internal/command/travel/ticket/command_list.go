@@ -20,7 +20,7 @@ func (c *TicketCommander) List(inputMessage *tgbotapi.Message) {
 
 	msg := tgbotapi.NewMessage(inputMessage.Chat.ID, outputMessage)
 
-	if c.ticketService.Count() > ListLimit {
+	if len(tickets) == ListLimit {
 		serializedData, _ := json.Marshal(
 			CallbackListData{
 				Cursor: ListLimit,

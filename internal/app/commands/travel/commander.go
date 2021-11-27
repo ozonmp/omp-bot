@@ -1,10 +1,14 @@
 package travel
 
 import (
+	"context"
+	"log"
+
+	trv_ticket_api "github.com/ozonmp/trv-ticket-api/pkg/trv-ticket-api"
+
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/app/commands/travel/ticket"
 	"github.com/ozonmp/omp-bot/internal/app/path"
-	"log"
 )
 
 type Commander interface {
@@ -18,12 +22,14 @@ type TravelCommander struct {
 }
 
 func NewTravelCommander(
+	ctx context.Context,
+	client trv_ticket_api.TravelTicketApiServiceClient,
 	bot Sender,
 ) *TravelCommander {
 	return &TravelCommander{
 		bot: bot,
 		// subdomainCommander
-		ticketCommander: ticket.NewTravelTicketCommander(bot),
+		ticketCommander: ticket.NewTravelTicketCommander(ctx, client, bot),
 	}
 }
 
