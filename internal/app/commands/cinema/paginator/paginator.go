@@ -7,7 +7,7 @@ import (
 
 type Paginator struct {
 	Direction string `json:"direction"`
-	Page      int64    `json:"page"`
+	Page      int64  `json:"page"`
 }
 
 func NewPaginator(s string) *Paginator {

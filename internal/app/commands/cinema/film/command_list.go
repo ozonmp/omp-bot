@@ -25,7 +25,7 @@ func (c *CinemaFilmCommander) List(ctx context.Context, inputMessage *tgbotapi.M
 		p.Page -= 1
 	}
 
-	startIndex := p.Page * defaultPageLength + 1
+	startIndex := p.Page*defaultPageLength + 1
 	if startIndex < 0 {
 		startIndex = firstIndexFilm
 		p.Page = 0

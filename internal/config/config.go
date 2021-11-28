@@ -16,7 +16,7 @@ type logger struct {
 
 type Config struct {
 	CnmFilm cnmFilm `yaml:"cnm_film"`
-	Logger logger `yaml:"logger"`
+	Logger  logger  `yaml:"logger"`
 }
 
 func InitConfigYAML(filePath string) (*Config, error) {
@@ -27,7 +27,7 @@ func InitConfigYAML(filePath string) (*Config, error) {
 		if file != nil {
 			_ = file.Close()
 		}
-	} ()
+	}()
 	if err != nil {
 		return nil, err
 	}

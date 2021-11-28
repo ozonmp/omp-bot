@@ -48,7 +48,7 @@ func (s *DummyFilmService) List(ctx context.Context, cursor, limit int64) ([]cin
 
 	req := &cnmApi.ListFilmV1Request{
 		Cursor: cursor,
-		Limit: limit,
+		Limit:  limit,
 	}
 	log.Debug().Msg(fmt.Sprintf("FilmService - List - Try ListFilmV1 with %v", req))
 	resp, err := s.filmApi.ListFilmV1(ctx, req)
@@ -68,8 +68,8 @@ func (s *DummyFilmService) Create(ctx context.Context, film *cinema.Film) (*int6
 	log.Debug().Msg("FilmService - Create - Start")
 
 	req := &cnmApi.CreateFilmV1Request{
-		Name: film.Name,
-		Rating: film.Rating,
+		Name:             film.Name,
+		Rating:           film.Rating,
 		ShortDescription: film.ShortDescription,
 	}
 	log.Debug().Msg(fmt.Sprintf("FilmService - Create - Try CreateFilmV1 with %v", req))

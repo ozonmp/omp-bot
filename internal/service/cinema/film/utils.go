@@ -7,18 +7,18 @@ import (
 
 func fromFilmToReq(film cinema.Film) filmApi.ReqFilm {
 	return filmApi.ReqFilm{
-		Id: film.ID,
-		Name: film.Name,
-		Rating: film.Rating,
+		Id:               film.ID,
+		Name:             film.Name,
+		Rating:           film.Rating,
 		ShortDescription: film.ShortDescription,
 	}
 }
 
 func fromPbToFilm(pbFilm *filmApi.Film) cinema.Film {
 	return cinema.Film{
-		ID: pbFilm.Id,
-		Name: pbFilm.Name,
-		Rating: pbFilm.Rating,
+		ID:               pbFilm.Id,
+		Name:             pbFilm.Name,
+		Rating:           pbFilm.Rating,
 		ShortDescription: pbFilm.ShortDescription,
 	}
 }
