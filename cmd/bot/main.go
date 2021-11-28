@@ -19,11 +19,11 @@ func main() {
 		log.Panic("environment variable TOKEN not found in .env")
 	}
 	ctx := context.Background()
-	if err := config.ReadConfigYML("config.yml"); err != nil {
+	cfg, err := config.ReadConfigYML("config.yml")
+	if err != nil {
 		logger.FatalKV(ctx, "Failed init configuration", "err", err)
 	}
 
-	cfg := config.GetConfigInstance()
 	bot, err := tgbotapi.NewBotAPI(token)
 	if err != nil {
 		log.Panic(err)

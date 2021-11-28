@@ -12,17 +12,6 @@ const (
 	commitHash string = "-"
 )
 
-var cfg *Config
-
-// GetConfigInstance returns service config
-func GetConfigInstance() Config {
-	if cfg != nil {
-		return *cfg
-	}
-
-	return Config{}
-}
-
 // Grpc - contains parameter address grpc.
 type Grpc struct {
 	Port              int    `yaml:"port"`
@@ -48,14 +37,12 @@ type Config struct {
 }
 
 // ReadConfigYML - read configurations from file and init instance Config.
-func ReadConfigYML(filePath string) error {
-	if cfg != nil {
-		return nil
-	}
+func ReadConfigYML(filePath string) (Config, error) {
+	var cfg Config
 
 	file, err := os.Open(filepath.Clean(filePath))
 	if err != nil {
-		return err
+		return Config{}, err
 	}
 	defer func() { //nolint:gosec
 		_ = file.Close()
@@ -63,11 +50,11 @@ func ReadConfigYML(filePath string) error {
 
 	decoder := yaml.NewDecoder(file)
 	if err := decoder.Decode(&cfg); err != nil {
-		return err
+		return Config{}, err
 	}
 
 	cfg.Project.Version = version
 	cfg.Project.CommitHash = commitHash
 
-	return nil
+	return cfg, nil
 }
