@@ -3,7 +3,7 @@ package config
 import (
 	"gopkg.in/yaml.v2"
 	"os"
-"path/filepath"
+	"path/filepath"
 )
 
 // Build information -ldflags .
@@ -41,11 +41,10 @@ type Project struct {
 	CommitHash  string
 }
 
-
 // Config - contains all configuration parameters in config package.
 type Config struct {
-	Project   Project   `yaml:"project"`
-	Grpc      Grpc      `yaml:"grpc"`
+	Project Project `yaml:"project"`
+	Grpc    Grpc    `yaml:"grpc"`
 }
 
 // ReadConfigYML - read configurations from file and init instance Config.
