@@ -14,10 +14,10 @@ func (commander *ProductCommander) New(inputMessage *tgbotapi.Message) {
 		log.Printf(err.Error())
 		return
 	}
-	_, err = commander.service.Create(productToCreate)
+	id, err := commander.service.Create(productToCreate)
 	if err != nil {
 		commander.Send(inputMessage.Chat.ID, err.Error())
 		return
 	}
-	commander.Send(inputMessage.Chat.ID, "Ok")
+	commander.Send(inputMessage.Chat.ID, fmt.Sprintf("Product created with id %d", id))
 }

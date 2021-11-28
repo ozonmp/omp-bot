@@ -1,8 +1,10 @@
 package router
 
 import (
+	"context"
 	"github.com/ozonmp/omp-bot/internal/app/commands"
 	"github.com/ozonmp/omp-bot/internal/app/commands/recommendation"
+	"github.com/ozonmp/omp-bot/internal/config"
 	"log"
 	"runtime/debug"
 
@@ -50,7 +52,9 @@ type Router struct {
 }
 
 func NewRouter(
+	ctx context.Context,
 	bot *tgbotapi.BotAPI,
+	conf config.Grpc,
 ) *Router {
 	return &Router{
 		// bot
@@ -62,7 +66,7 @@ func NewRouter(
 		// buy
 		// delivery
 		// recommendation
-		recommendationCommander: recommendation.NewRecommendationCommander(bot),
+		recommendationCommander: recommendation.NewRecommendationCommander(ctx, bot, conf),
 		// travel
 		// loyalty
 		// bank

@@ -1,7 +1,9 @@
 package recommendation
 
 import (
+	"context"
 	"github.com/ozonmp/omp-bot/internal/app/commands"
+	"github.com/ozonmp/omp-bot/internal/config"
 	service "github.com/ozonmp/omp-bot/internal/service/recommendation/product"
 	"log"
 
@@ -16,9 +18,14 @@ type RecommendationCommander struct {
 }
 
 func NewRecommendationCommander(
+	ctx context.Context,
 	bot *tgbotapi.BotAPI,
+	conf config.Grpc,
 ) *RecommendationCommander {
-	service := service.NewDummyProductService()
+	service, err := service.NewGrpcProductService(ctx, conf)
+	if err != nil {
+		return nil
+	}
 	return &RecommendationCommander{
 		bot:              bot,
 		productCommander: commander.NewProductCommander(bot, service),
