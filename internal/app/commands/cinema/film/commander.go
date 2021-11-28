@@ -1,10 +1,12 @@
 package film
 
 import (
+	"context"
 	"fmt"
 	"github.com/ozonmp/omp-bot/internal/service/cinema/film"
 	"log"
 
+	cnmApi "github.com/ozonmp/omp-bot/pb/github.com/ozonmp/cnm-film-api/pkg/cnm-film-api"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/app/path"
 )
@@ -14,9 +16,10 @@ type CinemaFilmCommander struct {
 	filmService *film.DummyFilmService
 }
 
-func NewCinemaFilmCommander(bot *tgbotapi.BotAPI) *CinemaFilmCommander {
-	filmService := film.NewDummyFilmService()
+func NewCinemaFilmCommander(ctx context.Context, bot *tgbotapi.BotAPI, film *cnmApi.CnmFilmApiServiceClient) *CinemaFilmCommander {
+	filmService := film.NewDummyFilmService(ctx, film)
 	return &CinemaFilmCommander{
+		ctx: ctx,
 		bot:         bot,
 		filmService: filmService,
 	}

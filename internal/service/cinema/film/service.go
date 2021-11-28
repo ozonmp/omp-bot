@@ -3,6 +3,7 @@ package film
 import (
 	"fmt"
 	"github.com/ozonmp/omp-bot/internal/model/cinema"
+	cnmApi "github.com/ozonmp/omp-bot/pb/github.com/ozonmp/cnm-film-api/pkg/cnm-film-api"
 )
 
 var iD uint64 = 1
@@ -24,12 +25,11 @@ func (s *DummyFilmService) fillByExamples() {
 }
 
 type DummyFilmService struct {
-	Films []cinema.Film
+	filmApi *cnmApi.CnmFilmApiServiceClient
 }
 
-func NewDummyFilmService() *DummyFilmService {
-	newService := &DummyFilmService{}
-	newService.fillByExamples()
+func NewDummyFilmService(film *cnmApi.CnmFilmApiServiceClient) *DummyFilmService {
+	newService := &DummyFilmService{filmApi: film}
 	return newService
 }
 

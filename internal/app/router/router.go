@@ -1,11 +1,13 @@
 package router
 
 import (
+	"context"
 	"github.com/ozonmp/omp-bot/internal/app/commands/cinema"
 	"log"
 	"runtime/debug"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+	cnmApi "github.com/ozonmp/omp-bot/pb/github.com/ozonmp/cnm-film-api/pkg/cnm-film-api"
 	"github.com/ozonmp/omp-bot/internal/app/commands/demo"
 	"github.com/ozonmp/omp-bot/internal/app/path"
 )
@@ -50,7 +52,9 @@ type Router struct {
 }
 
 func NewRouter(
+	ctx context.Context,
 	bot *tgbotapi.BotAPI,
+	film *cnmApi.CnmFilmApiServiceClient,
 ) *Router {
 	return &Router{
 		// bot
@@ -79,7 +83,7 @@ func NewRouter(
 		// rating
 		// security
 		// cinema
-		cinemaCommander: cinema.NewCinemaCommander(bot),
+		cinemaCommander: cinema.NewCinemaCommander(ctx, bot, film),
 		// logistic
 		// product
 		// education

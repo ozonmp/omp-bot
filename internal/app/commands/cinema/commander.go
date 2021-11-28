@@ -1,6 +1,8 @@
 package cinema
 
 import (
+	"context"
+	cnmApi "github.com/ozonmp/omp-bot/pb/github.com/ozonmp/cnm-film-api/pkg/cnm-film-api"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/app/commands/cinema/film"
 	"github.com/ozonmp/omp-bot/internal/app/path"
@@ -18,12 +20,14 @@ type CinemaCommander struct {
 }
 
 func NewCinemaCommander(
+	ctx context.Context,
 	bot *tgbotapi.BotAPI,
+	film *cnmApi.CnmFilmApiServiceClient,
 ) *CinemaCommander {
 	return &CinemaCommander{
 		bot: bot,
 		// subdomainCommander
-		filmCommander: film.NewCinemaFilmCommander(bot),
+		filmCommander: film.NewCinemaFilmCommander(ctx, bot, film),
 	}
 }
 
