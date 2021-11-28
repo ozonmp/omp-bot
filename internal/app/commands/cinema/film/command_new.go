@@ -1,23 +1,31 @@
 package film
 
 import (
+	"context"
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/model/cinema"
+	"github.com/ozonmp/omp-bot/internal/utils/logger"
 	"strings"
 )
 
-func (c *CinemaFilmCommander) New(inputMsg *tgbotapi.Message) {
+func (c *CinemaFilmCommander) New(ctx context.Context, inputMsg *tgbotapi.Message) {
+	log := logger.LoggerFromContext(ctx)
+	log.Debug().Msg("CinemaFilmCommander - New - Start")
+
 	entityArgsString := strings.TrimSpace(inputMsg.CommandArguments())
-	film, err := c.newCommandLogic(entityArgsString)
+	film, err := c.newCommandLogic(ctx, entityArgsString)
 	if err != nil {
-		c.sendMessage(tgbotapi.NewMessage(inputMsg.Chat.ID, fmt.Sprintf("%s", err)))
+		log.Debug().Err(err).Msg("CinemaFilmCommander - New - Error")
+		_ = c.sendMessage(tgbotapi.NewMessage(inputMsg.Chat.ID, fmt.Sprintf("%s", err)))
 		return
 	}
-	c.sendMessage(tgbotapi.NewMessage(inputMsg.Chat.ID, fmt.Sprintf("Film created:\n%s", film.String())))
+
+	log.Debug().Msg("CinemaFilmCommander - New - Success")
+	_ = c.sendMessage(tgbotapi.NewMessage(inputMsg.Chat.ID, fmt.Sprintf("Film created:\n%s", film.String())))
 }
 
-func (c *CinemaFilmCommander) newCommandLogic(entityArgsString string) (*cinema.Film, error) {
+func (c *CinemaFilmCommander) newCommandLogic(ctx context.Context, entityArgsString string) (*cinema.Film, error) {
 	params, err := getParameters(entityArgsString)
 	if err != nil {
 		return nil, err
@@ -28,8 +36,9 @@ func (c *CinemaFilmCommander) newCommandLogic(entityArgsString string) (*cinema.
 		return nil, err
 	}
 
-	if _, err := c.filmService.Create(film); err != nil {
+	if _, err := c.filmService.Create(ctx, film); err != nil {
 		return nil, err
 	}
+
 	return film, nil
 }

@@ -3,7 +3,7 @@ package cinema
 import "fmt"
 
 type Film struct {
-	ID               uint64  `json:"id"`
+	ID               int64  `json:"id"`
 	Name             string  `json:"name"`
 	Rating           float64 `json:"rating"`
 	ShortDescription string  `json:"shortDescription"`

@@ -1,120 +1,148 @@
 package film
 
 import (
+	"context"
 	"fmt"
 	"github.com/ozonmp/omp-bot/internal/model/cinema"
+	"github.com/ozonmp/omp-bot/internal/utils/logger"
 	cnmApi "github.com/ozonmp/omp-bot/pb/github.com/ozonmp/cnm-film-api/pkg/cnm-film-api"
 )
 
-var iD uint64 = 1
-
-var examples = []cinema.Film{{Name: "test1", Rating: 0.5, ShortDescription: "descr 1"},
-	{Name: "test2", Rating: 1.2, ShortDescription: "descr 2"},
-	{Name: "test3", Rating: 2.3, ShortDescription: "descr 3"},
-	{Name: "test4", Rating: 3.4, ShortDescription: "descr 4"},
-	{Name: "test5", Rating: 4.6, ShortDescription: "descr 5"},
-	{Name: "test6", Rating: 5.9, ShortDescription: "descr 6"},
-	{Name: "test7", Rating: 6.5, ShortDescription: "descr 7"}}
-
-func (s *DummyFilmService) fillByExamples() {
-	for i := range examples {
-		if _, err := s.Create(&examples[i]); err != nil {
-			continue
-		}
-	}
-}
-
 type DummyFilmService struct {
-	filmApi *cnmApi.CnmFilmApiServiceClient
+	filmApi cnmApi.CnmFilmApiServiceClient
 }
 
-func NewDummyFilmService(film *cnmApi.CnmFilmApiServiceClient) *DummyFilmService {
+func NewDummyFilmService(film cnmApi.CnmFilmApiServiceClient) *DummyFilmService {
 	newService := &DummyFilmService{filmApi: film}
 	return newService
 }
 
-func (s *DummyFilmService) Describe(filmID uint64) (*cinema.Film, error) {
-	foundFilm, err := s.findByID(filmID)
+func (s *DummyFilmService) Describe(ctx context.Context, filmID int64) (*cinema.Film, error) {
+	log := logger.LoggerFromContext(ctx)
+	log.Debug().Msg("FilmService - Describe - Start")
+
+	req := &cnmApi.DescribeFilmV1Request{FilmId: filmID}
+	log.Debug().Msg(fmt.Sprintf("FilmService - Describe - Try DescribeFilmV1 with %v", req))
+	resp, err := s.filmApi.DescribeFilmV1(ctx, req)
 	if err != nil {
+		log.Debug().Err(err).Msg("FilmService - Describe - DescribeFilmV1 handle error")
 		return nil, err
 	}
-	return foundFilm, nil
+
+	log.Debug().Msg(fmt.Sprintf("FilmService - Describe - Got DescribeFilmV1 response %v", resp))
+
+	pbFilm := resp.GetFilm()
+	if pbFilm == nil {
+		err := fmt.Errorf("empty film field in response")
+		log.Debug().Err(err).Msg("FilmService - Describe - Error")
+		return nil, err
+	}
+
+	film := fromPbToFilm(pbFilm)
+	return &film, nil
 }
 
-func (s *DummyFilmService) List(cursor, limit uint64) ([]cinema.Film, error) {
-	startIndex := cursor
-	endIndex := cursor + limit
-	if startIndex < 0 {
-		startIndex = 0
+func (s *DummyFilmService) List(ctx context.Context, cursor, limit int64) ([]cinema.Film, error) {
+	log := logger.LoggerFromContext(ctx)
+	log.Debug().Msg("FilmService - List - Start")
+
+	req := &cnmApi.ListFilmV1Request{
+		Cursor: cursor,
+		Limit: limit,
 	}
-
-	if endIndex > uint64(len(s.Films)) {
-		endIndex = uint64(len(s.Films))
-	}
-
-	return s.Films[startIndex:endIndex], nil
-}
-
-func (s *DummyFilmService) Create(film *cinema.Film) (uint64, error) {
-	if err := s.checkFilm(*film); err != nil {
-		return 0, err
-	}
-
-	if film.ShortDescription == "" {
-		film.ShortDescription = "No description provided"
-	}
-
-	film.ID = iD
-	s.Films = append(s.Films, *film)
-	iD += 1
-	return iD, nil
-}
-
-func (s *DummyFilmService) Update(filmID uint64, film *cinema.Film) error {
-	if err := s.checkFilm(*film); err != nil {
-		return err
-	}
-
-	foundFilm, err := s.findByID(filmID)
+	log.Debug().Msg(fmt.Sprintf("FilmService - List - Try ListFilmV1 with %v", req))
+	resp, err := s.filmApi.ListFilmV1(ctx, req)
 	if err != nil {
-		return err
+		log.Debug().Err(err).Msg("FilmService - List - ListFilmV1 handle error")
+		return nil, err
 	}
-	film.ID = foundFilm.ID
-	*foundFilm = *film
-	return nil
+
+	log.Debug().Msg(fmt.Sprintf("FilmService - List - Got ListFilmV1 response %v", resp))
+
+	films := fromPbToFilms(resp.GetFilm())
+	return films, nil
 }
 
-func (s *DummyFilmService) Remove(filmID uint64) (bool, error) {
-	for i := range s.Films {
-		if s.Films[i].ID == filmID {
-			s.Films = append(s.Films[:i], s.Films[i+1:]...)
-			return true, nil
-		}
+func (s *DummyFilmService) Create(ctx context.Context, film *cinema.Film) (*int64, error) {
+	log := logger.LoggerFromContext(ctx)
+	log.Debug().Msg("FilmService - Create - Start")
+
+	req := &cnmApi.CreateFilmV1Request{
+		Name: film.Name,
+		Rating: film.Rating,
+		ShortDescription: film.ShortDescription,
 	}
-	return false, fmt.Errorf("Cant find film with ID %d", filmID)
+	log.Debug().Msg(fmt.Sprintf("FilmService - Create - Try CreateFilmV1 with %v", req))
+	resp, err := s.filmApi.CreateFilmV1(ctx, req)
+	if err != nil {
+		log.Debug().Err(err).Msg("FilmService - Create - CreateFilmV1 handle error")
+		return nil, err
+	}
+
+	log.Debug().Msg(fmt.Sprintf("FilmService - Create - Got CreateFilmV1 response %v", resp))
+
+	pbFilm := resp.GetFilm()
+	if pbFilm == nil {
+		err := fmt.Errorf("empty film field in response")
+		log.Debug().Err(err).Msg("FilmService - Describe - Error")
+		return nil, err
+	}
+
+	resFilm := fromPbToFilm(pbFilm)
+	return &resFilm.ID, nil
 }
 
-func (s *DummyFilmService) NumberOfFilms() int {
-	return len(s.Films)
+func (s *DummyFilmService) Update(ctx context.Context, film *cinema.Film) (*int64, error) {
+	log := logger.LoggerFromContext(ctx)
+	log.Debug().Msg("FilmService - Update - Start")
+
+	reqFilm := fromFilmToReq(*film)
+	req := &cnmApi.UpdateFilmV1Request{
+		Film: &reqFilm,
+	}
+	log.Debug().Msg(fmt.Sprintf("FilmService - Update - Try UpdateFilmV1 with %v", req))
+	resp, err := s.filmApi.UpdateFilmV1(ctx, req)
+	if err != nil {
+		log.Debug().Err(err).Msg("FilmService - Update - UpdateFilmV1 handle error")
+		return nil, err
+	}
+
+	log.Debug().Msg(fmt.Sprintf("FilmService - Update - Got UpdateFilmV1 response %v", resp))
+
+	pbFilm := resp.GetFilm()
+	if pbFilm == nil {
+		err := fmt.Errorf("empty film field in response")
+		log.Debug().Err(err).Msg("FilmService - Describe - Error")
+		return nil, err
+	}
+
+	resFilm := fromPbToFilm(pbFilm)
+	return &resFilm.ID, nil
 }
 
-func (s *DummyFilmService) checkFilm(film cinema.Film) error {
-	if film.Name == "" {
-		return fmt.Errorf("Name can't be blank")
+func (s *DummyFilmService) Remove(ctx context.Context, filmID int64) (*int64, error) {
+	log := logger.LoggerFromContext(ctx)
+	log.Debug().Msg("FilmService - Remove - Start")
+
+	req := &cnmApi.RemoveFilmV1Request{
+		FilmId: filmID,
+	}
+	log.Debug().Msg(fmt.Sprintf("FilmService - Remove - Try RemoveFilmV1 with %v", req))
+	resp, err := s.filmApi.RemoveFilmV1(ctx, req)
+	if err != nil {
+		log.Debug().Err(err).Msg("FilmService - Remove - RemoveFilmV1 handle error")
+		return nil, err
 	}
 
-	if film.Rating > 10 && film.Rating < 0 {
-		return fmt.Errorf("Wrong rating value, it must be between 0 and 10")
+	log.Debug().Msg(fmt.Sprintf("FilmService - Remove - Got RemoveFilmV1 response %v", resp))
+
+	pbFilm := resp.GetFilm()
+	if pbFilm == nil {
+		err := fmt.Errorf("empty film field in response")
+		log.Debug().Err(err).Msg("FilmService - Remove - Error")
+		return nil, err
 	}
 
-	return nil
-}
-
-func (s *DummyFilmService) findByID(filmID uint64) (*cinema.Film, error) {
-	for i := range s.Films {
-		if s.Films[i].ID == filmID {
-			return &s.Films[i], nil
-		}
-	}
-	return nil, fmt.Errorf("Can't find film with ID %d", filmID)
+	resFilm := fromPbToFilm(pbFilm)
+	return &resFilm.ID, nil
 }

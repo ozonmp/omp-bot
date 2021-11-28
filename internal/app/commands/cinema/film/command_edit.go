@@ -1,6 +1,7 @@
 package film
 
 import (
+	"context"
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/model/cinema"
@@ -8,17 +9,17 @@ import (
 	"strings"
 )
 
-func (c CinemaFilmCommander) Edit(inputMsg *tgbotapi.Message) {
+func (c CinemaFilmCommander) Edit(ctx context.Context, inputMsg *tgbotapi.Message) {
 	entityArgsString := strings.TrimSpace(inputMsg.CommandArguments())
-	newFilm, err := c.editCommandLogic(entityArgsString)
+	newFilm, err := c.editCommandLogic(ctx, entityArgsString)
 	if err != nil {
-		c.sendMessage(tgbotapi.NewMessage(inputMsg.Chat.ID, fmt.Sprintf("%s", err)))
+		_ = c.sendMessage(tgbotapi.NewMessage(inputMsg.Chat.ID, fmt.Sprintf("%s", err)))
 		return
 	}
-	c.sendMessage(tgbotapi.NewMessage(inputMsg.Chat.ID, fmt.Sprintf("Updated film:\n%s", newFilm)))
+	_ = c.sendMessage(tgbotapi.NewMessage(inputMsg.Chat.ID, fmt.Sprintf("Updated film:\n%s", newFilm)))
 }
 
-func (c *CinemaFilmCommander) editCommandLogic(entityArgsString string) (*cinema.Film, error) {
+func (c *CinemaFilmCommander) editCommandLogic(ctx context.Context, entityArgsString string) (*cinema.Film, error) {
 	params, err := getParameters(entityArgsString)
 	if err != nil {
 		return nil, err
@@ -42,7 +43,8 @@ func (c *CinemaFilmCommander) editCommandLogic(entityArgsString string) (*cinema
 		return nil, err
 	}
 
-	if err := c.filmService.Update(uint64(idToFind), newFilm); err != nil {
+	newFilm.ID = int64(idToFind)
+	if _, err := c.filmService.Update(ctx, newFilm); err != nil {
 		return nil, err
 	}
 

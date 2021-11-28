@@ -7,14 +7,14 @@ import (
 	"runtime/debug"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-	cnmApi "github.com/ozonmp/omp-bot/pb/github.com/ozonmp/cnm-film-api/pkg/cnm-film-api"
 	"github.com/ozonmp/omp-bot/internal/app/commands/demo"
 	"github.com/ozonmp/omp-bot/internal/app/path"
+	cnmApi "github.com/ozonmp/omp-bot/pb/github.com/ozonmp/cnm-film-api/pkg/cnm-film-api"
 )
 
 type Commander interface {
-	HandleCallback(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath)
-	HandleCommand(callback *tgbotapi.Message, commandPath path.CommandPath)
+	HandleCallback(ctx context.Context, callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath)
+	HandleCommand(ctx context.Context, callback *tgbotapi.Message, commandPath path.CommandPath)
 }
 
 type Router struct {
@@ -54,7 +54,7 @@ type Router struct {
 func NewRouter(
 	ctx context.Context,
 	bot *tgbotapi.BotAPI,
-	film *cnmApi.CnmFilmApiServiceClient,
+	film cnmApi.CnmFilmApiServiceClient,
 ) *Router {
 	return &Router{
 		// bot
@@ -83,14 +83,14 @@ func NewRouter(
 		// rating
 		// security
 		// cinema
-		cinemaCommander: cinema.NewCinemaCommander(ctx, bot, film),
+		cinemaCommander: cinema.NewCinemaCommander(bot, film),
 		// logistic
 		// product
 		// education
 	}
 }
 
-func (c *Router) HandleUpdate(update tgbotapi.Update) {
+func (c *Router) HandleUpdate(ctx context.Context, update tgbotapi.Update) {
 	defer func() {
 		if panicValue := recover(); panicValue != nil {
 			log.Printf("recovered from panic: %v\n%v", panicValue, string(debug.Stack()))
@@ -99,13 +99,13 @@ func (c *Router) HandleUpdate(update tgbotapi.Update) {
 
 	switch {
 	case update.CallbackQuery != nil:
-		c.handleCallback(update.CallbackQuery)
+		c.handleCallback(ctx, update.CallbackQuery)
 	case update.Message != nil:
-		c.handleMessage(update.Message)
+		c.handleMessage(ctx, update.Message)
 	}
 }
 
-func (c *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
+func (c *Router) handleCallback(ctx context.Context, callback *tgbotapi.CallbackQuery) {
 	callbackPath, err := path.ParseCallback(callback.Data)
 	if err != nil {
 		log.Printf("Router.handleCallback: error parsing callback data `%s` - %v", callback.Data, err)
@@ -114,7 +114,7 @@ func (c *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
 
 	switch callbackPath.Domain {
 	case "demo":
-		c.demoCommander.HandleCallback(callback, callbackPath)
+		c.demoCommander.HandleCallback(ctx, callback, callbackPath)
 	case "user":
 		break
 	case "access":
@@ -158,7 +158,7 @@ func (c *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
 	case "security":
 		break
 	case "cinema":
-		c.cinemaCommander.HandleCallback(callback, callbackPath)
+		c.cinemaCommander.HandleCallback(ctx, callback, callbackPath)
 	case "logistic":
 		break
 	case "product":
@@ -170,7 +170,7 @@ func (c *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
 	}
 }
 
-func (c *Router) handleMessage(msg *tgbotapi.Message) {
+func (c *Router) handleMessage(ctx context.Context, msg *tgbotapi.Message) {
 	if !msg.IsCommand() {
 		c.showCommandFormat(msg)
 
@@ -185,7 +185,7 @@ func (c *Router) handleMessage(msg *tgbotapi.Message) {
 
 	switch commandPath.Domain {
 	case "demo":
-		c.demoCommander.HandleCommand(msg, commandPath)
+		c.demoCommander.HandleCommand(ctx, msg, commandPath)
 	case "user":
 		break
 	case "access":
@@ -229,7 +229,7 @@ func (c *Router) handleMessage(msg *tgbotapi.Message) {
 	case "security":
 		break
 	case "cinema":
-		c.cinemaCommander.HandleCommand(msg, commandPath)
+		c.cinemaCommander.HandleCommand(ctx, msg, commandPath)
 	case "logistic":
 		break
 	case "product":

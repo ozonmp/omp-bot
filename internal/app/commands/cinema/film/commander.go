@@ -6,9 +6,9 @@ import (
 	"github.com/ozonmp/omp-bot/internal/service/cinema/film"
 	"log"
 
-	cnmApi "github.com/ozonmp/omp-bot/pb/github.com/ozonmp/cnm-film-api/pkg/cnm-film-api"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/app/path"
+	cnmApi "github.com/ozonmp/omp-bot/pb/github.com/ozonmp/cnm-film-api/pkg/cnm-film-api"
 )
 
 type CinemaFilmCommander struct {
@@ -16,38 +16,37 @@ type CinemaFilmCommander struct {
 	filmService *film.DummyFilmService
 }
 
-func NewCinemaFilmCommander(ctx context.Context, bot *tgbotapi.BotAPI, film *cnmApi.CnmFilmApiServiceClient) *CinemaFilmCommander {
-	filmService := film.NewDummyFilmService(ctx, film)
+func NewCinemaFilmCommander(bot *tgbotapi.BotAPI, filmApi cnmApi.CnmFilmApiServiceClient) *CinemaFilmCommander {
+	filmService := film.NewDummyFilmService(filmApi)
 	return &CinemaFilmCommander{
-		ctx: ctx,
 		bot:         bot,
 		filmService: filmService,
 	}
 }
 
-func (c *CinemaFilmCommander) HandleCallback(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
+func (c *CinemaFilmCommander) HandleCallback(ctx context.Context, callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
 	switch callbackPath.CallbackName {
 	case "list":
-		c.CallbackList(callback, callbackPath)
+		c.CallbackList(ctx, callback, callbackPath)
 	default:
 		log.Printf("CinemaFilmCommander.HandleCallback: unknown callback name: %s", callbackPath.CallbackName)
 	}
 }
 
-func (c *CinemaFilmCommander) HandleCommand(msg *tgbotapi.Message, commandPath path.CommandPath) {
+func (c *CinemaFilmCommander) HandleCommand(ctx context.Context, msg *tgbotapi.Message, commandPath path.CommandPath) {
 	switch commandPath.CommandName {
 	case "help":
 		c.Help(msg)
 	case "list":
-		c.List(msg, nil)
+		c.List(ctx, msg, nil)
 	case "get":
-		c.Get(msg)
+		c.Get(ctx, msg)
 	case "delete":
-		c.Delete(msg)
+		c.Delete(ctx, msg)
 	case "new":
-		c.New(msg)
+		c.New(ctx, msg)
 	case "edit":
-		c.Edit(msg)
+		c.Edit(ctx, msg)
 	default:
 		c.Default(msg)
 	}
