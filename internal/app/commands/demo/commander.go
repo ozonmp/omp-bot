@@ -1,6 +1,7 @@
 package demo
 
 import (
+	"context"
 	"log"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
@@ -9,8 +10,8 @@ import (
 )
 
 type Commander interface {
-	HandleCallback(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath)
-	HandleCommand(message *tgbotapi.Message, commandPath path.CommandPath)
+	HandleCallback(ctx context.Context, callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath)
+	HandleCommand(ctx context.Context, message *tgbotapi.Message, commandPath path.CommandPath)
 }
 
 type DemoCommander struct {
@@ -28,19 +29,19 @@ func NewDemoCommander(
 	}
 }
 
-func (c *DemoCommander) HandleCallback(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
+func (c *DemoCommander) HandleCallback(ctx context.Context, callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
 	switch callbackPath.Subdomain {
 	case "subdomain":
-		c.subdomainCommander.HandleCallback(callback, callbackPath)
+		c.subdomainCommander.HandleCallback(ctx, callback, callbackPath)
 	default:
 		log.Printf("DemoCommander.HandleCallback: unknown subdomain - %s", callbackPath.Subdomain)
 	}
 }
 
-func (c *DemoCommander) HandleCommand(msg *tgbotapi.Message, commandPath path.CommandPath) {
+func (c *DemoCommander) HandleCommand(ctx context.Context, message *tgbotapi.Message, commandPath path.CommandPath) {
 	switch commandPath.Subdomain {
 	case "subdomain":
-		c.subdomainCommander.HandleCommand(msg, commandPath)
+		c.subdomainCommander.HandleCommand(ctx, message, commandPath)
 	default:
 		log.Printf("DemoCommander.HandleCommand: unknown subdomain - %s", commandPath.Subdomain)
 	}

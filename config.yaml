@@ -1,0 +1,6 @@
+cnm_film:
+  host: localhost
+  port: 8082
+
+logger:
+  log_level: debug

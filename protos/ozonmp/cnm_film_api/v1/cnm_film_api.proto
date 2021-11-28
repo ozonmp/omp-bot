@@ -1,0 +1,114 @@
+syntax = "proto3";
+
+package ozonmp.cnm_film_api.v1;
+
+import "validate/validate.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/ozonmp/cnm-film-api/pkg/cnm-film-api;cnm_film_api";
+
+// CnmFilmApiService - Service for working with films
+service CnmFilmApiService {
+  // DescribeFilmV1 - Describe a film
+  rpc DescribeFilmV1(DescribeFilmV1Request) returns (DescribeFilmV1Response) {
+    option (google.api.http) = {
+      post: "/v1/films/{film_id}"
+      body: "*"
+    };
+  }
+
+  rpc CreateFilmV1(CreateFilmV1Request) returns (CreateFilmV1Response) {
+    option (google.api.http) = {
+      post: "/v1/films/create"
+      body: "*"
+    };
+  }
+
+  rpc ListFilmV1(ListFilmV1Request) returns (ListFilmV1Response) {
+    option (google.api.http) = {
+      post: "/v1/films/list"
+      body: "*"
+    };
+  }
+
+  rpc RemoveFilmV1(RemoveFilmV1Request) returns (RemoveFilmV1Response) {
+    option (google.api.http) = {
+      post: "/v1/films/remove/{film_id}"
+      body: "*"
+    };
+  }
+
+  rpc UpdateFilmV1(UpdateFilmV1Request) returns (UpdateFilmV1Response) {
+    option (google.api.http) = {
+      post: "/v1/films/update"
+      body: "*"
+    };
+  }
+}
+
+message Film {
+  int64 id  = 1 [(validate.rules).int64 = {gt: 0}];
+  string name = 2 [(validate.rules).string = {min_len: 1, max_bytes: 1024}];
+  double rating = 3 [(validate.rules).double = {gte: 0, lte: 10}];
+  string short_description = 4 [(validate.rules).string = {max_bytes: 1024}];
+  google.protobuf.Timestamp created = 5;
+}
+
+message ReqFilm {
+  int64 id  = 1 [(validate.rules).int64 = {gt: 0}];
+  string name = 2 [(validate.rules).string = {min_len: 1, max_bytes: 1024}];
+  double rating = 3 [(validate.rules).double = {gte: 0, lte: 10}];
+  string short_description = 4 [(validate.rules).string = {max_bytes: 1024}];
+}
+
+message DescribeFilmV1Request {
+  int64 film_id = 1 [(validate.rules).int64 = {gt: 0}];
+}
+
+message DescribeFilmV1Response {
+  Film film = 1;
+}
+
+message CreateFilmV1Request {
+  string name = 1 [(validate.rules).string = {min_len: 1, max_bytes: 1024}];
+  double rating = 2 [(validate.rules).double = {gte: 0, lte: 10}];
+  string short_description = 3 [(validate.rules).string = {max_bytes: 1024}];
+}
+
+message CreateFilmV1Response {
+  Film film = 1;
+}
+
+message ListFilmV1Request {
+  int64 cursor = 1 [(validate.rules).int64 = {gt: 0, }];
+  int64 limit = 2 [(validate.rules).int64 = {gte: 0, }];
+}
+
+message ListFilmV1Response {
+  repeated Film film = 1;
+}
+
+message RemoveFilmV1Request {
+  int64 film_id = 1 [(validate.rules).int64 = {gt: 0, }];
+}
+
+message RemoveFilmV1Response {
+  Film film = 1;
+}
+
+message UpdateFilmV1Request {
+  ReqFilm film = 1;
+}
+
+message UpdateFilmV1Response {
+  Film film = 1;
+}
+
+message FilmEvent {
+  int64 id = 1 [(validate.rules).int64 = {gte: 0, }];
+  int64 film_id = 2 [(validate.rules).int64 = {gte: 0, }];
+  string type = 3;
+  string status = 4;
+  google.protobuf.Timestamp updated = 6;
+}
