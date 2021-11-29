@@ -58,6 +58,62 @@ func (s *Service) validateRequiredFields(ticket travel.Ticket) error {
 	return nil
 }
 
+func (s *Service) mapToTicketFromApi(res *trv_ticket_api.Ticket) *travel.Ticket {
+	if res == nil {
+		return nil
+	}
+
+	ticket := &travel.Ticket{
+		Seat:     res.GetSeat(),
+		Comments: res.GetComment(),
+	}
+
+	if user := res.GetUser(); user != nil {
+		ticket.User = &travel.User{
+			FirstName: user.GetFirstName(),
+			LastName:  user.GetLastName(),
+		}
+	}
+
+	if schedule := res.GetSchedule(); schedule != nil {
+		ticket.Schedule = &travel.Schedule{
+			Destination: schedule.Destination,
+			Departure:   schedule.GetDeparture().AsTime(),
+			Arrival:     schedule.GetArrival().AsTime(),
+		}
+	}
+
+	return ticket
+}
+
+func (s *Service) mapToTicketFromFacade(res *trv_ticket_facade.Ticket) *travel.Ticket {
+	if res == nil {
+		return nil
+	}
+
+	ticket := &travel.Ticket{
+		Seat:     res.GetSeat(),
+		Comments: res.GetComment(),
+	}
+
+	if user := res.GetUser(); user != nil {
+		ticket.User = &travel.User{
+			FirstName: user.GetFirstName(),
+			LastName:  user.GetLastName(),
+		}
+	}
+
+	if schedule := res.GetSchedule(); schedule != nil {
+		ticket.Schedule = &travel.Schedule{
+			Destination: schedule.Destination,
+			Departure:   schedule.GetDeparture().AsTime(),
+			Arrival:     schedule.GetArrival().AsTime(),
+		}
+	}
+
+	return ticket
+}
+
 // Describe a ticket
 func (s *Service) Describe(ticket_id uint64) (*travel.Ticket, error) {
 	log.Printf("Travel.TicketService: getting ticket with id %v", ticket_id)
@@ -94,7 +150,7 @@ func (s *Service) Describe(ticket_id uint64) (*travel.Ticket, error) {
 		}
 	}
 
-	return ticket, nil
+	return s.mapToTicketFromApi(res.GetData()), nil
 }
 
 // List some tickets
@@ -112,27 +168,13 @@ func (s *Service) List(cursor uint64, limit uint64) ([]travel.Ticket, uint64) {
 
 	tickets := make([]travel.Ticket, 0, len(res.GetItems()))
 	for _, t := range res.GetItems() {
-		ticket := travel.Ticket{
-			Seat:     t.GetSeat(),
-			Comments: t.GetComment(),
+		ticket := s.mapToTicketFromFacade(t)
+		if ticket == nil {
+			log.Printf("Travel.TicketService: failed to map ticket from %v. Skipping", t)
+			continue
 		}
 
-		if user := t.GetUser(); user != nil {
-			ticket.User = &travel.User{
-				FirstName: user.GetFirstName(),
-				LastName:  user.GetLastName(),
-			}
-		}
-
-		if schedule := t.GetSchedule(); schedule != nil {
-			ticket.Schedule = &travel.Schedule{
-				Destination: schedule.Destination,
-				Departure:   schedule.GetDeparture().AsTime(),
-				Arrival:     schedule.GetArrival().AsTime(),
-			}
-		}
-
-		tickets = append(tickets, ticket)
+		tickets = append(tickets, *ticket)
 	}
 
 	return tickets, res.GetTotal()
