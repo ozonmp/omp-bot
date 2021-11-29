@@ -3,6 +3,8 @@ package travel
 import (
 	"context"
 
+	trv_ticket_facade "github.com/ozonmp/trv-ticket-facade/pkg/trv-ticket-facade"
+
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/app/path"
 	"github.com/ozonmp/omp-bot/internal/command/travel/ticket"
@@ -25,14 +27,16 @@ type TicketCallbacker interface {
 
 func NewTicketCommander(
 	ctx context.Context,
-	client trv_ticket_api.TravelTicketApiServiceClient,
+	apiClient trv_ticket_api.TravelTicketApiServiceClient,
+	facadeClient trv_ticket_facade.TravelTicketFacadeServiceClient,
 	bot Sender) TicketCommander {
-	return ticket.NewTicketCommander(ctx, client, bot)
+	return ticket.NewTicketCommander(ctx, apiClient, facadeClient, bot)
 }
 
 func NewTicketCallbacker(
 	ctx context.Context,
-	client trv_ticket_api.TravelTicketApiServiceClient,
+	apiClient trv_ticket_api.TravelTicketApiServiceClient,
+	facadeClient trv_ticket_facade.TravelTicketFacadeServiceClient,
 	bot Sender) TicketCallbacker {
-	return ticket.NewTicketCommander(ctx, client, bot)
+	return ticket.NewTicketCommander(ctx, apiClient, facadeClient, bot)
 }

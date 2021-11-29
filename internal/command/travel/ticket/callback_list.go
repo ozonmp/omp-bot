@@ -20,7 +20,7 @@ func (c *TicketCommander) CallbackList(callback *tgbotapi.CallbackQuery, callbac
 
 	outputMessage := ""
 
-	tickets := c.ticketService.List(parsedData.Cursor, parsedData.Limit)
+	tickets, total := c.ticketService.List(parsedData.Cursor, parsedData.Limit)
 
 	for i, t := range tickets {
 		outputMessage += fmt.Sprintf("%v. ", uint64(i)+parsedData.Cursor+1)
@@ -30,7 +30,7 @@ func (c *TicketCommander) CallbackList(callback *tgbotapi.CallbackQuery, callbac
 
 	msg := tgbotapi.NewMessage(callback.Message.Chat.ID, outputMessage)
 
-	buttons := createButtonsIfNecessary(parsedData, len(tickets))
+	buttons := createButtonsIfNecessary(parsedData, total)
 	if len(buttons) > 0 {
 		msg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(
 			tgbotapi.NewInlineKeyboardRow(buttons...),
@@ -40,7 +40,7 @@ func (c *TicketCommander) CallbackList(callback *tgbotapi.CallbackQuery, callbac
 	c.bot.Send(msg)
 }
 
-func createButtonsIfNecessary(parsedData CallbackListData, ticketsCount int) []tgbotapi.InlineKeyboardButton {
+func createButtonsIfNecessary(parsedData CallbackListData, total uint64) []tgbotapi.InlineKeyboardButton {
 	buttons := make([]tgbotapi.InlineKeyboardButton, 0, 2)
 	if parsedData.Cursor > 0 {
 		previousPageStart := parsedData.Cursor - ListLimit
@@ -59,7 +59,7 @@ func createButtonsIfNecessary(parsedData CallbackListData, ticketsCount int) []t
 	}
 
 	nextPageCursor := parsedData.Cursor + parsedData.Limit
-	if ticketsCount == ListLimit {
+	if total > nextPageCursor {
 		serializedData, _ := json.Marshal(
 			CallbackListData{
 				Cursor: nextPageCursor,

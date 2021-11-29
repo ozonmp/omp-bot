@@ -5,23 +5,28 @@ import (
 	"errors"
 	"log"
 
+	trv_ticket_facade "github.com/ozonmp/trv-ticket-facade/pkg/trv-ticket-facade"
+
 	"github.com/ozonmp/omp-bot/internal/model/travel"
 	trv_ticket_api "github.com/ozonmp/trv-ticket-api/pkg/trv-ticket-api"
 )
 
 // Service handles tickets
 type Service struct {
-	client trv_ticket_api.TravelTicketApiServiceClient
-	ctx    context.Context
+	apiClient    trv_ticket_api.TravelTicketApiServiceClient
+	facadeClient trv_ticket_facade.TravelTicketFacadeServiceClient
+	ctx          context.Context
 }
 
 // NewTravelTicketService creates new service to handle tickets
 func NewTravelTicketService(
 	ctx context.Context,
-	client trv_ticket_api.TravelTicketApiServiceClient) *Service {
+	apiClient trv_ticket_api.TravelTicketApiServiceClient,
+	facadeClient trv_ticket_facade.TravelTicketFacadeServiceClient) *Service {
 	return &Service{
-		client: client,
-		ctx:    ctx,
+		apiClient:    apiClient,
+		facadeClient: facadeClient,
+		ctx:          ctx,
 	}
 }
 
@@ -61,7 +66,7 @@ func (s *Service) Describe(ticket_id uint64) (*travel.Ticket, error) {
 		return nil, err
 	}
 
-	res, err := s.client.DescribeTicketV1(s.ctx, &trv_ticket_api.DescribeTicketV1Request{
+	res, err := s.apiClient.DescribeTicketV1(s.ctx, &trv_ticket_api.DescribeTicketV1Request{
 		TicketId: ticket_id,
 	})
 
@@ -93,16 +98,16 @@ func (s *Service) Describe(ticket_id uint64) (*travel.Ticket, error) {
 }
 
 // List some tickets
-func (s *Service) List(cursor uint64, limit uint64) []travel.Ticket {
+func (s *Service) List(cursor uint64, limit uint64) ([]travel.Ticket, uint64) {
 	log.Printf("Travel.TicketService: listing tickets in range from %v to %v", cursor, cursor+limit)
 
-	res, err := s.client.ListTicketsV1(s.ctx, &trv_ticket_api.ListTicketsV1Request{
+	res, err := s.facadeClient.ListTicketsV1(s.ctx, &trv_ticket_facade.ListTicketsV1Request{
 		Limit:  limit,
 		Offset: cursor,
 	})
 
 	if err != nil {
-		return []travel.Ticket{}
+		return []travel.Ticket{}, 0
 	}
 
 	tickets := make([]travel.Ticket, 0, len(res.GetItems()))
@@ -130,7 +135,7 @@ func (s *Service) List(cursor uint64, limit uint64) []travel.Ticket {
 		tickets = append(tickets, ticket)
 	}
 
-	return tickets
+	return tickets, res.GetTotal()
 }
 
 // Create a ticket
@@ -141,7 +146,7 @@ func (s *Service) Create(new_ticket travel.Ticket) (uint64, error) {
 		return 0, err
 	}
 
-	res, err := s.client.CreateTicketV1(s.ctx, &trv_ticket_api.CreateTicketV1Request{
+	res, err := s.apiClient.CreateTicketV1(s.ctx, &trv_ticket_api.CreateTicketV1Request{
 		UserId:     new_ticket.User.ID,
 		Seat:       new_ticket.Seat,
 		ScheduleId: new_ticket.Schedule.ID,
@@ -166,7 +171,7 @@ func (s *Service) Update(ticket_id uint64, ticket travel.Ticket) error {
 		return nil
 	}
 
-	_, err := s.client.UpdateTicketV1(s.ctx, &trv_ticket_api.UpdateTicketV1Request{
+	_, err := s.apiClient.UpdateTicketV1(s.ctx, &trv_ticket_api.UpdateTicketV1Request{
 		TicketId:   ticket_id,
 		Seat:       ticket.Seat,
 		ScheduleId: ticket.Schedule.ID,
@@ -184,7 +189,7 @@ func (s *Service) Remove(ticket_id uint64) (bool, error) {
 		return false, err
 	}
 
-	_, err := s.client.RemoveTicketV1(s.ctx, &trv_ticket_api.RemoveTicketV1Request{TicketId: ticket_id})
+	_, err := s.apiClient.RemoveTicketV1(s.ctx, &trv_ticket_api.RemoveTicketV1Request{TicketId: ticket_id})
 
 	if err != nil {
 		return false, err

@@ -4,6 +4,8 @@ import (
 	"context"
 	"log"
 
+	trv_ticket_facade "github.com/ozonmp/trv-ticket-facade/pkg/trv-ticket-facade"
+
 	"github.com/ozonmp/omp-bot/internal/app/commands/travel"
 	trv_ticket_api "github.com/ozonmp/trv-ticket-api/pkg/trv-ticket-api"
 
@@ -53,7 +55,8 @@ type Router struct {
 
 func NewRouter(
 	ctx context.Context,
-	client trv_ticket_api.TravelTicketApiServiceClient,
+	apiClient trv_ticket_api.TravelTicketApiServiceClient,
+	facadeClient trv_ticket_facade.TravelTicketFacadeServiceClient,
 	bot *tgbotapi.BotAPI,
 ) *Router {
 	return &Router{
@@ -67,7 +70,7 @@ func NewRouter(
 		// delivery
 		// recommendation
 		// travel
-		travelCommander: travel.NewTravelCommander(ctx, client, bot),
+		travelCommander: travel.NewTravelCommander(ctx, apiClient, facadeClient, bot),
 		// loyalty
 		// bank
 		// subscription

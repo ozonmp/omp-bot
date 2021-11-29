@@ -4,6 +4,8 @@ import (
 	"context"
 	"log"
 
+	trv_ticket_facade "github.com/ozonmp/trv-ticket-facade/pkg/trv-ticket-facade"
+
 	trv_ticket_api "github.com/ozonmp/trv-ticket-api/pkg/trv-ticket-api"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
@@ -19,14 +21,15 @@ type TravelTicketCommander struct {
 
 func NewTravelTicketCommander(
 	ctx context.Context,
-	client trv_ticket_api.TravelTicketApiServiceClient,
+	apiClient trv_ticket_api.TravelTicketApiServiceClient,
+	facadeClient trv_ticket_facade.TravelTicketFacadeServiceClient,
 	bot Sender,
 ) *TravelTicketCommander {
 
 	return &TravelTicketCommander{
 		bot:              bot,
-		ticketCommander:  travel.NewTicketCommander(ctx, client, bot),
-		ticketCallbacker: travel.NewTicketCallbacker(ctx, client, bot),
+		ticketCommander:  travel.NewTicketCommander(ctx, apiClient, facadeClient, bot),
+		ticketCallbacker: travel.NewTicketCallbacker(ctx, apiClient, facadeClient, bot),
 	}
 }
 

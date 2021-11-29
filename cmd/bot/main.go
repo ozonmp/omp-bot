@@ -7,6 +7,8 @@ import (
 	"os/signal"
 	"syscall"
 
+	trv_ticket_facade "github.com/ozonmp/trv-ticket-facade/pkg/trv-ticket-facade"
+
 	"google.golang.org/grpc"
 
 	trv_ticket_api "github.com/ozonmp/trv-ticket-api/pkg/trv-ticket-api"
@@ -21,6 +23,7 @@ func main() {
 
 	token := os.Getenv("TOKEN")
 	apiAddress := os.Getenv("TRV_TICKET_API_ADDRESS")
+	facadeAddress := os.Getenv("TRV_TICKET_FACADE_ADDRESS")
 
 	bot, err := tgbotapi.NewBotAPI(token)
 	if err != nil {
@@ -41,15 +44,22 @@ func main() {
 		log.Panic(err)
 	}
 
-	conn, err := grpc.Dial(apiAddress, grpc.WithInsecure())
+	apiConn, err := grpc.Dial(apiAddress, grpc.WithInsecure())
 	if err != nil {
 		panic(err)
 	}
-	defer conn.Close()
+	defer apiConn.Close()
+
+	facadeConn, err := grpc.Dial(facadeAddress, grpc.WithInsecure())
+	if err != nil {
+		panic(err)
+	}
+	defer facadeConn.Close()
 
 	router := router.NewRouter(
 		context.Background(),
-		trv_ticket_api.NewTravelTicketApiServiceClient(conn),
+		trv_ticket_api.NewTravelTicketApiServiceClient(apiConn),
+		trv_ticket_facade.NewTravelTicketFacadeServiceClient(facadeConn),
 		bot,
 	)
 
