@@ -6,11 +6,11 @@ import (
 )
 
 type Task struct {
-	Id            uint64
-	Championat_id uint64
-	Difficulty    uint64
-	Title         string
-	Description   string
+	Id            uint64 `json:"id"`
+	Championat_id uint64 `json:"championatID"`
+	Difficulty    uint64 `json:"difficulty"`
+	Title         string `json:"title"`
+	Description   string `json:"description"`
 }
 
 func (t *Task) String() string {

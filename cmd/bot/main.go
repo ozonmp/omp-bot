@@ -7,6 +7,7 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/joho/godotenv"
 	routerPkg "github.com/ozonmp/omp-bot/internal/app/router"
+	"github.com/ozonmp/omp-bot/internal/config"
 )
 
 func main() {
@@ -15,6 +16,10 @@ func main() {
 	token, found := os.LookupEnv("TOKEN")
 	if !found {
 		log.Panic("environment variable TOKEN not found in .env")
+	}
+
+	if err := config.ReadConfigYML("config.yml"); err != nil {
+		log.Fatal("Failed init configuration", "err", err)
 	}
 
 	bot, err := tgbotapi.NewBotAPI(token)

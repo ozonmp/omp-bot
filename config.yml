@@ -1,0 +1,6 @@
+project:
+  name: Edu Task OMP bot
+  debug: true
+  environment: development
+
+grpcServerAddr: localhost:8082

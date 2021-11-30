@@ -8,9 +8,7 @@ import (
 )
 
 type CallbackListData struct {
-	PageNumber uint64 `json:"page"`
-	Direction  int8   `json:"dir"`
-	FirstLast  int8   `json:"fl"`
+	Offset uint64 `json:"offset"`
 }
 
 func (c *TaskCommandStruct) CallbackList(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
@@ -24,42 +22,30 @@ func (c *TaskCommandStruct) CallbackList(callback *tgbotapi.CallbackQuery, callb
 		return
 	}
 
-	var cursor uint64
-
-	if parsedData.FirstLast == -1 {
-		cursor = 0
-	} else if parsedData.FirstLast == 1 {
-		cursor = uint64((c.taskService.CountData() - 1) / maxElemListPerPage * maxElemListPerPage)
-	} else {
-		cursor = uint64((int(parsedData.PageNumber) + int(parsedData.Direction)) * maxElemListPerPage)
-	}
-
-	products, err := c.taskService.List(cursor, maxElemListPerPage)
+	products, err := c.taskService.List(parsedData.Offset, maxElemListPerPage)
 	if err != nil {
-		msg := tgbotapi.NewMessage(callback.Message.Chat.ID, "Error. Cursor out of data. /list__education__task")
+		msg := tgbotapi.NewMessage(callback.Message.Chat.ID, "Error. Offset out of data. /list__education__task")
 		c.SendMessage(msg)
 		return
 	}
 
-	currentPage := cursor / maxElemListPerPage
+	var lastID uint64
 
 	outputMsgText := "Here the products: \n"
 	for _, p := range products {
 		outputMsgText += p.String()
 		outputMsgText += "\n"
+		lastID = p.Id
 	}
 
 	msg := tgbotapi.NewMessage(callback.Message.Chat.ID, outputMsgText)
 
 	KeyboardMarkup := tgbotapi.NewInlineKeyboardMarkup()
 
-	maxElem := c.taskService.CountData()
-
-	if cursor > maxElemListPerPage-1 {
+	if lastID > maxElemListPerPage {
 		serializedDataBack, _ := json.Marshal(
 			CallbackListData{
-				PageNumber: currentPage,
-				Direction:  -1,
+				Offset: parsedData.Offset - maxElemListPerPage,
 			},
 		)
 
@@ -73,45 +59,16 @@ func (c *TaskCommandStruct) CallbackList(callback *tgbotapi.CallbackQuery, callb
 		)
 	}
 
-	if maxElem > int(cursor)+int(maxElemListPerPage) {
-		serializedDataNext, _ := json.Marshal(
-			CallbackListData{
-				PageNumber: currentPage,
-				Direction:  1,
-			})
+	if len(products) == maxElemListPerPage {
 
-		KeyboardMarkup.InlineKeyboard = append(KeyboardMarkup.InlineKeyboard,
-			tgbotapi.NewInlineKeyboardRow(
-				tgbotapi.NewInlineKeyboardButtonData(
-					"Next page",
-					getCallbackPathList(string(serializedDataNext)).String(),
-				),
-			),
-		)
-	}
-
-	if maxElem > maxElemListPerPage {
-		serializedDataFirst, _ := json.Marshal(
-			CallbackListData{
-				FirstLast: -1,
-			},
-		)
-
-		serializedDataLast, _ := json.Marshal(
-			CallbackListData{
-				FirstLast: 1,
-			},
+		serializedData, _ := json.Marshal(
+			CallbackListData{Offset: lastID},
 		)
 
 		KeyboardMarkup.InlineKeyboard = append(KeyboardMarkup.InlineKeyboard,
 			tgbotapi.NewInlineKeyboardRow(
-				tgbotapi.NewInlineKeyboardButtonData(
-					"First page",
-					getCallbackPathList(string(serializedDataFirst)).String(),
-				),
-				tgbotapi.NewInlineKeyboardButtonData(
-					"Last page",
-					getCallbackPathList(string(serializedDataLast)).String(),
+				tgbotapi.NewInlineKeyboardButtonData("Next page",
+					getCallbackPathList(string(serializedData)).String(),
 				),
 			),
 		)

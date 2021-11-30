@@ -9,8 +9,10 @@ import (
 )
 
 type createProductData struct {
-	Title       string `json:"title"`
-	Description string `json:"description"`
+	Championat_id uint64 `json:"championatID"`
+	Difficulty    uint64 `json:"difficulty"`
+	Title         string `json:"title"`
+	Description   string `json:"description"`
 }
 
 func (c *TaskCommandStruct) New(inputMessage *tgbotapi.Message) {
@@ -31,8 +33,10 @@ func (c *TaskCommandStruct) New(inputMessage *tgbotapi.Message) {
 
 	id, err := c.taskService.Create(
 		education.Task{
-			Title:       createData.Title,
-			Description: createData.Description,
+			Championat_id: createData.Championat_id,
+			Difficulty:    createData.Difficulty,
+			Title:         createData.Title,
+			Description:   createData.Description,
 		},
 	)
 	if err == nil {
