@@ -7,6 +7,7 @@ import (
 )
 
 type Ticket struct {
+	ID       uint64
 	User     *User
 	Seat     string
 	Schedule *Schedule
@@ -15,8 +16,9 @@ type Ticket struct {
 
 func (t *Ticket) String() string {
 	return fmt.Sprintf(
-		"%v's ticket.\n  Schedule: %v.\n  Seat: %v.\n  Comments: %v",
+		"%v's ticket #%v.\n  Schedule: %v.\n  Seat: %v.\n  Comments: %v",
 		t.User,
+		t.ID,
 		t.Schedule,
 		t.Seat,
 		t.Comments,

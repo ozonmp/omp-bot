@@ -24,7 +24,7 @@ func (c *TicketCommander) CallbackList(callback *tgbotapi.CallbackQuery, callbac
 
 	for i, t := range tickets {
 		outputMessage += fmt.Sprintf("%v. ", uint64(i)+parsedData.Cursor+1)
-		outputMessage += fmt.Sprintf("User: %v,\nSchedule: %v", t.User, t.Schedule)
+		outputMessage += fmt.Sprintf("ID: %v,\nUser: %v,\nSchedule: %v", t.ID, t.User, t.Schedule)
 		outputMessage += "\n\n"
 	}
 

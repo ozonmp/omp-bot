@@ -64,6 +64,7 @@ func (s *Service) mapToTicketFromApi(res *trv_ticket_api.Ticket) *travel.Ticket 
 	}
 
 	ticket := &travel.Ticket{
+		ID:       res.GetTicketId(),
 		Seat:     res.GetSeat(),
 		Comments: res.GetComment(),
 	}
@@ -92,6 +93,7 @@ func (s *Service) mapToTicketFromFacade(res *trv_ticket_facade.Ticket) *travel.T
 	}
 
 	ticket := &travel.Ticket{
+		ID:       res.GetTicketId(),
 		Seat:     res.GetSeat(),
 		Comments: res.GetComment(),
 	}
@@ -128,26 +130,6 @@ func (s *Service) Describe(ticket_id uint64) (*travel.Ticket, error) {
 
 	if err != nil {
 		return nil, err
-	}
-
-	ticket := &travel.Ticket{
-		Seat:     res.GetData().GetSeat(),
-		Comments: res.GetData().GetComment(),
-	}
-
-	if user := res.GetData().GetUser(); user != nil {
-		ticket.User = &travel.User{
-			FirstName: user.GetFirstName(),
-			LastName:  user.GetLastName(),
-		}
-	}
-
-	if schedule := res.GetData().GetSchedule(); schedule != nil {
-		ticket.Schedule = &travel.Schedule{
-			Destination: schedule.Destination,
-			Departure:   schedule.GetDeparture().AsTime(),
-			Arrival:     schedule.GetArrival().AsTime(),
-		}
 	}
 
 	return s.mapToTicketFromApi(res.GetData()), nil

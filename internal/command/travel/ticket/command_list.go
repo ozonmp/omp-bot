@@ -14,7 +14,7 @@ func (c *TicketCommander) List(inputMessage *tgbotapi.Message) {
 
 	for i, t := range tickets {
 		outputMessage += fmt.Sprintf("%v. ", i+1)
-		outputMessage += fmt.Sprintf("User: %v,\nSchedule: %v", t.User, t.Schedule)
+		outputMessage += fmt.Sprintf("ID: %v,\nUser: %v,\nSchedule: %v", t.ID, t.User, t.Schedule)
 		outputMessage += "\n\n"
 	}
 

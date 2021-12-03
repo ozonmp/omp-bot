@@ -56,12 +56,14 @@ func main() {
 	}
 	defer facadeConn.Close()
 
-	router := router.NewRouter(
-		context.Background(),
-		trv_ticket_api.NewTravelTicketApiServiceClient(apiConn),
-		trv_ticket_facade.NewTravelTicketFacadeServiceClient(facadeConn),
-		bot,
-	)
+	botWrapper := &router.TelegramBotAPIWrapper{
+		BotAPI:                   *bot,
+		Ctx:                      context.Background(),
+		TravelTicketApiClient:    trv_ticket_api.NewTravelTicketApiServiceClient(apiConn),
+		TravelTicketFacadeClient: trv_ticket_facade.NewTravelTicketFacadeServiceClient(facadeConn),
+	}
+
+	router := router.NewRouter(botWrapper)
 
 	for update := range updates {
 		router.HandleUpdate(update)
