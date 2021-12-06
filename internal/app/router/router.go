@@ -2,6 +2,7 @@ package router
 
 import (
 	"log"
+	"runtime/debug"
 
 	"github.com/ozonmp/omp-bot/internal/model/commander"
 
@@ -89,7 +90,7 @@ func NewRouter(bot commander.Sender) *Router {
 func (c *Router) HandleUpdate(update tgbotapi.Update) {
 	defer func() {
 		if panicValue := recover(); panicValue != nil {
-			log.Printf("recovered from panic: %v", panicValue)
+			log.Printf("recovered from panic: %v\n%v", panicValue, string(debug.Stack()))
 		}
 	}()
 
@@ -240,5 +241,8 @@ func (c *Router) handleMessage(msg *tgbotapi.Message) {
 func (c *Router) showCommandFormat(inputMessage *tgbotapi.Message) {
 	outputMsg := tgbotapi.NewMessage(inputMessage.Chat.ID, "Command format: /{command}__{domain}__{subdomain}")
 
-	c.bot.Send(outputMsg)
+	_, err := c.bot.Send(outputMsg)
+	if err != nil {
+		log.Printf("Router.showCommandFormat: error sending reply message to chat - %v", err)
+	}
 }
