@@ -1,11 +1,9 @@
 package router
 
 import (
-	"context"
 	"log"
 
-	trv_ticket_api "github.com/ozonmp/trv-ticket-api/pkg/trv-ticket-api"
-	trv_ticket_facade "github.com/ozonmp/trv-ticket-facade/pkg/trv-ticket-facade"
+	"github.com/ozonmp/omp-bot/internal/model/commander"
 
 	"github.com/ozonmp/omp-bot/internal/app/commands/travel"
 
@@ -19,19 +17,9 @@ type Commander interface {
 	HandleCommand(callback *tgbotapi.Message, commandPath path.CommandPath)
 }
 
-// TelegramBotAPIWrapper is the wrapper for Telegram bot API with additional properties required for routing
-type TelegramBotAPIWrapper struct {
-	tgbotapi.BotAPI
-
-	Ctx context.Context
-
-	TravelTicketApiClient    trv_ticket_api.TravelTicketApiServiceClient
-	TravelTicketFacadeClient trv_ticket_facade.TravelTicketFacadeServiceClient
-}
-
 type Router struct {
 	// bot
-	bot *TelegramBotAPIWrapper
+	bot commander.Sender
 
 	// demoCommander
 	demoCommander Commander
@@ -63,7 +51,7 @@ type Router struct {
 	// education
 }
 
-func NewRouter(bot *TelegramBotAPIWrapper) *Router {
+func NewRouter(bot commander.Sender) *Router {
 	return &Router{
 		// bot
 		bot: bot,
@@ -75,12 +63,7 @@ func NewRouter(bot *TelegramBotAPIWrapper) *Router {
 		// delivery
 		// recommendation
 		// travel
-		travelCommander: travel.NewTravelCommander(
-			bot.Ctx,
-			bot.TravelTicketApiClient,
-			bot.TravelTicketFacadeClient,
-			bot,
-		),
+		travelCommander: travel.NewTravelCommander(bot),
 		// loyalty
 		// bank
 		// subscription

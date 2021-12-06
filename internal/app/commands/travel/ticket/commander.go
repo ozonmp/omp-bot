@@ -25,7 +25,6 @@ func NewTravelTicketCommander(
 	facadeClient trv_ticket_facade.TravelTicketFacadeServiceClient,
 	bot Sender,
 ) *TravelTicketCommander {
-
 	return &TravelTicketCommander{
 		bot:              bot,
 		ticketCommander:  travel.NewTicketCommander(ctx, apiClient, facadeClient, bot),
