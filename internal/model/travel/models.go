@@ -7,6 +7,7 @@ import (
 )
 
 type Ticket struct {
+	ID       uint64
 	User     *User
 	Seat     string
 	Schedule *Schedule
@@ -15,8 +16,9 @@ type Ticket struct {
 
 func (t *Ticket) String() string {
 	return fmt.Sprintf(
-		"%v's ticket.\n  Schedule: %v.\n  Seat: %v.\n  Comments: %v",
+		"%v's ticket #%v.\n  Schedule: %v.\n  Seat: %v.\n  Comments: %v",
 		t.User,
+		t.ID,
 		t.Schedule,
 		t.Seat,
 		t.Comments,
@@ -24,6 +26,7 @@ func (t *Ticket) String() string {
 }
 
 type User struct {
+	ID        uint64
 	FirstName string
 	LastName  string
 }
@@ -33,6 +36,7 @@ func (u *User) String() string {
 }
 
 type Schedule struct {
+	ID          uint64
 	Destination string
 	Departure   time.Time
 	Arrival     time.Time
@@ -40,6 +44,7 @@ type Schedule struct {
 
 func (s *Schedule) UnmarshalJSON(data []byte) (err error) {
 	var tmp struct {
+		ID          uint64
 		Destination string
 		Departure   string
 		Arrival     string
@@ -48,6 +53,7 @@ func (s *Schedule) UnmarshalJSON(data []byte) (err error) {
 		return err
 	}
 
+	s.ID = tmp.ID
 	s.Destination = tmp.Destination
 
 	if len(tmp.Departure) > 0 {

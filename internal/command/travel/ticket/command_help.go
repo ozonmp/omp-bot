@@ -16,11 +16,11 @@ func (c *TicketCommander) Help(inputMessage *tgbotapi.Message) {
 			"  Required fields: At least user and schedule must be specified.\n"+
 			"  Field constraints: Departure and Arrival date time must be in RFC3339 format.\n"+
 			"  Example 1: { \"User\": {\"FirstName\":\"Petr\"},\"Schedule\":{\"Destination\":\"Tokyo\"}}.\n"+
-			"  Example 2: User:{\"FirstName\":\"Petr\"} Schedule:{\"Destination\":\"Tokyo\"} comment:\"meaningful comment.\".\n"+
+			"  Example 2: User:{\"ID\":1} Schedule:{\"ID\":2} comment:\"meaningful comment.\".\n"+
 			"/edit__travel__ticket - edit a ticket by id \n"+
 			"  Input format: ticket id, then JSON-serialized ticket.\n"+
 			"  Required fields: At least user and schedule must be specified.\n"+
-			"  Example: 1, { \"User\": {\"FirstName\":\"Petr\"},\"Schedule\":{\"Destination\":\"Tokyo\"}}.\n",
+			"  Example: 1, { \"User\": {\"ID\":1},\"Schedule\":{\"ID\":2}}.\n",
 	)
 
 	c.bot.Send(msg)

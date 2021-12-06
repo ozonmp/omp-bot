@@ -3,18 +3,20 @@ package subdomain
 import (
 	"log"
 
+	"github.com/ozonmp/omp-bot/internal/model/commander"
+
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/app/path"
 	"github.com/ozonmp/omp-bot/internal/service/demo/subdomain"
 )
 
 type DemoSubdomainCommander struct {
-	bot              *tgbotapi.BotAPI
+	bot              commander.Sender
 	subdomainService *subdomain.Service
 }
 
 func NewDemoSubdomainCommander(
-	bot *tgbotapi.BotAPI,
+	bot commander.Sender,
 ) *DemoSubdomainCommander {
 	subdomainService := subdomain.NewService()
 

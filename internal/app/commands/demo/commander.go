@@ -3,6 +3,8 @@ package demo
 import (
 	"log"
 
+	"github.com/ozonmp/omp-bot/internal/model/commander"
+
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/app/commands/demo/subdomain"
 	"github.com/ozonmp/omp-bot/internal/app/path"
@@ -14,12 +16,12 @@ type Commander interface {
 }
 
 type DemoCommander struct {
-	bot                *tgbotapi.BotAPI
+	bot                commander.Sender
 	subdomainCommander Commander
 }
 
 func NewDemoCommander(
-	bot *tgbotapi.BotAPI,
+	bot commander.Sender,
 ) *DemoCommander {
 	return &DemoCommander{
 		bot: bot,

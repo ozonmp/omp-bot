@@ -3,6 +3,8 @@ package main
 import (
 	"log"
 	"os"
+	"os/signal"
+	"syscall"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/joho/godotenv"
@@ -35,7 +37,20 @@ func main() {
 
 	router := router.NewRouter(bot)
 
-	for update := range updates {
-		router.HandleUpdate(update)
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
+
+loop:
+	for {
+		select {
+		case update, ok := <-updates:
+			if !ok {
+				break loop
+			}
+			router.HandleUpdate(update)
+		case <-quit:
+			log.Print("Terminate signal received. Finishing waiting for updates.")
+			break loop
+		}
 	}
 }

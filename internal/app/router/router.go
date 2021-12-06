@@ -1,8 +1,11 @@
 package router
 
 import (
-	"github.com/ozonmp/omp-bot/internal/app/commands/travel"
 	"log"
+
+	"github.com/ozonmp/omp-bot/internal/model/commander"
+
+	"github.com/ozonmp/omp-bot/internal/app/commands/travel"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/app/commands/demo"
@@ -16,7 +19,7 @@ type Commander interface {
 
 type Router struct {
 	// bot
-	bot *tgbotapi.BotAPI
+	bot commander.Sender
 
 	// demoCommander
 	demoCommander Commander
@@ -48,9 +51,7 @@ type Router struct {
 	// education
 }
 
-func NewRouter(
-	bot *tgbotapi.BotAPI,
-) *Router {
+func NewRouter(bot commander.Sender) *Router {
 	return &Router{
 		// bot
 		bot: bot,
