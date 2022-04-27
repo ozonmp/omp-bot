@@ -1,4 +1,4 @@
-package subdomain
+package travel
 
 type Service struct{}
 
@@ -6,10 +6,10 @@ func NewService() *Service {
 	return &Service{}
 }
 
-func (s *Service) List() []Subdomain {
+func (s *Service) List() []Travel {
 	return allEntities
 }
 
-func (s *Service) Get(idx int) (*Subdomain, error) {
+func (s *Service) Get(idx int) (*Travel, error) {
 	return &allEntities[idx], nil
 }

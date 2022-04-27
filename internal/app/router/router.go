@@ -1,11 +1,11 @@
 package router
 
 import (
+	"github.com/ozonmp/omp-bot/internal/app/commands/business"
 	"log"
 	"runtime/debug"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-	"github.com/ozonmp/omp-bot/internal/app/commands/demo"
 	"github.com/ozonmp/omp-bot/internal/app/path"
 )
 
@@ -19,7 +19,6 @@ type Router struct {
 	bot *tgbotapi.BotAPI
 
 	// demoCommander
-	demoCommander Commander
 	// user
 	// access
 	// buy
@@ -35,6 +34,7 @@ type Router struct {
 	// storage
 	// streaming
 	// business
+	businessCommander Commander
 	// work
 	// service
 	// exchange
@@ -54,7 +54,6 @@ func NewRouter(
 		// bot
 		bot: bot,
 		// demoCommander
-		demoCommander: demo.NewDemoCommander(bot),
 		// user
 		// access
 		// buy
@@ -70,6 +69,7 @@ func NewRouter(
 		// storage
 		// streaming
 		// business
+		businessCommander: business.NewBusinessCommander(bot),
 		// work
 		// service
 		// exchange
@@ -105,9 +105,9 @@ func (c *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
 		return
 	}
 
-	switch callbackPath.Domain {
+	switch callbackPath.Business {
 	case "demo":
-		c.demoCommander.HandleCallback(callback, callbackPath)
+		break
 	case "user":
 		break
 	case "access":
@@ -137,7 +137,7 @@ func (c *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
 	case "streaming":
 		break
 	case "business":
-		break
+		c.businessCommander.HandleCallback(callback, callbackPath)
 	case "work":
 		break
 	case "service":
@@ -159,7 +159,7 @@ func (c *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
 	case "education":
 		break
 	default:
-		log.Printf("Router.handleCallback: unknown domain - %s", callbackPath.Domain)
+		log.Printf("Router.handleCallback: unknown domain - %s", callbackPath.Business)
 	}
 }
 
@@ -176,9 +176,9 @@ func (c *Router) handleMessage(msg *tgbotapi.Message) {
 		return
 	}
 
-	switch commandPath.Domain {
+	switch commandPath.Business {
 	case "demo":
-		c.demoCommander.HandleCommand(msg, commandPath)
+		break
 	case "user":
 		break
 	case "access":
@@ -208,7 +208,7 @@ func (c *Router) handleMessage(msg *tgbotapi.Message) {
 	case "streaming":
 		break
 	case "business":
-		break
+		c.businessCommander.HandleCommand(msg, commandPath)
 	case "work":
 		break
 	case "service":
@@ -230,12 +230,12 @@ func (c *Router) handleMessage(msg *tgbotapi.Message) {
 	case "education":
 		break
 	default:
-		log.Printf("Router.handleCallback: unknown domain - %s", commandPath.Domain)
+		log.Printf("Router.handleCallback: unknown domain - %s", commandPath.Business)
 	}
 }
 
 func (c *Router) showCommandFormat(inputMessage *tgbotapi.Message) {
-	outputMsg := tgbotapi.NewMessage(inputMessage.Chat.ID, "Command format: /{command}__{domain}__{subdomain}")
+	outputMsg := tgbotapi.NewMessage(inputMessage.Chat.ID, "Command format: /{command}__{business}__{travel}")
 
 	_, err := c.bot.Send(outputMsg)
 	if err != nil {
