@@ -34,5 +34,5 @@ func (c CommandPath) WithCommandName(commandName string) CommandPath {
 }
 
 func (c CommandPath) String() string {
-	return fmt.Sprintf("/%s__%s__%s", c.CommandName, c.Domain, c.Subdomain)
+	return fmt.Sprintf("%s__%s__%s", c.CommandName, c.Domain, c.Subdomain)
 }
