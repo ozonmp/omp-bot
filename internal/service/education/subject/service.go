@@ -5,6 +5,7 @@ import (
 	"fmt"
 )
 
+// ...
 type DummyService struct {
 	indexByID map[uint64]int
 	subjects  []Subject
