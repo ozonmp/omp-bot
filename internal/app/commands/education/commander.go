@@ -12,7 +12,7 @@ type Commander interface {
 	HandleCallback(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath)
 	HandleCommand(msg *tgbotapi.Message, commandPath path.CommandPath)
 }
-
+// ...
 type EducationCommander struct {
 	bot *tgbotapi.BotAPI
 	// subjectCommander router.Commander
